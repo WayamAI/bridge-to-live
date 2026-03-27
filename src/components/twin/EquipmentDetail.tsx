@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
-import type { Equipment, EquipmentStatus } from "@/hooks/useFactoryData";
-import { X, Wrench, AlertTriangle, Clock, Activity } from "lucide-react";
+import type { Equipment, EquipmentStatus } from "@/hooks/usePlantData";
+import { X, Wrench, AlertTriangle, Clock, Activity, MapPin, Factory } from "lucide-react";
 import SensorSparkline from "./SensorSparkline";
 
 const statusBadge: Record<EquipmentStatus, { label: string; className: string }> = {
@@ -35,8 +35,16 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
       {/* Header */}
       <div className="p-4 border-b border-border flex items-start justify-between">
         <div>
+          <p className="text-[10px] font-mono text-primary">{equipment.tag}</p>
           <h3 className="font-bold text-sm">{equipment.name}</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">{equipment.zone}</p>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+              <MapPin className="w-2.5 h-2.5" />{equipment.processUnit}
+            </span>
+            <span className="text-[10px] text-muted-foreground flex items-center gap-1">
+              <Factory className="w-2.5 h-2.5" />{equipment.manufacturer} {equipment.model}
+            </span>
+          </div>
         </div>
         <button onClick={onClose} className="p-1 hover:bg-muted rounded-md">
           <X className="w-4 h-4 text-muted-foreground" />
@@ -44,7 +52,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
       </div>
 
       {/* Status bar */}
-      <div className="px-4 py-3 border-b border-border flex items-center gap-3">
+      <div className="px-4 py-3 border-b border-border flex items-center gap-3 flex-wrap">
         <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full border ${badge.className}`}>
           {badge.label}
         </span>
@@ -56,6 +64,11 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
           <Clock className="w-3 h-3" />
           <span>{equipment.runtimeHours.toLocaleString()}h runtime</span>
         </div>
+        {equipment.rulDays !== null && (
+          <span className="text-[10px] font-mono text-muted-foreground">
+            RUL: <strong className={equipment.rulDays < 30 ? "text-destructive" : "text-foreground"}>{equipment.rulDays}d</strong>
+          </span>
+        )}
       </div>
 
       {/* Health bar */}
@@ -71,27 +84,33 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
       </div>
 
       {/* Sensors */}
-      <div className="p-4 space-y-3">
+      <div className="p-4 space-y-3 max-h-[320px] overflow-y-auto">
         <h4 className="text-[10px] font-mono text-muted-foreground uppercase tracking-wider">Live Sensors</h4>
-        {equipment.sensors.map((sensor) => {
-          const isOutOfRange = sensor.value < sensor.normalMin || sensor.value > sensor.normalMax;
+        {equipment.sensors.map((s) => {
+          const isOutOfRange = s.value < s.normalMin || s.value > s.normalMax;
+          const deviation = s.setpoint !== 0 ? ((s.value - s.setpoint) / s.setpoint * 100).toFixed(1) : "0";
           return (
-            <div key={sensor.id} className="rounded-lg border border-border bg-surface-elevated p-3">
+            <div key={s.id} className="rounded-lg border border-border bg-surface-elevated p-3">
               <div className="flex items-center justify-between mb-1.5">
-                <span className="text-xs font-medium">{sensor.name}</span>
-                <span className={`text-sm font-mono font-bold ${isOutOfRange ? "text-destructive" : "text-foreground"}`}>
-                  {sensor.value} {sensor.unit}
-                </span>
+                <span className="text-xs font-medium">{s.name}</span>
+                <div className="flex items-center gap-2">
+                  <span className={`text-sm font-mono font-bold ${isOutOfRange ? "text-destructive" : "text-foreground"}`}>
+                    {s.value} {s.unit}
+                  </span>
+                  <span className={`text-[9px] font-mono ${parseFloat(deviation) > 0 ? "text-gap" : "text-muted-foreground"}`}>
+                    {parseFloat(deviation) > 0 ? "+" : ""}{deviation}%
+                  </span>
+                </div>
               </div>
               <SensorSparkline
-                data={sensor.trend}
-                min={sensor.min}
-                max={sensor.max}
-                normalMin={sensor.normalMin}
-                normalMax={sensor.normalMax}
+                data={s.trend}
+                min={s.min}
+                max={s.max}
+                normalMin={s.normalMin}
+                normalMax={s.normalMax}
               />
               <div className="flex justify-between text-[9px] text-muted-foreground mt-1 font-mono">
-                <span>Range: {sensor.normalMin}–{sensor.normalMax} {sensor.unit}</span>
+                <span>Range: {s.normalMin}–{s.normalMax} {s.unit}</span>
                 {isOutOfRange && (
                   <span className="text-destructive flex items-center gap-0.5">
                     <AlertTriangle className="w-2.5 h-2.5" /> OUT OF RANGE
