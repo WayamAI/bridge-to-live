@@ -1,0 +1,154 @@
+import { useState } from "react";
+import { MonitorSpeaker, Shield, AlertTriangle, Search } from "lucide-react";
+
+interface OTAsset {
+  name: string;
+  type: string;
+  vendor: string;
+  firmware: string;
+  lastSeen: string;
+  purdueLevel: number;
+  protocols: string[];
+  patchStatus: "Up to date" | "Patch available" | "End-of-life";
+  riskScore: number;
+}
+
+const OT_ASSETS: OTAsset[] = [
+  { name: "DCS Controller DC-01", type: "DCS", vendor: "Honeywell", firmware: "R520.1", lastSeen: "Live", purdueLevel: 2, protocols: ["OPC-UA", "Modbus TCP"], patchStatus: "Up to date", riskScore: 12 },
+  { name: "DCS Controller DC-02", type: "DCS", vendor: "Honeywell", firmware: "R520.1", lastSeen: "Live", purdueLevel: 2, protocols: ["OPC-UA", "Modbus TCP"], patchStatus: "Up to date", riskScore: 15 },
+  { name: "PLC-A-01 (Compression A)", type: "PLC", vendor: "Siemens", firmware: "V17.0 SP3", lastSeen: "Live", purdueLevel: 1, protocols: ["Profinet", "OPC-UA"], patchStatus: "Up to date", riskScore: 18 },
+  { name: "PLC-A-02 (Compression A)", type: "PLC", vendor: "Siemens", firmware: "V17.0 SP3", lastSeen: "Live", purdueLevel: 1, protocols: ["Profinet", "OPC-UA"], patchStatus: "Up to date", riskScore: 18 },
+  { name: "PLC-B-01 (Compression B)", type: "PLC", vendor: "Siemens", firmware: "V17.0 SP2", lastSeen: "Live", purdueLevel: 1, protocols: ["Profinet", "OPC-UA"], patchStatus: "Patch available", riskScore: 34 },
+  { name: "PLC-B-02 (Compression B)", type: "PLC", vendor: "Siemens", firmware: "V16.0 SP4", lastSeen: "Live", purdueLevel: 1, protocols: ["Profinet"], patchStatus: "Patch available", riskScore: 42 },
+  { name: "PLC-CW-01 (Cooling Water)", type: "PLC", vendor: "Siemens", firmware: "V17.0 SP3", lastSeen: "Live", purdueLevel: 1, protocols: ["Profinet", "OPC-UA"], patchStatus: "Up to date", riskScore: 14 },
+  { name: "PLC-F-01 (Flare)", type: "PLC", vendor: "Siemens", firmware: "V17.0 SP3", lastSeen: "Live", purdueLevel: 1, protocols: ["Profinet"], patchStatus: "Up to date", riskScore: 20 },
+  { name: "HMI-A-001", type: "HMI", vendor: "Honeywell", firmware: "Experion R520", lastSeen: "Live", purdueLevel: 2, protocols: ["OPC-UA"], patchStatus: "Up to date", riskScore: 22 },
+  { name: "HMI-A-002", type: "HMI", vendor: "Honeywell", firmware: "Experion R510", lastSeen: "Live", purdueLevel: 2, protocols: ["OPC-UA"], patchStatus: "Patch available", riskScore: 38 },
+  { name: "HMI-B-001", type: "HMI", vendor: "Honeywell", firmware: "Experion R520", lastSeen: "Live", purdueLevel: 2, protocols: ["OPC-UA"], patchStatus: "Up to date", riskScore: 22 },
+  { name: "HMI-B-002", type: "HMI", vendor: "Honeywell", firmware: "Experion R500", lastSeen: "3 hr ago", purdueLevel: 2, protocols: ["OPC-UA"], patchStatus: "End-of-life", riskScore: 72 },
+  { name: "RTU-ML-01 (Marine Loading)", type: "RTU", vendor: "ABB", firmware: "RTU560 v9.2", lastSeen: "Live", purdueLevel: 1, protocols: ["IEC 61850", "Modbus"], patchStatus: "Up to date", riskScore: 16 },
+  { name: "RTU-FW-01 (Firewater)", type: "RTU", vendor: "ABB", firmware: "RTU560 v9.2", lastSeen: "Live", purdueLevel: 1, protocols: ["Modbus"], patchStatus: "Up to date", riskScore: 14 },
+  { name: "PI Historian Server", type: "Historian", vendor: "OSIsoft", firmware: "PI Server 2024", lastSeen: "Live", purdueLevel: 3, protocols: ["PI-SDK", "OPC-HDA"], patchStatus: "Up to date", riskScore: 24 },
+  { name: "PI Interface Node 01", type: "Historian", vendor: "OSIsoft", firmware: "PI ICU 2023", lastSeen: "Live", purdueLevel: 3, protocols: ["OPC-DA"], patchStatus: "Patch available", riskScore: 36 },
+  { name: "Engineering Workstation EW-001", type: "Engineering workstation", vendor: "Dell", firmware: "Win 10 LTSC 2021", lastSeen: "2 hr ago", purdueLevel: 3, protocols: ["SSH", "RDP"], patchStatus: "Patch available", riskScore: 48 },
+  { name: "Engineering Workstation EW-002", type: "Engineering workstation", vendor: "Dell", firmware: "Win 10 LTSC 2021", lastSeen: "5 hr ago", purdueLevel: 3, protocols: ["SSH", "RDP"], patchStatus: "Patch available", riskScore: 48 },
+  { name: "Engineering Workstation EW-003", type: "Engineering workstation", vendor: "Dell", firmware: "Win 10 LTSC 2019", lastSeen: "Live", purdueLevel: 3, protocols: ["SSH", "RDP"], patchStatus: "End-of-life", riskScore: 68 },
+  { name: "OT Switch SW-L1-01", type: "OT switch", vendor: "Cisco", firmware: "IE 5000 v17.9", lastSeen: "Live", purdueLevel: 1, protocols: ["Ethernet/IP"], patchStatus: "Up to date", riskScore: 8 },
+  { name: "OT Switch SW-L1-02", type: "OT switch", vendor: "Cisco", firmware: "IE 5000 v17.9", lastSeen: "Live", purdueLevel: 1, protocols: ["Ethernet/IP"], patchStatus: "Up to date", riskScore: 8 },
+  { name: "OT Switch SW-L2-01", type: "OT switch", vendor: "Cisco", firmware: "IE 5000 v17.8", lastSeen: "Live", purdueLevel: 2, protocols: ["Ethernet/IP"], patchStatus: "Patch available", riskScore: 28 },
+  { name: "OT Firewall FW-DMZ-01", type: "OT firewall", vendor: "Palo Alto", firmware: "PAN-OS 11.1", lastSeen: "Live", purdueLevel: 3.5, protocols: ["IPS/IDS"], patchStatus: "Up to date", riskScore: 10 },
+  { name: "OT Firewall FW-DMZ-02", type: "OT firewall", vendor: "Palo Alto", firmware: "PAN-OS 11.0", lastSeen: "Live", purdueLevel: 3.5, protocols: ["IPS/IDS"], patchStatus: "Patch available", riskScore: 26 },
+  { name: "SIS Controller SIS-01", type: "SIS", vendor: "Honeywell", firmware: "Safety Manager SC", lastSeen: "Live (read-only)", purdueLevel: 1, protocols: ["SIL3 certified"], patchStatus: "Up to date", riskScore: 6 },
+  { name: "SIS Controller SIS-02", type: "SIS", vendor: "Honeywell", firmware: "Safety Manager SC", lastSeen: "Live (read-only)", purdueLevel: 1, protocols: ["SIL3 certified"], patchStatus: "Up to date", riskScore: 6 },
+  { name: "Smart Transmitter Gateway GTW-01", type: "Smart sensor", vendor: "Emerson", firmware: "AMS v14.0", lastSeen: "Live", purdueLevel: 1, protocols: ["HART", "WirelessHART"], patchStatus: "Up to date", riskScore: 12 },
+  { name: "Smart Transmitter Gateway GTW-02", type: "Smart sensor", vendor: "Emerson", firmware: "AMS v14.0", lastSeen: "Live", purdueLevel: 1, protocols: ["HART", "WirelessHART"], patchStatus: "Up to date", riskScore: 12 },
+  { name: "Vibration Monitor Node VM-01", type: "Smart sensor", vendor: "Fluke", firmware: "3563 v3.2", lastSeen: "2 hr ago", purdueLevel: 1, protocols: ["WiFi", "MQTT"], patchStatus: "Patch available", riskScore: 32 },
+  { name: "Power Meter PM-01", type: "Smart sensor", vendor: "Schneider", firmware: "ION 9000 v4.1", lastSeen: "Live", purdueLevel: 1, protocols: ["Modbus TCP"], patchStatus: "Up to date", riskScore: 10 },
+  { name: "Power Meter PM-02", type: "Smart sensor", vendor: "Schneider", firmware: "ION 9000 v4.0", lastSeen: "Live", purdueLevel: 1, protocols: ["Modbus TCP"], patchStatus: "Patch available", riskScore: 22 },
+  { name: "Gas Detector GD-01", type: "Smart sensor", vendor: "Dräger", firmware: "PIR 7000 v2.4", lastSeen: "Live", purdueLevel: 0, protocols: ["4-20mA", "HART"], patchStatus: "Up to date", riskScore: 4 },
+  { name: "Gas Detector GD-02", type: "Smart sensor", vendor: "Dräger", firmware: "PIR 7000 v2.4", lastSeen: "Live", purdueLevel: 0, protocols: ["4-20mA", "HART"], patchStatus: "Up to date", riskScore: 4 },
+  { name: "CCTV NVR NVR-01", type: "Smart sensor", vendor: "Hikvision", firmware: "v4.62", lastSeen: "Live", purdueLevel: 2, protocols: ["RTSP", "ONVIF"], patchStatus: "End-of-life", riskScore: 58 },
+  { name: "Access Control Panel ACP-01", type: "Smart sensor", vendor: "HID Global", firmware: "v8.3", lastSeen: "Live", purdueLevel: 2, protocols: ["Wiegand", "OSDP"], patchStatus: "Up to date", riskScore: 14 },
+  { name: "Weather Station WS-01", type: "Smart sensor", vendor: "Vaisala", firmware: "WXT536 v2.1", lastSeen: "Live", purdueLevel: 0, protocols: ["SDI-12", "Modbus"], patchStatus: "Up to date", riskScore: 2 },
+  { name: "LDAR Detector LDAR-01", type: "Smart sensor", vendor: "Teledyne", firmware: "Hi-Flow v3.0", lastSeen: "Hourly", purdueLevel: 0, protocols: ["USB", "BLE"], patchStatus: "Up to date", riskScore: 6 },
+  { name: "UPS Controller UPS-01", type: "Smart sensor", vendor: "Eaton", firmware: "9PX v2.8", lastSeen: "Live", purdueLevel: 1, protocols: ["SNMP", "Modbus"], patchStatus: "Up to date", riskScore: 8 },
+  { name: "HVAC Controller HVAC-01", type: "Smart sensor", vendor: "Johnson Controls", firmware: "Metasys v12", lastSeen: "Live", purdueLevel: 2, protocols: ["BACnet", "Modbus"], patchStatus: "Patch available", riskScore: 28 },
+  { name: "Analyser System AN-01", type: "Smart sensor", vendor: "ABB", firmware: "Sensi+ v5.1", lastSeen: "Live", purdueLevel: 1, protocols: ["Modbus", "HART"], patchStatus: "Up to date", riskScore: 10 },
+];
+
+const PATCH_COLORS: Record<string, string> = {
+  "Up to date": "bg-operational/10 text-operational",
+  "Patch available": "bg-gap/10 text-gap",
+  "End-of-life": "bg-destructive/10 text-destructive",
+};
+
+const OTAssetRegistry = () => {
+  const [search, setSearch] = useState("");
+  const [filterPatch, setFilterPatch] = useState<string>("all");
+
+  const filtered = OT_ASSETS.filter(a => {
+    if (filterPatch !== "all" && a.patchStatus !== filterPatch) return false;
+    if (search && !a.name.toLowerCase().includes(search.toLowerCase()) && !a.type.toLowerCase().includes(search.toLowerCase()) && !a.vendor.toLowerCase().includes(search.toLowerCase())) return false;
+    return true;
+  });
+
+  const upToDate = OT_ASSETS.filter(a => a.patchStatus === "Up to date").length;
+  const patchAvail = OT_ASSETS.filter(a => a.patchStatus === "Patch available").length;
+  const eol = OT_ASSETS.filter(a => a.patchStatus === "End-of-life").length;
+  const highRisk = OT_ASSETS.filter(a => a.riskScore > 50).length;
+
+  return (
+    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
+      <h1 className="text-lg font-bold flex items-center gap-2"><MonitorSpeaker className="w-5 h-5 text-primary" /> OT Asset Registry</h1>
+      <p className="text-xs text-muted-foreground -mt-3">Comprehensive inventory of all OT assets — IEC 62443 asset management</p>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[
+          { label: "Total OT Assets", value: OT_ASSETS.length.toString() },
+          { label: "Up to Date", value: upToDate.toString(), color: "text-operational" },
+          { label: "Patch Available", value: patchAvail.toString(), color: "text-gap" },
+          { label: "End-of-Life / High Risk", value: `${eol} EOL · ${highRisk} high risk`, color: "text-destructive" },
+        ].map(s => (
+          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
+            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
+            <p className={`text-lg font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
+          </div>
+        ))}
+      </div>
+
+      {/* Filters */}
+      <div className="flex gap-3 items-center">
+        <div className="relative flex-1 max-w-xs">
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
+          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets..." className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
+        </div>
+        {["all", "Up to date", "Patch available", "End-of-life"].map(f => (
+          <button key={f} onClick={() => setFilterPatch(f)}
+            className={`text-[10px] px-3 py-1.5 rounded-lg border transition-colors ${filterPatch === f ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
+            {f === "all" ? "All" : f}
+          </button>
+        ))}
+      </div>
+
+      {/* Table */}
+      <div className="rounded-xl border border-border bg-card overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full text-[11px]">
+            <thead>
+              <tr className="border-b border-border text-muted-foreground bg-muted/30">
+                <th className="text-left py-2 px-3 font-medium">Asset Name</th>
+                <th className="text-left py-2 px-3 font-medium">Type</th>
+                <th className="text-left py-2 px-3 font-medium">Vendor</th>
+                <th className="text-left py-2 px-3 font-medium">Firmware</th>
+                <th className="text-left py-2 px-3 font-medium">Last Seen</th>
+                <th className="text-center py-2 px-3 font-medium">Purdue</th>
+                <th className="text-left py-2 px-3 font-medium">Protocols</th>
+                <th className="text-left py-2 px-3 font-medium">Patch Status</th>
+                <th className="text-right py-2 px-3 font-medium">Risk</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((a, i) => (
+                <tr key={i} className={`border-b border-border/50 hover:bg-muted/20 ${a.riskScore > 50 ? "bg-destructive/5" : ""}`}>
+                  <td className="py-1.5 px-3 font-medium">{a.name}</td>
+                  <td className="py-1.5 px-3 text-[10px]">{a.type}</td>
+                  <td className="py-1.5 px-3">{a.vendor}</td>
+                  <td className="py-1.5 px-3 font-mono text-[10px]">{a.firmware}</td>
+                  <td className="py-1.5 px-3 text-[10px]">{a.lastSeen}</td>
+                  <td className="py-1.5 px-3 text-center font-mono">{a.purdueLevel}</td>
+                  <td className="py-1.5 px-3 text-[10px]">{a.protocols.join(", ")}</td>
+                  <td className="py-1.5 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${PATCH_COLORS[a.patchStatus]}`}>{a.patchStatus}</span></td>
+                  <td className="py-1.5 px-3 text-right font-mono font-bold">
+                    <span className={a.riskScore > 50 ? "text-destructive" : a.riskScore > 30 ? "text-gap" : "text-operational"}>{a.riskScore}</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default OTAssetRegistry;
