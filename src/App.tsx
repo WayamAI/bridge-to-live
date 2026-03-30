@@ -12,7 +12,25 @@ import EquipmentHealthPage from "@/pages/EquipmentHealth";
 import AlarmManagementPage from "@/pages/AlarmManagement";
 import EnergyPage from "@/pages/EnergyIntelligence";
 import HandoverPage from "@/pages/HandoverTracker";
-import PlaceholderPage from "@/pages/PlaceholderPage";
+import FailureAnalysis from "@/pages/FailureAnalysis";
+import RemainingUsefulLife from "@/pages/RemainingUsefulLife";
+import PredictiveMaintenance from "@/pages/PredictiveMaintenance";
+import WorkOrders from "@/pages/WorkOrders";
+import MaintenanceCost from "@/pages/MaintenanceCost";
+import LoadOptimisation from "@/pages/LoadOptimisation";
+import Sustainability from "@/pages/Sustainability";
+import AlarmAnalytics from "@/pages/AlarmAnalytics";
+import AlarmRationalisation from "@/pages/AlarmRationalisation";
+import OTAssetRegistry from "@/pages/OTAssetRegistry";
+import ThreatMonitor from "@/pages/ThreatMonitor";
+import NetworkSegmentation from "@/pages/NetworkSegmentation";
+import ComplianceDashboard from "@/pages/ComplianceDashboard";
+import TwinSync from "@/pages/TwinSync";
+import DataCompleteness from "@/pages/DataCompleteness";
+import ISOValidator from "@/pages/ISOValidator";
+import WhatIfSimulator from "@/pages/WhatIfSimulator";
+import DataQuality from "@/pages/DataQuality";
+import SettingsPage from "@/pages/SettingsPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,26 +49,26 @@ const AppInner = () => {
         <Route path="/alarms" element={<AlarmManagementPage alerts={data.alerts} onAcknowledge={data.acknowledgeAlert} onSelectEquipment={setSelectedEquipmentId} />} />
         <Route path="/energy" element={<EnergyPage energyMetrics={data.energyMetrics} />} />
         <Route path="/handover" element={<HandoverPage handoverData={data.handoverData} connectedSystems={data.connectedSystems} plantInfo={data.plantInfo} />} />
-        <Route path="/failure-analysis" element={<PlaceholderPage title="Failure Analysis" />} />
-        <Route path="/rul" element={<PlaceholderPage title="Remaining Useful Life (RUL)" />} />
-        <Route path="/predictive-maintenance" element={<PlaceholderPage title="Predictive Maintenance" />} />
-        <Route path="/work-orders" element={<PlaceholderPage title="Work Order Integration" />} />
-        <Route path="/maintenance-cost" element={<PlaceholderPage title="Maintenance Cost Tracker" />} />
-        <Route path="/load-optimisation" element={<PlaceholderPage title="Load Optimisation" />} />
-        <Route path="/sustainability" element={<PlaceholderPage title="Sustainability & Emissions" />} />
-        <Route path="/alarm-analytics" element={<PlaceholderPage title="Alarm History & Analytics" />} />
-        <Route path="/alarm-rationalisation" element={<PlaceholderPage title="Alarm Rationalisation" />} />
-        <Route path="/ot-assets" element={<PlaceholderPage title="OT Asset Registry" />} />
-        <Route path="/threat-monitor" element={<PlaceholderPage title="Threat Monitor" />} />
-        <Route path="/network" element={<PlaceholderPage title="Network Segmentation Status" />} />
-        <Route path="/compliance" element={<PlaceholderPage title="Compliance Dashboard" />} />
-        <Route path="/twin-sync" element={<PlaceholderPage title="Engineering Twin Sync" />} />
-        <Route path="/data-completeness" element={<PlaceholderPage title="Data Completeness Monitor" />} />
-        <Route path="/iso-validator" element={<PlaceholderPage title="ISO 15926 / CFIHOS Validator" />} />
-        <Route path="/simulator" element={<PlaceholderPage title="What-If Simulator" />} />
+        <Route path="/failure-analysis" element={<FailureAnalysis equipment={data.equipment} />} />
+        <Route path="/rul" element={<RemainingUsefulLife equipment={data.equipment} />} />
+        <Route path="/predictive-maintenance" element={<PredictiveMaintenance equipment={data.equipment} />} />
+        <Route path="/work-orders" element={<WorkOrders />} />
+        <Route path="/maintenance-cost" element={<MaintenanceCost />} />
+        <Route path="/load-optimisation" element={<LoadOptimisation />} />
+        <Route path="/sustainability" element={<Sustainability />} />
+        <Route path="/alarm-analytics" element={<AlarmAnalytics alerts={data.alerts} />} />
+        <Route path="/alarm-rationalisation" element={<AlarmRationalisation />} />
+        <Route path="/ot-assets" element={<OTAssetRegistry />} />
+        <Route path="/threat-monitor" element={<ThreatMonitor />} />
+        <Route path="/network" element={<NetworkSegmentation />} />
+        <Route path="/compliance" element={<ComplianceDashboard />} />
+        <Route path="/twin-sync" element={<TwinSync />} />
+        <Route path="/data-completeness" element={<DataCompleteness />} />
+        <Route path="/iso-validator" element={<ISOValidator />} />
+        <Route path="/simulator" element={<WhatIfSimulator equipment={data.equipment} />} />
         <Route path="/data-sources" element={<HandoverPage handoverData={data.handoverData} connectedSystems={data.connectedSystems} plantInfo={data.plantInfo} />} />
-        <Route path="/data-quality" element={<PlaceholderPage title="Data Quality Monitor" />} />
-        <Route path="/settings" element={<PlaceholderPage title="Settings & Configuration" />} />
+        <Route path="/data-quality" element={<DataQuality />} />
+        <Route path="/settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<NotFound />} />
     </Routes>
