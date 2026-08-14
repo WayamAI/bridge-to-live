@@ -1,5 +1,9 @@
 import { useState, useEffect } from "react";
-import { Radio, User, ChevronDown, Search } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Radio, User, ChevronDown, Sun, Moon, LogOut } from "lucide-react";
+import Logo from "@/components/Logo";
+import { useTheme } from "@/hooks/useTheme";
+import { useAuth } from "@/hooks/useAuth";
 import type { UserRole } from "@/hooks/usePlantData";
 
 const ROLE_LABELS: Record<UserRole, string> = {
@@ -21,6 +25,15 @@ interface TopBarProps {
 const TopBar = ({ userRole, onRoleChange, breadcrumb }: TopBarProps) => {
   const [time, setTime] = useState(new Date());
   const [showRoleMenu, setShowRoleMenu] = useState(false);
+  const { theme, toggleTheme } = useTheme();
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    setShowRoleMenu(false);
+    logout();
+    navigate("/login", { replace: true });
+  };
 
   useEffect(() => {
     const id = setInterval(() => setTime(new Date()), 1000);
@@ -30,12 +43,14 @@ const TopBar = ({ userRole, onRoleChange, breadcrumb }: TopBarProps) => {
   return (
     <header className="h-11 border-b border-border bg-card/80 backdrop-blur-xl sticky top-0 z-50 flex items-center justify-between px-4">
       <div className="flex items-center gap-3">
-        {breadcrumb && (
+        {breadcrumb ? (
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span className="text-foreground font-medium">PlantMind</span>
+            <Logo size={62} showText={false} />
             <span>/</span>
             <span>{breadcrumb}</span>
           </div>
+        ) : (
+          <Logo size={62} showText={false} />
         )}
       </div>
       <div className="flex items-center gap-4">
@@ -50,6 +65,15 @@ const TopBar = ({ userRole, onRoleChange, breadcrumb }: TopBarProps) => {
         <span className="text-[10px] font-mono text-muted-foreground">
           42,400 tags active
         </span>
+
+        {/* Theme toggle */}
+        <button
+          onClick={toggleTheme}
+          aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
+          className="flex items-center justify-center w-7 h-7 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+        >
+          {theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+        </button>
 
         {/* Role selector */}
         <div className="relative">
@@ -78,6 +102,14 @@ const TopBar = ({ userRole, onRoleChange, breadcrumb }: TopBarProps) => {
                     {label}
                   </button>
                 ))}
+                <div className="my-1 border-t border-border" />
+                <button
+                  onClick={handleLogout}
+                  className="w-full flex items-center gap-1.5 text-left px-3 py-1.5 text-xs text-destructive hover:bg-muted transition-colors"
+                >
+                  <LogOut className="w-3 h-3" />
+                  Log out
+                </button>
               </div>
             </>
           )}

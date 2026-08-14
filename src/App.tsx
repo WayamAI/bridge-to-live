@@ -1,12 +1,14 @@
-import { useState } from "react";
+import { useState, type ReactNode } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Navigate, Route, Routes, useLocation } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { usePlantData } from "@/hooks/usePlantData";
 import type { UserRole } from "@/hooks/usePlantData";
+import { useAuth } from "@/hooks/useAuth";
 import AppLayout from "@/components/layout/AppLayout";
+import Login from "@/pages/Login";
 import Dashboard from "@/pages/Dashboard";
 import EquipmentHealthPage from "@/pages/EquipmentHealth";
 import AlarmManagementPage from "@/pages/AlarmManagement";
@@ -35,6 +37,17 @@ import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
 
+const RequireAuth = ({ children }: { children: ReactNode }) => {
+  const { isAuthenticated } = useAuth();
+  const location = useLocation();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace state={{ from: location.pathname }} />;
+  }
+
+  return <>{children}</>;
+};
+
 const AppInner = () => {
   const data = usePlantData();
   const [userRole, setUserRole] = useState<UserRole>("plant_director");
@@ -42,7 +55,14 @@ const AppInner = () => {
 
   return (
     <Routes>
-      <Route element={<AppLayout alerts={data.alerts} userRole={userRole} onRoleChange={setUserRole} />}>
+      <Route path="/login" element={<Login />} />
+      <Route
+        element={
+          <RequireAuth>
+            <AppLayout alerts={data.alerts} userRole={userRole} onRoleChange={setUserRole} />
+          </RequireAuth>
+        }
+      >
         <Route path="/" element={<Dashboard data={data} selectedEquipmentId={selectedEquipmentId} onSelectEquipment={setSelectedEquipmentId} />} />
         <Route path="/equipment" element={<EquipmentHealthPage equipment={data.equipment} selectedEquipmentId={selectedEquipmentId} onSelectEquipment={setSelectedEquipmentId} />} />
         <Route path="/equipment/detail" element={<EquipmentHealthPage equipment={data.equipment} selectedEquipmentId={selectedEquipmentId} onSelectEquipment={setSelectedEquipmentId} />} />

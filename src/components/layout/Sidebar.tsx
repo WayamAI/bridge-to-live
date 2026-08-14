@@ -7,6 +7,7 @@ import {
   TrendingDown, ListChecks, Brain, Bolt, Leaf, MonitorSpeaker, Lock,
   ClipboardCheck, Beaker, Cable
 } from "lucide-react";
+import Logo from "@/components/Logo";
 import type { Alert } from "@/hooks/usePlantData";
 
 interface NavItem {
@@ -116,14 +117,7 @@ const Sidebar = ({ alerts, userRole }: SidebarProps) => {
     <aside className={`h-screen sticky top-0 flex flex-col border-r border-border bg-sidebar transition-all duration-200 ${collapsed ? "w-14" : "w-56"}`}>
       {/* Logo */}
       <div className="h-12 flex items-center px-3 border-b border-sidebar-border shrink-0">
-        <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center shrink-0">
-          <Activity className="w-4 h-4 text-primary-foreground" />
-        </div>
-        {!collapsed && (
-          <div className="ml-2.5 overflow-hidden">
-            <span className="font-bold text-sm text-sidebar-foreground whitespace-nowrap">PlantMind</span>
-          </div>
-        )}
+        <Logo size={58} showText={!collapsed} />
       </div>
 
       {/* Nav */}
