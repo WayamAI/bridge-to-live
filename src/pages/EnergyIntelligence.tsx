@@ -1,3 +1,4 @@
+import { seriesColor } from "@/components/dashboard/chartTheme";
 import type { EnergyMetric } from "@/hooks/usePlantData";
 import SensorSparkline from "@/components/twin/SensorSparkline";
 import { Zap, TrendingDown } from "lucide-react";
@@ -42,7 +43,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
                   <polyline
                     points={m.trend.map((v, i) => `${(i / (m.trend.length - 1)) * 200},${24 - ((v - m.setpoint * 0.9) / (m.setpoint * 0.2)) * 24}`).join(" ")}
                     fill="none"
-                    stroke="hsl(170, 80%, 45%)"
+                    stroke={seriesColor(1)}
                     strokeWidth="1.5"
                   />
                 </svg>

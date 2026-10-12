@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart, ScatterChart, Scatter, ZAxis } from "recharts";
 import { TrendingDown, TrendingUp, AlertTriangle, ArrowRight, Clock } from "lucide-react";
 import type { Equipment } from "@/hooks/usePlantData";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 
 const FAILURE_MODES = [
   { mode: "Bearing failure", count: 84, pct: 34, downtime: 624, cost: 312, mtbf: 11200, trend: "↑" },
@@ -37,12 +38,12 @@ const SCATTER_DATA = [
 ];
 
 const MODE_COLORS: Record<string, string> = {
-  "Bearing failure": "hsl(0, 72%, 51%)",
-  "Seal degradation": "hsl(35, 90%, 55%)",
-  "Impeller fouling": "hsl(170, 80%, 45%)",
-  "Lube oil contamination": "hsl(235, 55%, 55%)",
-  "Coupling misalignment": "hsl(280, 50%, 55%)",
-  "Other": "hsl(215, 15%, 55%)",
+  "Bearing failure": seriesColor(3),
+  "Seal degradation": seriesColor(2),
+  "Impeller fouling": seriesColor(1),
+  "Lube oil contamination": seriesColor(0),
+  "Coupling misalignment": seriesColor(5),
+  "Other": seriesColor(4),
 };
 
 interface Props {
@@ -91,11 +92,10 @@ const FailureAnalysis = ({ equipment }: Props) => {
           <div className="p-4">
             <ResponsiveContainer width="100%" height={220}>
               <BarChart data={FAILURE_MODES} layout="vertical" margin={{ left: 120 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis type="number" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <YAxis type="category" dataKey="mode" tick={{ fill: "hsl(210, 20%, 92%)", fontSize: 10 }} width={110} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Bar dataKey="count" fill="hsl(170, 80%, 45%)" radius={[0, 4, 4, 0]} cursor="pointer"
+                <XAxis type="number" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis type="category" dataKey="mode" tick={axisTick} tickLine={false} axisLine={false} width={110} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Bar isAnimationActive={false} dataKey="count" fill={seriesColor(1)} radius={[0, 4, 4, 0]} cursor="pointer"
                   onClick={(d: any) => setSelectedMode(selectedMode === d.mode ? null : d.mode)} />
               </BarChart>
             </ResponsiveContainer>
@@ -138,13 +138,12 @@ const FailureAnalysis = ({ equipment }: Props) => {
           <div className="p-4">
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={WEIBULL_DATA}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis dataKey="hours" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} label={{ value: "Operating Hours", position: "insideBottom", offset: -5, fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} label={{ value: "Survival %", angle: -90, position: "insideLeft", fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Area type="monotone" dataKey="upper" stroke="none" fill="hsl(170, 80%, 45%)" fillOpacity={0.1} />
-                <Area type="monotone" dataKey="lower" stroke="none" fill="hsl(220, 18%, 10%)" fillOpacity={1} />
-                <Line type="monotone" dataKey="survival" stroke="hsl(170, 80%, 45%)" strokeWidth={2} dot={false} />
+                <XAxis dataKey="hours" tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Operating Hours", position: "insideBottom", offset: -5, fill: "var(--text-quaternary)", fontSize: 11 }} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Survival %", angle: -90, position: "insideLeft", fill: "var(--text-quaternary)", fontSize: 11 }} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Area isAnimationActive={false} type="monotone" dataKey="upper" stroke="none" fill={seriesColor(1)} fillOpacity={0.1} />
+                <Area isAnimationActive={false} type="monotone" dataKey="lower" stroke="none" fill="var(--surface-container)" fillOpacity={1} />
+                <Line isAnimationActive={false} type="monotone" dataKey="survival" stroke={seriesColor(1)} strokeWidth={2} dot={false} />
               </AreaChart>
             </ResponsiveContainer>
             <div className="mt-3 grid grid-cols-2 gap-3">
@@ -174,13 +173,12 @@ const FailureAnalysis = ({ equipment }: Props) => {
         <div className="p-4">
           <ResponsiveContainer width="100%" height={200}>
             <ScatterChart margin={{ left: 20 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-              <XAxis dataKey="hours" name="Operating Hours" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} label={{ value: "Operating Hours at Failure", position: "insideBottom", offset: -5, fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-              <YAxis dataKey="date" name="Date" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
+              <XAxis dataKey="hours" name="Operating Hours" tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Operating Hours at Failure", position: "insideBottom", offset: -5, fill: "var(--text-quaternary)", fontSize: 11 }} />
+              <YAxis dataKey="date" name="Date" tick={axisTick} tickLine={false} axisLine={false} />
               <ZAxis dataKey="cost" range={[40, 400]} name="Repair Cost (₹L)" />
-              <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }}
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle}
                 formatter={(val: any, name: string) => [name === "Repair Cost (₹L)" ? `₹${val}L` : val, name]} />
-              <Scatter data={filteredScatter} fill="hsl(170, 80%, 45%)" />
+              <Scatter isAnimationActive={false} data={filteredScatter} fill={seriesColor(1)} />
             </ScatterChart>
           </ResponsiveContainer>
           <div className="flex flex-wrap gap-3 mt-3">

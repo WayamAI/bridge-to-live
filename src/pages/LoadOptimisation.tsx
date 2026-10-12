@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Zap, TrendingDown, ArrowRight, Check } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from "recharts";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 
 interface Opportunity {
   id: string;
@@ -142,12 +143,11 @@ const LoadOptimisation = () => {
                 </div>
                 <ResponsiveContainer width="100%" height={180}>
                   <AreaChart data={projectionData}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                    <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 9 }} />
-                    <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 9 }} />
-                    <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                    <Area type="monotone" dataKey="baseline" stroke="hsl(215, 15%, 55%)" fill="hsl(215, 15%, 55%)" fillOpacity={0.1} name="Baseline (₹/day)" />
-                    <Area type="monotone" dataKey="projected" stroke="hsl(170, 80%, 45%)" fill="hsl(170, 80%, 45%)" fillOpacity={0.2} name="Projected (₹/day)" />
+                    <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+                    <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                    <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                    <Area isAnimationActive={false} type="monotone" dataKey="baseline" stroke={seriesColor(4)} fill={seriesColor(4)} fillOpacity={0.1} name="Baseline (₹/day)" />
+                    <Area isAnimationActive={false} type="monotone" dataKey="projected" stroke={seriesColor(1)} fill={seriesColor(1)} fillOpacity={0.2} name="Projected (₹/day)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </>

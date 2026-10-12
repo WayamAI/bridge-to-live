@@ -1,5 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import type { Alert } from "@/hooks/usePlantData";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { toneChart } from "@/lib/status";
 
 const HOURLY_ALARMS = Array.from({ length: 24 }, (_, i) => ({
   hour: `${i.toString().padStart(2, "0")}:00`,
@@ -77,13 +79,12 @@ const AlarmAnalytics = ({ alerts }: Props) => {
           <div className="p-4">
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={HOURLY_ALARMS}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis dataKey="hour" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 9 }} interval={2} />
-                <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Bar dataKey="critical" stackId="a" fill="hsl(0, 72%, 51%)" name="Critical" />
-                <Bar dataKey="warning" stackId="a" fill="hsl(35, 90%, 55%)" name="Warning" />
-                <Bar dataKey="info" stackId="a" fill="hsl(235, 55%, 55%)" name="Info" radius={[4, 4, 0, 0]} />
+                <XAxis dataKey="hour" tick={axisTick} tickLine={false} axisLine={false} interval={2} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Bar isAnimationActive={false} dataKey="critical" stackId="a" fill={toneChart.error} name="Critical" />
+                <Bar isAnimationActive={false} dataKey="warning" stackId="a" fill={toneChart.warning} name="Warning" />
+                <Bar isAnimationActive={false} dataKey="info" stackId="a" fill={toneChart.info} name="Info" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -97,13 +98,12 @@ const AlarmAnalytics = ({ alerts }: Props) => {
           <div className="p-4">
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={DAILY_TREND}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis dataKey="date" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 9 }} interval={4} />
-                <YAxis yAxisId="left" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <YAxis yAxisId="right" orientation="right" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Line yAxisId="left" type="monotone" dataKey="total" stroke="hsl(170, 80%, 45%)" strokeWidth={2} dot={false} name="Total Alarms" />
-                <Line yAxisId="right" type="monotone" dataKey="ackTime" stroke="hsl(35, 90%, 55%)" strokeWidth={2} dot={false} name="Avg Ack Time (min)" />
+                <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval={4} />
+                <YAxis yAxisId="left" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis yAxisId="right" orientation="right" tick={axisTick} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Line isAnimationActive={false} yAxisId="left" type="monotone" dataKey="total" stroke={seriesColor(1)} strokeWidth={2} dot={false} name="Total Alarms" />
+                <Line isAnimationActive={false} yAxisId="right" type="monotone" dataKey="ackTime" stroke={seriesColor(2)} strokeWidth={2} dot={false} name="Avg Ack Time (min)" />
               </LineChart>
             </ResponsiveContainer>
           </div>

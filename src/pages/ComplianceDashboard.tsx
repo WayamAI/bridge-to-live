@@ -1,5 +1,7 @@
 import { Lock, CheckCircle, AlertTriangle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { toneChart } from "@/lib/status";
 
 interface ComplianceDomain {
   domain: string;
@@ -37,7 +39,7 @@ const CHART_DATA = DOMAINS.map(d => ({
   domain: d.domain,
   compliance: d.compliance,
   target: d.target,
-  fill: d.status === "green" ? "hsl(170, 80%, 45%)" : d.status === "amber" ? "hsl(35, 90%, 55%)" : "hsl(0, 72%, 51%)",
+  fill: d.status === "green" ? toneChart.success : d.status === "amber" ? toneChart.warning : toneChart.error,
 }));
 
 const ComplianceDashboard = () => {
@@ -71,11 +73,10 @@ const ComplianceDashboard = () => {
         <div className="p-4">
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={CHART_DATA} layout="vertical" margin={{ left: 140 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-              <XAxis type="number" domain={[0, 100]} tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-              <YAxis type="category" dataKey="domain" tick={{ fill: "hsl(210, 20%, 92%)", fontSize: 10 }} width={130} />
-              <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-              <Bar dataKey="compliance" radius={[0, 4, 4, 0]}>
+              <XAxis type="number" domain={[0, 100]} tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="domain" tick={axisTick} tickLine={false} axisLine={false} width={130} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+              <Bar isAnimationActive={false} dataKey="compliance" radius={[0, 4, 4, 0]}>
                 {CHART_DATA.map((d, i) => <Cell key={i} fill={d.fill} />)}
               </Bar>
             </BarChart>
@@ -89,7 +90,7 @@ const ComplianceDashboard = () => {
           <div key={d.domain} className="rounded-xl border border-border bg-card overflow-hidden">
             <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full ${d.status === "green" ? "bg-operational" : d.status === "amber" ? "bg-gap" : "bg-destructive"}`} />
+                <span className={`w-2.5 h-2.5 rounded-full ${d.status === "green" ? "bg-series-2" : d.status === "amber" ? "bg-series-3" : "bg-series-4"}`} />
                 <h4 className="text-xs font-semibold">{d.domain}</h4>
               </div>
               <span className={`text-xs font-mono font-bold ${d.compliance >= d.target ? "text-operational" : "text-gap"}`}>{d.compliance}% / {d.target}%</span>

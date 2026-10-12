@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Target, AlertTriangle, CheckCircle } from "lucide-react";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { toneChart } from "@/lib/status";
 
 interface AlarmPoint {
   id: string;
@@ -27,10 +29,10 @@ const ALARM_POINTS: AlarmPoint[] = [
 ];
 
 const SUMMARY_PIE = [
-  { name: "Reviewed — Keep", value: 1842, color: "hsl(170, 80%, 45%)" },
-  { name: "Setpoint Changed", value: 428, color: "hsl(235, 55%, 55%)" },
-  { name: "Suppressed", value: 124, color: "hsl(35, 90%, 55%)" },
-  { name: "Pending Review", value: 453, color: "hsl(215, 15%, 55%)" },
+  { name: "Reviewed — Keep", value: 1842, color: toneChart.success },
+  { name: "Setpoint Changed", value: 428, color: toneChart.info },
+  { name: "Suppressed", value: 124, color: toneChart.warning },
+  { name: "Pending Review", value: 453, color: toneChart.neutral },
 ];
 
 const STATUS_COLORS: Record<string, string> = {
@@ -111,10 +113,10 @@ const AlarmRationalisation = () => {
           <div className="p-4">
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
-                <Pie data={SUMMARY_PIE} cx="50%" cy="50%" outerRadius={80} innerRadius={45} dataKey="value" paddingAngle={2}>
+                <Pie isAnimationActive={false} data={SUMMARY_PIE} cx="50%" cy="50%" outerRadius={80} innerRadius={45} dataKey="value" paddingAngle={2}>
                   {SUMMARY_PIE.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Pie>
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
               </PieChart>
             </ResponsiveContainer>
             <div className="space-y-1.5 mt-3">

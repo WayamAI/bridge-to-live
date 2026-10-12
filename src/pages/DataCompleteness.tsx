@@ -1,17 +1,19 @@
 import { FileCheck, AlertTriangle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { toneChart } from "@/lib/status";
 
 const COMPLETENESS_DATA = [
-  { category: "Equipment tags", total: 2847, complete: 2847, pct: 100, color: "hsl(170, 80%, 45%)" },
-  { category: "Sensor mappings", total: 42400, complete: 38200, pct: 90.1, color: "hsl(170, 80%, 45%)" },
-  { category: "P&ID cross-refs", total: 12440, complete: 11892, pct: 95.6, color: "hsl(170, 80%, 45%)" },
-  { category: "Alarm setpoints", total: 2847, complete: 2420, pct: 85.0, color: "hsl(35, 90%, 55%)" },
-  { category: "Equipment datasheets", total: 2847, complete: 2680, pct: 94.1, color: "hsl(170, 80%, 45%)" },
-  { category: "Maintenance history", total: 2847, complete: 2104, pct: 73.9, color: "hsl(35, 90%, 55%)" },
-  { category: "Spare parts catalog", total: 2847, complete: 2847, pct: 100, color: "hsl(170, 80%, 45%)" },
-  { category: "Operating procedures", total: 480, complete: 312, pct: 65.0, color: "hsl(0, 72%, 51%)" },
-  { category: "Safety documentation", total: 1200, complete: 1140, pct: 95.0, color: "hsl(170, 80%, 45%)" },
-  { category: "3D model coordinates", total: 2847, complete: 2847, pct: 100, color: "hsl(170, 80%, 45%)" },
+  { category: "Equipment tags", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
+  { category: "Sensor mappings", total: 42400, complete: 38200, pct: 90.1, color: toneChart.success },
+  { category: "P&ID cross-refs", total: 12440, complete: 11892, pct: 95.6, color: toneChart.success },
+  { category: "Alarm setpoints", total: 2847, complete: 2420, pct: 85.0, color: toneChart.warning },
+  { category: "Equipment datasheets", total: 2847, complete: 2680, pct: 94.1, color: toneChart.success },
+  { category: "Maintenance history", total: 2847, complete: 2104, pct: 73.9, color: toneChart.warning },
+  { category: "Spare parts catalog", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
+  { category: "Operating procedures", total: 480, complete: 312, pct: 65.0, color: toneChart.error },
+  { category: "Safety documentation", total: 1200, complete: 1140, pct: 95.0, color: toneChart.success },
+  { category: "3D model coordinates", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
 ];
 
 const DataCompleteness = () => {
@@ -44,11 +46,10 @@ const DataCompleteness = () => {
         <div className="p-4">
           <ResponsiveContainer width="100%" height={320}>
             <BarChart data={COMPLETENESS_DATA} layout="vertical" margin={{ left: 150 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-              <XAxis type="number" domain={[0, 100]} tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-              <YAxis type="category" dataKey="category" tick={{ fill: "hsl(210, 20%, 92%)", fontSize: 10 }} width={140} />
-              <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} formatter={(v: number) => `${v}%`} />
-              <Bar dataKey="pct" radius={[0, 4, 4, 0]}>
+              <XAxis type="number" domain={[0, 100]} tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="category" tick={axisTick} tickLine={false} axisLine={false} width={140} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} formatter={(v: number) => `${v}%`} />
+              <Bar isAnimationActive={false} dataKey="pct" radius={[0, 4, 4, 0]}>
                 {COMPLETENESS_DATA.map((d, i) => <Cell key={i} fill={d.color} />)}
               </Bar>
             </BarChart>

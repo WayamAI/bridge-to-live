@@ -1,4 +1,6 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell, LineChart, Line } from "recharts";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { toneChart } from "@/lib/status";
 
 const MONTHLY_COST = [
   { month: "Oct '25", planned: 42, predictive: 28, corrective: 18, emergency: 8 },
@@ -10,12 +12,12 @@ const MONTHLY_COST = [
 ];
 
 const BY_UNIT = [
-  { name: "Compression A", value: 284, color: "hsl(170, 80%, 45%)" },
-  { name: "Compression B", value: 196, color: "hsl(235, 55%, 55%)" },
-  { name: "Cooling Water", value: 142, color: "hsl(35, 90%, 55%)" },
-  { name: "Power Gen", value: 118, color: "hsl(0, 72%, 51%)" },
-  { name: "Feed Gas", value: 94, color: "hsl(280, 50%, 55%)" },
-  { name: "Others", value: 142, color: "hsl(215, 15%, 55%)" },
+  { name: "Compression A", value: 284, color: seriesColor(1) },
+  { name: "Compression B", value: 196, color: seriesColor(0) },
+  { name: "Cooling Water", value: 142, color: seriesColor(2) },
+  { name: "Power Gen", value: 118, color: seriesColor(3) },
+  { name: "Feed Gas", value: 94, color: seriesColor(5) },
+  { name: "Others", value: 142, color: seriesColor(4) },
 ];
 
 const PLANNED_VS_REACTIVE = [
@@ -60,14 +62,13 @@ const MaintenanceCost = () => {
           <div className="p-4">
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={MONTHLY_COST}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Bar dataKey="planned" stackId="a" fill="hsl(170, 80%, 45%)" name="Planned PM" />
-                <Bar dataKey="predictive" stackId="a" fill="hsl(235, 55%, 55%)" name="Predictive" />
-                <Bar dataKey="corrective" stackId="a" fill="hsl(35, 90%, 55%)" name="Corrective" />
-                <Bar dataKey="emergency" stackId="a" fill="hsl(0, 72%, 51%)" name="Emergency" radius={[4, 4, 0, 0]} />
+                <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Bar isAnimationActive={false} dataKey="planned" stackId="a" fill={toneChart.success} name="Planned PM" />
+                <Bar isAnimationActive={false} dataKey="predictive" stackId="a" fill={toneChart.info} name="Predictive" />
+                <Bar isAnimationActive={false} dataKey="corrective" stackId="a" fill={toneChart.warning} name="Corrective" />
+                <Bar isAnimationActive={false} dataKey="emergency" stackId="a" fill={toneChart.error} name="Emergency" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -81,10 +82,10 @@ const MaintenanceCost = () => {
           <div className="p-4">
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
-                <Pie data={BY_UNIT} cx="50%" cy="50%" outerRadius={80} innerRadius={45} dataKey="value" paddingAngle={2}>
+                <Pie isAnimationActive={false} data={BY_UNIT} cx="50%" cy="50%" outerRadius={80} innerRadius={45} dataKey="value" paddingAngle={2}>
                   {BY_UNIT.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Pie>
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
               </PieChart>
             </ResponsiveContainer>
             <div className="space-y-1 mt-2">
@@ -110,12 +111,11 @@ const MaintenanceCost = () => {
         <div className="p-4">
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={PLANNED_VS_REACTIVE}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-              <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-              <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} domain={[0, 100]} />
-              <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-              <Bar dataKey="planned" stackId="a" fill="hsl(170, 80%, 45%)" name="Planned %" />
-              <Bar dataKey="reactive" stackId="a" fill="hsl(0, 72%, 51%)" name="Reactive %" radius={[4, 4, 0, 0]} />
+              <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis tick={axisTick} tickLine={false} axisLine={false} domain={[0, 100]} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+              <Bar isAnimationActive={false} dataKey="planned" stackId="a" fill={toneChart.success} name="Planned %" />
+              <Bar isAnimationActive={false} dataKey="reactive" stackId="a" fill={toneChart.error} name="Reactive %" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>

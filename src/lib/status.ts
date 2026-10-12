@@ -40,3 +40,15 @@ export const severityTone: Record<AlarmSeverity, Tone> = {
   warning: "warning",
   info: "info",
 };
+
+/**
+ * Chart fills for meaning-bearing colours, as CSS variables so charts follow the theme.
+ * Same slots as the Chronus series: info 1, success 2, warning 3, error 4, neutral 5.
+ */
+export const toneChart: Record<Tone, string> = {
+  info: "var(--analytics-series-1)",
+  success: "var(--analytics-series-2)",
+  warning: "var(--analytics-series-3)",
+  error: "var(--analytics-series-4)",
+  neutral: "var(--analytics-series-5)",
+};

@@ -1,4 +1,5 @@
 import { Network as NetworkIcon, Shield, ArrowRight } from "lucide-react";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 
 interface PurdueLevel {
   level: string;
@@ -8,22 +9,22 @@ interface PurdueLevel {
 }
 
 const PURDUE_LEVELS: PurdueLevel[] = [
-  { level: "Level 4", label: "Enterprise IT", color: "hsl(235, 55%, 55%)", devices: [
+  { level: "Level 4", label: "Enterprise IT", color: seriesColor(0), devices: [
     { name: "SAP ERP Server", status: "green" }, { name: "Maximo CMMS", status: "green" }, { name: "Email Gateway", status: "green" }, { name: "PlantMind Cloud", status: "green" },
   ]},
-  { level: "Level 3.5", label: "DMZ / Firewall", color: "hsl(0, 72%, 51%)", devices: [
+  { level: "Level 3.5", label: "DMZ / Firewall", color: seriesColor(3), devices: [
     { name: "FW-DMZ-01 (Palo Alto)", status: "green" }, { name: "FW-DMZ-02 (Palo Alto)", status: "amber" }, { name: "Jump Server JS-01", status: "green" },
   ]},
-  { level: "Level 3", label: "Plant Network / Historians", color: "hsl(35, 90%, 55%)", devices: [
+  { level: "Level 3", label: "Plant Network / Historians", color: seriesColor(2), devices: [
     { name: "PI Historian Server", status: "green" }, { name: "PI Interface Node 01", status: "amber" }, { name: "EW-001", status: "amber" }, { name: "EW-002", status: "amber" }, { name: "EW-003", status: "red" },
   ]},
-  { level: "Level 2", label: "SCADA / DCS / HMI", color: "hsl(170, 80%, 45%)", devices: [
+  { level: "Level 2", label: "SCADA / DCS / HMI", color: seriesColor(1), devices: [
     { name: "DCS DC-01", status: "green" }, { name: "DCS DC-02", status: "green" }, { name: "HMI-A-001", status: "green" }, { name: "HMI-A-002", status: "amber" }, { name: "HMI-B-001", status: "green" }, { name: "HMI-B-002", status: "red" }, { name: "SW-L2-01", status: "amber" },
   ]},
-  { level: "Level 1", label: "PLCs / RTUs / Controllers", color: "hsl(170, 80%, 45%)", devices: [
+  { level: "Level 1", label: "PLCs / RTUs / Controllers", color: seriesColor(1), devices: [
     { name: "PLC-A-01", status: "green" }, { name: "PLC-A-02", status: "green" }, { name: "PLC-B-01", status: "amber" }, { name: "PLC-B-02", status: "amber" }, { name: "PLC-CW-01", status: "green" }, { name: "PLC-F-01", status: "green" }, { name: "RTU-ML-01", status: "green" }, { name: "RTU-FW-01", status: "green" }, { name: "SIS-01", status: "green" }, { name: "SIS-02", status: "green" },
   ]},
-  { level: "Level 0", label: "Field Devices / Sensors", color: "hsl(215, 15%, 55%)", devices: [
+  { level: "Level 0", label: "Field Devices / Sensors", color: seriesColor(4), devices: [
     { name: "Gas Detectors (GD-01/02)", status: "green" }, { name: "Weather Station WS-01", status: "green" }, { name: "LDAR Detector", status: "green" }, { name: "Smart Transmitters (42,400 tags)", status: "green" },
   ]},
 ];

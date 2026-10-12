@@ -2,6 +2,8 @@ import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, Line, Cell } from "recharts";
 import { AlertTriangle, Clock } from "lucide-react";
 import type { Equipment } from "@/hooks/usePlantData";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { toneChart } from "@/lib/status";
 
 interface Props {
   equipment: Equipment[];
@@ -10,12 +12,12 @@ interface Props {
 const RemainingUsefulLife = ({ equipment }: Props) => {
   const distribution = useMemo(() => {
     const bins = [
-      { range: "0–500 hr", min: 0, max: 500 / 24, count: 0, color: "hsl(0, 72%, 51%)" },
-      { range: "500–1k hr", min: 500 / 24, max: 1000 / 24, count: 0, color: "hsl(0, 72%, 51%)" },
-      { range: "1k–2k hr", min: 1000 / 24, max: 2000 / 24, count: 0, color: "hsl(35, 90%, 55%)" },
-      { range: "2k–3k hr", min: 2000 / 24, max: 3000 / 24, count: 0, color: "hsl(35, 90%, 55%)" },
-      { range: "3k–5k hr", min: 3000 / 24, max: 5000 / 24, count: 0, color: "hsl(170, 80%, 45%)" },
-      { range: "5k+ hr", min: 5000 / 24, max: 99999, count: 0, color: "hsl(170, 80%, 45%)" },
+      { range: "0–500 hr", min: 0, max: 500 / 24, count: 0, color: toneChart.error },
+      { range: "500–1k hr", min: 500 / 24, max: 1000 / 24, count: 0, color: toneChart.error },
+      { range: "1k–2k hr", min: 1000 / 24, max: 2000 / 24, count: 0, color: toneChart.warning },
+      { range: "2k–3k hr", min: 2000 / 24, max: 3000 / 24, count: 0, color: toneChart.warning },
+      { range: "3k–5k hr", min: 3000 / 24, max: 5000 / 24, count: 0, color: toneChart.success },
+      { range: "5k+ hr", min: 5000 / 24, max: 99999, count: 0, color: toneChart.success },
     ];
     equipment.forEach(e => {
       if (e.rulDays !== null) {
@@ -66,19 +68,18 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
           <div className="p-4">
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={distribution}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis dataKey="range" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Bar dataKey="count" radius={[4, 4, 0, 0]}>
+                <XAxis dataKey="range" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Bar isAnimationActive={false} dataKey="count" radius={[4, 4, 0, 0]}>
                   {distribution.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
             <div className="flex gap-4 mt-2 text-[9px] text-muted-foreground">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-destructive" /> Critical (0–1k hr)</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-accent" /> Watch (1k–3k hr)</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-primary" /> Healthy (3k+ hr)</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-4" /> Critical (0–1k hr)</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-3" /> Watch (1k–3k hr)</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-2" /> Healthy (3k+ hr)</span>
             </div>
           </div>
         </div>
@@ -91,14 +92,13 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
           <div className="p-4">
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={fleetAge}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Area type="monotone" dataKey="young" stackId="1" fill="hsl(170, 80%, 45%)" fillOpacity={0.6} stroke="hsl(170, 80%, 45%)" name="<5k hr" />
-                <Area type="monotone" dataKey="mid" stackId="1" fill="hsl(35, 90%, 55%)" fillOpacity={0.6} stroke="hsl(35, 90%, 55%)" name="5k–15k hr" />
-                <Area type="monotone" dataKey="old" stackId="1" fill="hsl(0, 72%, 51%)" fillOpacity={0.6} stroke="hsl(0, 72%, 51%)" name=">15k hr" />
-                <Line type="monotone" dataKey="failures" stroke="hsl(210, 20%, 92%)" strokeWidth={2} dot={{ r: 3 }} name="Monthly Failures" />
+                <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Area isAnimationActive={false} type="monotone" dataKey="young" stackId="1" fill={toneChart.success} fillOpacity={0.6} stroke={toneChart.success} name="<5k hr" />
+                <Area isAnimationActive={false} type="monotone" dataKey="mid" stackId="1" fill={toneChart.warning} fillOpacity={0.6} stroke={toneChart.warning} name="5k–15k hr" />
+                <Area isAnimationActive={false} type="monotone" dataKey="old" stackId="1" fill={toneChart.error} fillOpacity={0.6} stroke={toneChart.error} name=">15k hr" />
+                <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke="var(--text-primary)" strokeWidth={2} dot={{ r: 3 }} name="Monthly Failures" />
               </AreaChart>
             </ResponsiveContainer>
           </div>
