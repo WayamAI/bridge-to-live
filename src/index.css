@@ -27,7 +27,10 @@
     --primary: 0 0% 6.3%;                  /* action-primary (was brand orange) */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 0 0% 94.9%;               /* action */
+    /* The old PlantMind "secondary" was an indigo accent used as pill text (text-secondary on bg-secondary/10),
+       not a surface. It is aliased to info blue like engineering. secondary-foreground stays the grey
+       text colour that the shell uses. */
+    --secondary: 209 68% 37.3%;
     --secondary-foreground: 0 0% 27.5%;    /* text-secondary */
 
     --muted: 0 0% 94.9%;
@@ -90,7 +93,7 @@
     --primary: 0 0% 98%;
     --primary-foreground: 0 0% 0%;
 
-    --secondary: 0 0% 9.8%;
+    --secondary: 201 83% 74.5%;
     --secondary-foreground: 0 0% 83.1%;
     --muted: 0 0% 9.8%;
     --muted-foreground: 0 0% 54.1%;
