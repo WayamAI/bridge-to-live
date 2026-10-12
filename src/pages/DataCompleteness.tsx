@@ -61,29 +61,29 @@ const DataCompleteness = () => {
           <h3 className="text-sm font-semibold">Detailed Breakdown</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Category</th>
-                <th className="text-right py-2 px-3 font-medium">Total Required</th>
-                <th className="text-right py-2 px-3 font-medium">Complete</th>
-                <th className="text-right py-2 px-3 font-medium">Remaining</th>
-                <th className="text-right py-2 px-3 font-medium">Completeness</th>
-                <th className="text-left py-2 px-3 font-medium">Status</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total Required</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Complete</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Remaining</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Completeness</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
               </tr>
             </thead>
             <tbody>
               {COMPLETENESS_DATA.map(d => (
-                <tr key={d.category} className={`border-b border-border/50 hover:bg-muted/20 ${d.pct < 80 ? "bg-destructive/5" : ""}`}>
+                <tr key={d.category} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{d.category}</td>
-                  <td className="py-2 px-3 text-right font-mono">{d.total.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right font-mono">{d.complete.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right font-mono">{(d.total - d.complete).toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right font-mono font-bold">
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.total.toLocaleString()}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.complete.toLocaleString()}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{(d.total - d.complete).toLocaleString()}</td>
+                  <td className="py-2 px-3 text-right tabular font-bold whitespace-nowrap">
                     <span className={d.pct >= 95 ? "text-operational" : d.pct >= 80 ? "text-gap" : "text-destructive"}>{d.pct}%</span>
                   </td>
                   <td className="py-2 px-3">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${d.pct === 100 ? "bg-operational/10 text-operational" : d.pct >= 80 ? "bg-gap/10 text-gap" : "bg-destructive/10 text-destructive"}`}>
+                    <span className={`type-body-sm px-2 py-0.5 rounded-full font-medium ${d.pct === 100 ? "bg-operational/10 text-operational" : d.pct >= 80 ? "bg-gap/10 text-gap" : "bg-destructive/10 text-destructive"}`}>
                       {d.pct === 100 ? "Complete" : d.pct >= 80 ? "On Track" : "At Risk"}
                     </span>
                   </td>

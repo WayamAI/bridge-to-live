@@ -146,13 +146,13 @@ const WhatIfSimulator = ({ equipment }: Props) => {
               <h3 className="text-sm font-semibold">Current State vs. Scenario</h3>
             </div>
             <div className="overflow-x-auto">
-              <table className="w-full text-[11px]">
+              <table className="w-full type-body-sm">
                 <thead>
-                  <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                    <th className="text-left py-2 px-4 font-medium">Metric</th>
-                    <th className="text-right py-2 px-4 font-medium">Current</th>
-                    <th className="text-right py-2 px-4 font-medium">Scenario</th>
-                    <th className="text-right py-2 px-4 font-medium">Delta</th>
+                  <tr className="border-b border-hairline">
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Metric</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Current</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Scenario</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Delta</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -160,11 +160,11 @@ const WhatIfSimulator = ({ equipment }: Props) => {
                     const delta = m.scenVal - m.baseVal;
                     const isGood = m.label === "OEE" ? delta > 0 : delta < 0;
                     return (
-                      <tr key={m.label} className="border-b border-border/50 hover:bg-muted/20">
-                        <td className="py-2.5 px-4 font-medium">{m.label}</td>
-                        <td className="py-2.5 px-4 text-right font-mono">{m.prefix ? "₹" : ""}{m.baseVal}{m.suffix || m.unit}</td>
-                        <td className="py-2.5 px-4 text-right font-mono font-bold">{m.prefix ? "₹" : ""}{m.scenVal}{m.suffix || m.unit}</td>
-                        <td className={`py-2.5 px-4 text-right font-mono font-bold ${isGood ? "text-operational" : delta === 0 ? "text-muted-foreground" : "text-destructive"}`}>
+                      <tr key={m.label} className="border-b border-hairline hover:bg-raised">
+                        <td className="py-2.5 px-3 font-medium">{m.label}</td>
+                        <td className="py-2.5 px-3 text-right tabular whitespace-nowrap">{m.prefix ? "₹" : ""}{m.baseVal}{m.suffix || m.unit}</td>
+                        <td className="py-2.5 px-3 text-right tabular font-bold whitespace-nowrap">{m.prefix ? "₹" : ""}{m.scenVal}{m.suffix || m.unit}</td>
+                        <td className={`py-2.5 px-3 text-right tabular font-bold ${isGood ? "text-operational" : delta === 0 ? "text-tertiary" : "text-destructive"}`}>
                           {delta > 0 ? "+" : ""}{m.prefix ? "₹" : ""}{Math.round(delta * 10) / 10}{m.suffix || m.unit}
                         </td>
                       </tr>

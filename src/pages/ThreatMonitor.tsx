@@ -66,28 +66,28 @@ const ThreatMonitor = () => {
           <h3 className="text-sm font-semibold">Security Event Log — Most Recent</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Timestamp</th>
-                <th className="text-left py-2 px-3 font-medium">Asset</th>
-                <th className="text-left py-2 px-3 font-medium">Event Type</th>
-                <th className="text-left py-2 px-3 font-medium">Severity</th>
-                <th className="text-left py-2 px-3 font-medium">Status</th>
-                <th className="text-left py-2 px-3 font-medium">MITRE Tactic</th>
-                <th className="text-left py-2 px-3 font-medium min-w-[250px]">Details</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Timestamp</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Asset</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Event Type</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Severity</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">MITRE Tactic</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[250px]">Details</th>
               </tr>
             </thead>
             <tbody>
               {THREAT_EVENTS.map(e => (
-                <tr key={e.id} className={`border-b border-border/50 hover:bg-muted/20 ${e.severity === "Critical" ? "bg-destructive/5" : ""}`}>
-                  <td className="py-2 px-3 font-mono text-[10px] whitespace-nowrap">{e.timestamp}</td>
+                <tr key={e.id} className="border-b border-hairline hover:bg-raised">
+                  <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{e.timestamp}</td>
                   <td className="py-2 px-3 font-medium">{e.asset}</td>
                   <td className="py-2 px-3">{e.eventType}</td>
-                  <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${SEVERITY_COLORS[e.severity]}`}>{e.severity}</span></td>
-                  <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[e.status]}`}>{e.status}</span></td>
-                  <td className="py-2 px-3 text-[10px] font-mono">{e.mitreTactic}</td>
-                  <td className="py-2 px-3 text-[10px]">{e.details}</td>
+                  <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full font-medium ${SEVERITY_COLORS[e.severity]}`}>{e.severity}</span></td>
+                  <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full font-medium ${STATUS_COLORS[e.status]}`}>{e.status}</span></td>
+                  <td className="py-2 px-3 type-body-sm tabular whitespace-nowrap">{e.mitreTactic}</td>
+                  <td className="py-2 px-3 type-body-sm">{e.details}</td>
                 </tr>
               ))}
             </tbody>

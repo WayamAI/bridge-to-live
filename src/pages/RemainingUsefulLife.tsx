@@ -113,42 +113,42 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
           <span className="ml-auto text-[10px] bg-destructive/10 text-destructive px-2 py-0.5 rounded-full font-medium">{criticalEquip.length} items</span>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Tag</th>
-                <th className="text-left py-2 px-3 font-medium">Class</th>
-                <th className="text-left py-2 px-3 font-medium">Process Unit</th>
-                <th className="text-right py-2 px-3 font-medium">Operating Hours</th>
-                <th className="text-right py-2 px-3 font-medium">RUL (days)</th>
-                <th className="text-right py-2 px-3 font-medium">Failure Prob. (90d)</th>
-                <th className="text-left py-2 px-3 font-medium">Dominant Failure Mode</th>
-                <th className="text-left py-2 px-3 font-medium">Recommended Action</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Class</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Process Unit</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Operating Hours</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">RUL (days)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Failure Prob. (90d)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Dominant Failure Mode</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Recommended Action</th>
               </tr>
             </thead>
             <tbody>
               {criticalEquip.map(e => (
-                <tr key={e.id} className="border-b border-border/50 hover:bg-muted/20">
-                  <td className="py-2 px-3 font-mono font-medium text-primary">{e.tag}</td>
+                <tr key={e.id} className="border-b border-hairline hover:bg-raised">
+                  <td className="py-2 px-3 tabular font-medium text-foreground whitespace-nowrap">{e.tag}</td>
                   <td className="py-2 px-3">{e.classLabel}</td>
                   <td className="py-2 px-3">{e.processUnit}</td>
-                  <td className="py-2 px-3 text-right font-mono">{e.runtimeHours.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right font-mono">
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{e.runtimeHours.toLocaleString()}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">
                     <span className={e.rulDays! < 30 ? "text-destructive font-bold" : "text-gap"}>{e.rulDays}</span>
                   </td>
-                  <td className="py-2 px-3 text-right font-mono">
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">
                     <span className={getFailureProb(e.rulDays!) > 70 ? "text-destructive" : "text-gap"}>{getFailureProb(e.rulDays!)}%</span>
                   </td>
                   <td className="py-2 px-3">{getDominantMode(e.equipmentClass)}</td>
                   <td className="py-2 px-3">
-                    <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded">
+                    <span className="type-body-sm bg-primary/10 text-primary px-2 py-0.5 rounded">
                       {e.rulDays! < 20 ? "Schedule immediate replacement" : "Increase monitoring frequency"}
                     </span>
                   </td>
                 </tr>
               ))}
               {criticalEquip.length === 0 && (
-                <tr><td colSpan={8} className="py-8 text-center text-muted-foreground">No equipment predicted to reach end-of-life within 90 days</td></tr>
+                <tr><td colSpan={8} className="py-8 text-center">No equipment predicted to reach end-of-life within 90 days</td></tr>
               )}
             </tbody>
           </table>

@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { EmptyState } from "@/components/ui/primitives";
 import { AnimatePresence } from "framer-motion";
 import type { Equipment } from "@/hooks/usePlantData";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
@@ -58,7 +59,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
 
   const SortHeader = ({ label, k }: { label: string; k: SortKey }) => (
     <th
-      className="text-left px-3 py-2 font-medium text-muted-foreground cursor-pointer hover:text-foreground select-none"
+      className="type-eyebrow cursor-pointer select-none whitespace-nowrap px-3 py-2 text-left text-quaternary hover:text-secondary-foreground"
       onClick={() => handleSort(k)}
     >
       <span className="flex items-center gap-1">
@@ -108,9 +109,9 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
         {/* Equipment Table */}
         <div className="rounded-xl border border-border bg-card overflow-hidden">
           <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
-            <table className="w-full text-xs">
-              <thead className="sticky top-0 bg-card z-10">
-                <tr className="border-b border-border bg-muted/30">
+            <table className="w-full type-body-sm">
+              <thead className="sticky top-0 z-10 bg-container">
+                <tr className="border-b border-hairline">
                   <SortHeader label="Tag" k="tag" />
                   <SortHeader label="Class" k="classLabel" />
                   <SortHeader label="Process Unit" k="processUnit" />
@@ -125,13 +126,11 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                   <tr
                     key={eq.id}
                     onClick={() => onSelectEquipment(eq.id)}
-                    className={`border-b border-border last:border-0 cursor-pointer transition-colors hover:bg-muted/20 ${
-                      selectedEquipmentId === eq.id ? "bg-primary/5" : ""
-                    }`}
+                    className={`border-b border-hairline last:border-0 cursor-pointer transition-colors hover:bg-raised ${selectedEquipmentId === eq.id ? "bg-raised" : ""}`}
                   >
-                    <td className="px-3 py-2 font-mono text-primary font-medium">{eq.tag}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{eq.classLabel}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{eq.processUnit}</td>
+                    <td className="px-3 py-2 tabular text-foreground font-medium whitespace-nowrap">{eq.tag}</td>
+                    <td className="px-3 py-2 text-tertiary">{eq.classLabel}</td>
+                    <td className="px-3 py-2 text-tertiary">{eq.processUnit}</td>
                     <td className="px-3 py-2">
                       <div className="flex items-center gap-2">
                         <div className="w-12 h-1 rounded-full bg-muted overflow-hidden">
@@ -142,17 +141,17 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                             style={{ width: `${eq.health}%` }}
                           />
                         </div>
-                        <span className="font-mono">{eq.health}%</span>
+                        <span className="tabular">{eq.health}%</span>
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-muted-foreground text-[11px]">{eq.lastAlarm}</td>
-                    <td className="px-3 py-2 font-mono">
+                    <td className="px-3 py-2 text-tertiary type-body-sm">{eq.lastAlarm}</td>
+                    <td className="px-3 py-2 tabular whitespace-nowrap">
                       {eq.rulDays !== null ? (
                         <span className={eq.rulDays < 30 ? "text-destructive" : eq.rulDays < 90 ? "text-gap" : "text-foreground"}>
                           {eq.rulDays}d
                         </span>
                       ) : (
-                        <span className="text-muted-foreground">—</span>
+                        <span className="text-tertiary">—</span>
                       )}
                     </td>
                     <td className="px-3 py-2">
@@ -163,6 +162,11 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                     </td>
                   </tr>
                 ))}
+                {filtered.length === 0 && (
+                  <tr>
+                    <td colSpan={7}><EmptyState title="No equipment match this filter" className="min-h-[96px]" /></td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

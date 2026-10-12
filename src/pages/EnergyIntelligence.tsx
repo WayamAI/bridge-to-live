@@ -79,28 +79,28 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
           <h3 className="text-sm font-semibold">Optimisation Opportunities — Ranked by Annual Value</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/30">
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">#</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Opportunity</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Category</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">System</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Annual Saving</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Complexity</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Payback</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">#</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Opportunity</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">System</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Annual Saving</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Complexity</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Payback</th>
               </tr>
             </thead>
             <tbody>
               {optimisationOpps.map((opp, i) => (
-                <tr key={i} className="border-b border-border last:border-0 hover:bg-muted/20">
-                  <td className="px-3 py-2 font-mono text-muted-foreground">{i + 1}</td>
+                <tr key={i} className="border-b border-hairline last:border-0 hover:bg-raised">
+                  <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{i + 1}</td>
                   <td className="px-3 py-2 max-w-[350px]">{opp.opportunity}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{opp.category}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{opp.system}</td>
-                  <td className="px-3 py-2 font-mono font-medium text-operational">{opp.saving}</td>
+                  <td className="px-3 py-2 text-tertiary">{opp.category}</td>
+                  <td className="px-3 py-2 text-tertiary">{opp.system}</td>
+                  <td className="px-3 py-2 text-right tabular font-medium text-operational whitespace-nowrap">{opp.saving}</td>
                   <td className="px-3 py-2">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full border ${
+                    <span className={`type-body-sm px-2 py-0.5 rounded-full border ${
                       opp.complexity === "Low" ? "border-operational/30 text-operational bg-operational/10" :
                       opp.complexity === "Medium" ? "border-gap/30 text-gap bg-gap/10" :
                       "border-destructive/30 text-destructive bg-destructive/10"
@@ -108,7 +108,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
                       {opp.complexity}
                     </span>
                   </td>
-                  <td className="px-3 py-2 text-muted-foreground">{opp.payback}</td>
+                  <td className="px-3 py-2 text-tertiary">{opp.payback}</td>
                 </tr>
               ))}
             </tbody>

@@ -95,20 +95,20 @@ const ComplianceDashboard = () => {
               <span className={`text-xs font-mono font-bold ${d.compliance >= d.target ? "text-operational" : "text-gap"}`}>{d.compliance}% / {d.target}%</span>
             </div>
             {d.gaps.length > 0 && (
-              <table className="w-full text-[11px]">
+              <table className="w-full type-body-sm">
                 <thead>
-                  <tr className="border-b border-border/50 text-muted-foreground">
-                    <th className="text-left py-1.5 px-4 font-medium">Finding</th>
-                    <th className="text-left py-1.5 px-4 font-medium">Remediation</th>
-                    <th className="text-left py-1.5 px-4 font-medium">Effort</th>
+                  <tr className="border-b border-hairline">
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Finding</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Remediation</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Effort</th>
                   </tr>
                 </thead>
                 <tbody>
                   {d.gaps.map((g, i) => (
-                    <tr key={i} className="border-b border-border/30 hover:bg-muted/20">
-                      <td className="py-1.5 px-4">{g.finding}</td>
-                      <td className="py-1.5 px-4">{g.remediation}</td>
-                      <td className="py-1.5 px-4 font-mono">{g.effort}</td>
+                    <tr key={i} className="border-b border-hairline/30 hover:bg-raised">
+                      <td className="py-2 px-3">{g.finding}</td>
+                      <td className="py-2 px-3">{g.remediation}</td>
+                      <td className="py-2 px-3 tabular whitespace-nowrap">{g.effort}</td>
                     </tr>
                   ))}
                 </tbody>

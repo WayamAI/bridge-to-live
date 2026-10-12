@@ -62,25 +62,25 @@ const TwinSync = () => {
           <h3 className="text-sm font-semibold">Data Source Mapping — Current Sync State</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Category</th>
-                <th className="text-left py-2 px-3 font-medium">Source System</th>
-                <th className="text-right py-2 px-3 font-medium">Total Records</th>
-                <th className="text-right py-2 px-3 font-medium">Synced</th>
-                <th className="text-left py-2 px-3 font-medium">Delta (Last Sync)</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source System</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total Records</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Synced</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Delta (Last Sync)</th>
               </tr>
             </thead>
             <tbody>
               {DELTA_DETAILS.map(d => (
-                <tr key={d.category} className="border-b border-border/50 hover:bg-muted/20">
+                <tr key={d.category} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{d.category}</td>
-                  <td className="py-2 px-3 text-[10px] text-muted-foreground">{d.source}</td>
-                  <td className="py-2 px-3 text-right font-mono">{d.total.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right font-mono">{d.synced.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-[10px]">
-                    <span className={d.delta.includes("error") ? "text-destructive" : d.delta === "No change" ? "text-muted-foreground" : "text-primary"}>{d.delta}</span>
+                  <td className="py-2 px-3 type-body-sm text-tertiary">{d.source}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.total.toLocaleString()}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.synced.toLocaleString()}</td>
+                  <td className="py-2 px-3 type-body-sm">
+                    <span className={d.delta.includes("error") ? "text-destructive" : d.delta === "No change" ? "text-tertiary" : "text-primary"}>{d.delta}</span>
                   </td>
                 </tr>
               ))}
@@ -95,29 +95,29 @@ const TwinSync = () => {
           <h3 className="text-sm font-semibold">Sync History</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Timestamp</th>
-                <th className="text-right py-2 px-3 font-medium">Records</th>
-                <th className="text-right py-2 px-3 font-medium">New</th>
-                <th className="text-right py-2 px-3 font-medium">Modified</th>
-                <th className="text-right py-2 px-3 font-medium">Deleted</th>
-                <th className="text-right py-2 px-3 font-medium">Errors</th>
-                <th className="text-left py-2 px-3 font-medium">Status</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Timestamp</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Records</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">New</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Modified</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Deleted</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Errors</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
               </tr>
             </thead>
             <tbody>
               {SYNC_LOG.map(s => (
-                <tr key={s.timestamp} className="border-b border-border/50 hover:bg-muted/20">
-                  <td className="py-2 px-3 font-mono text-[10px]">{s.timestamp}</td>
-                  <td className="py-2 px-3 text-right font-mono">{s.records}</td>
-                  <td className="py-2 px-3 text-right font-mono text-primary">{s.newTags}</td>
-                  <td className="py-2 px-3 text-right font-mono">{s.modified}</td>
-                  <td className="py-2 px-3 text-right font-mono">{s.deleted}</td>
-                  <td className="py-2 px-3 text-right font-mono">{s.errors > 0 ? <span className="text-destructive">{s.errors}</span> : "0"}</td>
+                <tr key={s.timestamp} className="border-b border-hairline hover:bg-raised">
+                  <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{s.timestamp}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.records}</td>
+                  <td className="py-2 px-3 text-right tabular text-foreground whitespace-nowrap">{s.newTags}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.modified}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.deleted}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.errors > 0 ? <span className="text-destructive">{s.errors}</span> : "0"}</td>
                   <td className="py-2 px-3">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${s.errors > 0 ? "bg-gap/10 text-gap" : "bg-operational/10 text-operational"}`}>{s.status}</span>
+                    <span className={`type-body-sm px-2 py-0.5 rounded-full font-medium ${s.errors > 0 ? "bg-gap/10 text-gap" : "bg-operational/10 text-operational"}`}>{s.status}</span>
                   </td>
                 </tr>
               ))}

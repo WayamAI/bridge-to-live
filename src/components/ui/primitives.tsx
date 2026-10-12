@@ -2,11 +2,12 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
 import type { EquipmentStatus } from "@/hooks/usePlantData";
+import { equipmentLabel, equipmentTone, type Tone } from "@/lib/status";
 
 // Chronus shared primitives (CHRONUS_DESIGN_SYSTEM.md section 4), adapted for PlantMind.
 // Components use semantic tokens only: bg-container, border-hairline, text-quaternary...
 
-export type Tone = "success" | "info" | "warning" | "error" | "neutral";
+export type { Tone };
 
 const toneText: Record<Tone, string> = {
   success: "text-success",
@@ -125,23 +126,6 @@ export const QuietStatus = ({ tone = "success", children, className }: { tone?: 
     {children}
   </span>
 );
-
-const equipmentLabel: Record<EquipmentStatus, string> = {
-  running: "Running",
-  warning: "Warning",
-  critical: "Critical",
-  offline: "Offline",
-  maintenance: "Maintenance",
-};
-
-/** Colour carried by each equipment status (old to new: operational to success, gap to warning, destructive to error, engineering to info). */
-const equipmentTone: Record<EquipmentStatus, Tone> = {
-  running: "success",
-  warning: "warning",
-  critical: "error",
-  offline: "neutral",
-  maintenance: "info",
-};
 
 /**
  * Equipment status (the PlantMind counterpart of BOM Sync's LifecycleStatus).

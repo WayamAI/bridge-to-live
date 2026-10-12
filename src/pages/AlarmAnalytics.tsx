@@ -117,26 +117,26 @@ const AlarmAnalytics = ({ alerts }: Props) => {
           <p className="text-[9px] text-muted-foreground mt-0.5">Alarms with &gt;10 activations/24hr flagged as chattering</p>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-center py-2 px-2 font-medium w-8">#</th>
-                <th className="text-left py-2 px-3 font-medium">Tag</th>
-                <th className="text-left py-2 px-3 font-medium">Parameter</th>
-                <th className="text-right py-2 px-3 font-medium">Activations (7d)</th>
-                <th className="text-left py-2 px-3 font-medium">Avg Duration</th>
-                <th className="text-left py-2 px-3 font-medium">Classification</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary w-8">#</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Activations (7d)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Avg Duration</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Classification</th>
               </tr>
             </thead>
             <tbody>
               {CHATTERING.map((a, i) => (
-                <tr key={a.tag} className={`border-b border-border/50 hover:bg-muted/20 ${a.count > 20 ? "bg-destructive/5" : ""}`}>
-                  <td className="text-center py-2 px-2 font-mono">{i + 1}</td>
-                  <td className="py-2 px-3 font-mono text-primary font-medium">{a.tag}</td>
+                <tr key={a.tag} className={`border-b border-hairline hover:bg-raised ${a.count > 20 ? "bg-destructive/5" : ""}`}>
+                  <td className="text-center py-2 px-3 tabular whitespace-nowrap">{i + 1}</td>
+                  <td className="py-2 px-3 tabular text-foreground font-medium whitespace-nowrap">{a.tag}</td>
                   <td className="py-2 px-3">{a.parameter}</td>
-                  <td className="py-2 px-3 text-right font-mono font-bold">{a.count}</td>
-                  <td className="py-2 px-3 font-mono">{a.avgDuration}</td>
-                  <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[a.status]}`}>{a.status}</span></td>
+                  <td className="py-2 px-3 text-right tabular font-bold whitespace-nowrap">{a.count}</td>
+                  <td className="py-2 px-3 tabular whitespace-nowrap">{a.avgDuration}</td>
+                  <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full font-medium ${STATUS_COLORS[a.status]}`}>{a.status}</span></td>
                 </tr>
               ))}
             </tbody>

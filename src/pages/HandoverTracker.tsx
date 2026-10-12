@@ -40,26 +40,26 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
           <h3 className="text-sm font-semibold">Handover Readiness Scorecard</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/30">
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Requirement</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Target</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Completed</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Remaining</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Progress</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Status</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Requirement</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Target</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Completed</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Remaining</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Progress</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
               </tr>
             </thead>
             <tbody>
               {handoverData.map((item, i) => {
                 const pct = Math.round(item.completed / item.target * 100);
                 return (
-                  <tr key={i} className="border-b border-border last:border-0 hover:bg-muted/20 cursor-pointer">
+                  <tr key={i} className="border-b border-hairline last:border-0 hover:bg-raised cursor-pointer">
                     <td className="px-3 py-2 font-medium">{item.requirement}</td>
-                    <td className="px-3 py-2 font-mono text-muted-foreground">{item.target.toLocaleString()} {item.unit}</td>
-                    <td className="px-3 py-2 font-mono">{item.completed.toLocaleString()} {item.unit}</td>
-                    <td className="px-3 py-2 font-mono text-muted-foreground">{(item.target - item.completed).toLocaleString()} {item.unit}</td>
+                    <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{item.target.toLocaleString()} {item.unit}</td>
+                    <td className="px-3 py-2 tabular whitespace-nowrap">{item.completed.toLocaleString()} {item.unit}</td>
+                    <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{(item.target - item.completed).toLocaleString()} {item.unit}</td>
                     <td className="px-3 py-2 w-32">
                       <div className="flex items-center gap-2">
                         <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
@@ -72,11 +72,11 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
                             style={{ width: `${pct}%` }}
                           />
                         </div>
-                        <span className="text-[10px] font-mono">{pct}%</span>
+                        <span className="type-body-sm tabular">{pct}%</span>
                       </div>
                     </td>
                     <td className="px-3 py-2">
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium ${statusColors[item.status]}`}>
+                      <span className={`type-body-sm px-2 py-0.5 rounded-full border font-medium ${statusColors[item.status]}`}>
                         {item.status}
                       </span>
                     </td>
@@ -97,21 +97,21 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
           </button>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/30">
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">System</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Type</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Status</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Last Sync</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Records / 24hr</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">System</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Type</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Last Sync</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Records / 24hr</th>
               </tr>
             </thead>
             <tbody>
               {connectedSystems.map((sys, i) => (
-                <tr key={i} className="border-b border-border last:border-0 hover:bg-muted/20">
+                <tr key={i} className="border-b border-hairline last:border-0 hover:bg-raised">
                   <td className="px-3 py-2 font-medium">{sys.name}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{sys.type}</td>
+                  <td className="px-3 py-2 text-tertiary">{sys.type}</td>
                   <td className="px-3 py-2">
                     <span className={`flex items-center gap-1.5 ${
                       sys.status === "Active" ? "text-operational" : sys.status === "Degraded" ? "text-gap" : "text-destructive"
@@ -122,8 +122,8 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
                       {sys.status}
                     </span>
                   </td>
-                  <td className="px-3 py-2 font-mono text-muted-foreground">{sys.lastSync}</td>
-                  <td className="px-3 py-2 font-mono text-muted-foreground">{sys.recordsPer24h}</td>
+                  <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{sys.lastSync}</td>
+                  <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{sys.recordsPer24h}</td>
                 </tr>
               ))}
             </tbody>

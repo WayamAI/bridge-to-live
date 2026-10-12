@@ -81,34 +81,34 @@ const LoadOptimisation = () => {
             <h3 className="text-sm font-semibold">Optimisation Opportunities — Select to model combined impact</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-[11px]">
+            <table className="w-full type-body-sm">
               <thead>
-                <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                  <th className="w-8 py-2 px-2"></th>
-                  <th className="text-left py-2 px-3 font-medium min-w-[200px]">Opportunity</th>
-                  <th className="text-left py-2 px-3 font-medium">Category</th>
-                  <th className="text-left py-2 px-3 font-medium">System</th>
-                  <th className="text-right py-2 px-3 font-medium">Annual Saving</th>
-                  <th className="text-left py-2 px-3 font-medium">Complexity</th>
-                  <th className="text-left py-2 px-3 font-medium">Payback</th>
-                  <th className="text-left py-2 px-3 font-medium">Status</th>
+                <tr className="border-b border-hairline">
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-8"></th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[200px]">Opportunity</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">System</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Annual Saving</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Complexity</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Payback</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {OPPORTUNITIES.map(o => (
-                  <tr key={o.id} className={`border-b border-border/50 hover:bg-muted/20 cursor-pointer ${selected.has(o.id) ? "bg-primary/5" : ""}`} onClick={() => toggle(o.id)}>
-                    <td className="py-2 px-2 text-center">
+                  <tr key={o.id} className={`border-b border-hairline hover:bg-raised cursor-pointer ${selected.has(o.id) ? "bg-raised" : ""}`} onClick={() => toggle(o.id)}>
+                    <td className="py-2 px-3 text-center">
                       <div className={`w-4 h-4 rounded border flex items-center justify-center ${selected.has(o.id) ? "bg-primary border-primary" : "border-border"}`}>
                         {selected.has(o.id) && <Check className="w-3 h-3 text-primary-foreground" />}
                       </div>
                     </td>
                     <td className="py-2 px-3">{o.opportunity}</td>
-                    <td className="py-2 px-3 text-[10px]">{o.category}</td>
-                    <td className="py-2 px-3 text-[10px]">{o.system}</td>
-                    <td className="py-2 px-3 text-right font-mono text-operational font-bold">₹{o.annualSaving}L</td>
-                    <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full ${COMPLEXITY_COLORS[o.complexity]}`}>{o.complexity}</span></td>
-                    <td className="py-2 px-3 text-[10px]">{o.payback}</td>
-                    <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full ${STATUS_COLORS[o.status]}`}>{o.status}</span></td>
+                    <td className="py-2 px-3 type-body-sm">{o.category}</td>
+                    <td className="py-2 px-3 type-body-sm">{o.system}</td>
+                    <td className="py-2 px-3 text-right tabular text-operational font-bold whitespace-nowrap">₹{o.annualSaving}L</td>
+                    <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full ${COMPLEXITY_COLORS[o.complexity]}`}>{o.complexity}</span></td>
+                    <td className="py-2 px-3 type-body-sm">{o.payback}</td>
+                    <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full ${STATUS_COLORS[o.status]}`}>{o.status}</span></td>
                   </tr>
                 ))}
               </tbody>

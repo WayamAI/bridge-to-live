@@ -99,21 +99,21 @@ const NetworkSegmentation = () => (
         <h3 className="text-sm font-semibold">Inter-Zone Data Flows</h3>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-[11px]">
+        <table className="w-full type-body-sm">
           <thead>
-            <tr className="border-b border-border text-muted-foreground bg-muted/30">
-              <th className="text-left py-2 px-3 font-medium">Source → Destination</th>
-              <th className="text-left py-2 px-3 font-medium">Protocol</th>
-              <th className="text-left py-2 px-3 font-medium">Status</th>
+            <tr className="border-b border-hairline">
+              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source → Destination</th>
+              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Protocol</th>
+              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
             </tr>
           </thead>
           <tbody>
             {CONNECTIONS.map((c, i) => (
-              <tr key={i} className={`border-b border-border/50 ${c.status === "red" ? "bg-destructive/5" : ""}`}>
+              <tr key={i} className="border-b border-hairline">
                 <td className="py-2 px-3 font-medium">{c.from} → {c.to}</td>
-                <td className="py-2 px-3 font-mono text-[10px]">{c.protocol}</td>
+                <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{c.protocol}</td>
                 <td className="py-2 px-3">
-                  <span className={`inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-full font-medium ${c.status === "green" ? "bg-operational/10 text-operational" : c.status === "amber" ? "bg-gap/10 text-gap" : "bg-destructive/10 text-destructive"}`}>
+                  <span className={`inline-flex items-center gap-1.5 type-body-sm px-2 py-0.5 rounded-full font-medium ${c.status === "green" ? "bg-operational/10 text-operational" : c.status === "amber" ? "bg-gap/10 text-gap" : "bg-destructive/10 text-destructive"}`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[c.status]}`} />
                     {c.status === "green" ? "Allowed" : c.status === "amber" ? "Warning" : "Violation"}
                   </span>

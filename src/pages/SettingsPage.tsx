@@ -58,28 +58,30 @@ const SettingsPage = () => {
               <Save className="w-3 h-3" /> Save Changes
             </button>
           </div>
-          <table className="w-full text-[11px]">
+          <div className="overflow-x-auto">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Tag Pattern</th>
-                <th className="text-left py-2 px-3 font-medium">Parameter</th>
-                <th className="text-right py-2 px-3 font-medium">HIGH Alarm</th>
-                <th className="text-right py-2 px-3 font-medium">HIGH-HIGH Alarm</th>
-                <th className="text-left py-2 px-3 font-medium">Unit</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag Pattern</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH Alarm</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH-HIGH Alarm</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Unit</th>
               </tr>
             </thead>
             <tbody>
               {THRESHOLD_PRESETS.map((t, i) => (
-                <tr key={i} className="border-b border-border/50 hover:bg-muted/20">
-                  <td className="py-2 px-3 font-mono text-primary">{t.tag}</td>
+                <tr key={i} className="border-b border-hairline hover:bg-raised">
+                  <td className="py-2 px-3 tabular text-foreground whitespace-nowrap">{t.tag}</td>
                   <td className="py-2 px-3">{t.parameter}</td>
-                  <td className="py-2 px-3 text-right"><input defaultValue={t.high} className="w-20 text-right px-2 py-1 rounded border border-border bg-background text-foreground font-mono text-[11px]" /></td>
-                  <td className="py-2 px-3 text-right"><input defaultValue={t.highHigh} className="w-20 text-right px-2 py-1 rounded border border-destructive/30 bg-destructive/5 text-foreground font-mono text-[11px]" /></td>
-                  <td className="py-2 px-3 text-muted-foreground">{t.unit}</td>
+                  <td className="py-2 px-3 text-right"><input defaultValue={t.high} className="w-20 text-right px-3 py-1 rounded border border-border bg-background text-foreground tabular type-body-sm" /></td>
+                  <td className="py-2 px-3 text-right"><input defaultValue={t.highHigh} className="w-20 text-right px-3 py-1 rounded border border-destructive/30 bg-destructive/5 text-foreground tabular type-body-sm" /></td>
+                  <td className="py-2 px-3 text-tertiary">{t.unit}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
@@ -108,26 +110,28 @@ const SettingsPage = () => {
           <div className="px-4 py-3 border-b border-border">
             <h3 className="text-sm font-semibold">AI/ML Model Parameters</h3>
           </div>
-          <table className="w-full text-[11px]">
+          <div className="overflow-x-auto">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Model</th>
-                <th className="text-left py-2 px-3 font-medium">Parameter</th>
-                <th className="text-left py-2 px-3 font-medium">Value</th>
-                <th className="text-left py-2 px-3 font-medium">Description</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Model</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Value</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Description</th>
               </tr>
             </thead>
             <tbody>
               {MODEL_PARAMS.map((p, i) => (
-                <tr key={i} className="border-b border-border/50 hover:bg-muted/20">
+                <tr key={i} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{p.model}</td>
                   <td className="py-2 px-3">{p.parameter}</td>
-                  <td className="py-2 px-3 font-mono font-bold">{p.value}</td>
-                  <td className="py-2 px-3 text-muted-foreground">{p.description}</td>
+                  <td className="py-2 px-3 tabular font-bold whitespace-nowrap">{p.value}</td>
+                  <td className="py-2 px-3 text-tertiary">{p.description}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
 
@@ -136,13 +140,14 @@ const SettingsPage = () => {
           <div className="px-4 py-3 border-b border-border">
             <h3 className="text-sm font-semibold">User Roles & Access</h3>
           </div>
-          <table className="w-full text-[11px]">
+          <div className="overflow-x-auto">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Role</th>
-                <th className="text-left py-2 px-3 font-medium">Primary Focus</th>
-                <th className="text-left py-2 px-3 font-medium">Screen Access</th>
-                <th className="text-center py-2 px-3 font-medium">Active Users</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Role</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Primary Focus</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Screen Access</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Active Users</th>
               </tr>
             </thead>
             <tbody>
@@ -155,15 +160,16 @@ const SettingsPage = () => {
                 { role: "IT/OT Security Analyst", focus: "OT asset inventory, threat monitoring", access: "OT Security, Asset Registry, Compliance", users: 2 },
                 { role: "Handover Manager", focus: "Data completeness, ISO compliance", access: "Handover, Data Quality, Twin Sync", users: 3 },
               ].map(u => (
-                <tr key={u.role} className="border-b border-border/50 hover:bg-muted/20">
+                <tr key={u.role} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{u.role}</td>
                   <td className="py-2 px-3">{u.focus}</td>
-                  <td className="py-2 px-3 text-[10px]">{u.access}</td>
-                  <td className="py-2 px-3 text-center font-mono">{u.users}</td>
+                  <td className="py-2 px-3 type-body-sm">{u.access}</td>
+                  <td className="py-2 px-3 text-center tabular whitespace-nowrap">{u.users}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </div>
         </div>
       )}
     </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { EmptyState } from "@/components/ui/primitives";
 import { CheckCircle, Clock, AlertTriangle, Wrench, ArrowUpDown } from "lucide-react";
 
 interface WorkOrder {
@@ -92,36 +93,41 @@ const WorkOrders = () => {
       {/* Table */}
       <div className="rounded-xl border border-border bg-card overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">WO ID</th>
-                <th className="text-left py-2 px-3 font-medium">Tag</th>
-                <th className="text-left py-2 px-3 font-medium min-w-[200px]">Description</th>
-                <th className="text-left py-2 px-3 font-medium">Type</th>
-                <th className="text-center py-2 px-2 font-medium">P</th>
-                <th className="text-left py-2 px-3 font-medium">Status</th>
-                <th className="text-left py-2 px-3 font-medium">Due</th>
-                <th className="text-left py-2 px-3 font-medium">Assignee</th>
-                <th className="text-right py-2 px-3 font-medium">Cost (₹L)</th>
-                <th className="text-right py-2 px-3 font-medium">Hours</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">WO ID</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[200px]">Description</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Type</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">P</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Due</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Assignee</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Cost (₹L)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Hours</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map(wo => (
-                <tr key={wo.id} className={`border-b border-border/50 hover:bg-muted/20 ${wo.status !== "Completed" && new Date(wo.due) < new Date() ? "bg-destructive/5" : ""}`}>
-                  <td className="py-2 px-3 font-mono font-medium">{wo.id}</td>
-                  <td className="py-2 px-3 font-mono text-primary">{wo.tag}</td>
+                <tr key={wo.id} className="border-b border-hairline hover:bg-raised">
+                  <td className="py-2 px-3 tabular font-medium whitespace-nowrap">{wo.id}</td>
+                  <td className="py-2 px-3 tabular text-foreground whitespace-nowrap">{wo.tag}</td>
                   <td className="py-2 px-3">{wo.description}</td>
-                  <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full ${TYPE_COLORS[wo.type]}`}>{wo.type}</span></td>
-                  <td className="py-2 px-2 text-center font-mono font-bold">{wo.priority}</td>
-                  <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full ${STATUS_COLORS[wo.status]}`}>{wo.status}</span></td>
-                  <td className="py-2 px-3 font-mono text-[10px]">{wo.due}</td>
+                  <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full ${TYPE_COLORS[wo.type]}`}>{wo.type}</span></td>
+                  <td className="py-2 px-3 text-center tabular font-bold whitespace-nowrap">{wo.priority}</td>
+                  <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full ${STATUS_COLORS[wo.status]}`}>{wo.status}</span></td>
+                  <td className={`py-2 px-3 tabular type-body-sm ${wo.status !== "Completed" && new Date(wo.due) < new Date() ? "text-error" : ""}`}>{wo.due}</td>
                   <td className="py-2 px-3">{wo.assignee}</td>
-                  <td className="py-2 px-3 text-right font-mono">{wo.cost}</td>
-                  <td className="py-2 px-3 text-right font-mono">{wo.hours}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{wo.cost}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{wo.hours}</td>
                 </tr>
               ))}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={10}><EmptyState title="No work orders match this filter" className="min-h-[96px]" /></td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

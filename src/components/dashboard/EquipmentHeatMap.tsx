@@ -62,10 +62,10 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
         <h3 className="text-sm font-semibold">Equipment Health Heat Map</h3>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-[10px]">
+        <table className="w-full type-body-sm">
           <thead>
-            <tr className="border-b border-border bg-muted/30">
-              <th className="text-left px-3 py-2 font-medium text-muted-foreground w-40">Process Unit</th>
+            <tr className="border-b border-hairline">
+              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-40">Process Unit</th>
               {HEALTH_DIMENSIONS.map(d => (
                 <th key={d} className="text-center px-2 py-2 font-medium text-muted-foreground w-16">{d}</th>
               ))}
@@ -75,13 +75,13 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
             {heatData.map((row) => row && (
               <tr
                 key={row.processUnit}
-                className="border-b border-border last:border-0 cursor-pointer hover:bg-muted/10"
+                className="border-b border-hairline last:border-0 cursor-pointer hover:bg-raised"
                 onClick={() => onSelect(row.firstId)}
               >
-                <td className="px-3 py-2 font-medium text-xs">{row.processUnit}</td>
+                <td className="px-3 py-2 font-medium type-body-sm">{row.processUnit}</td>
                 {row.dimensions.map((score, i) => (
-                  <td key={i} className="px-1 py-1.5 text-center">
-                    <span className={`inline-block w-12 py-1 rounded text-[10px] font-bold font-mono ${getHealthColor(score)} ${getHealthTextColor(score)}`}>
+                  <td key={i} className="px-1 py-2 text-center">
+                    <span className={`inline-block w-12 py-1 rounded type-body-sm font-bold tabular ${getHealthColor(score)} ${getHealthTextColor(score)}`}>
                       {score}%
                     </span>
                   </td>

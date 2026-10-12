@@ -70,32 +70,32 @@ const AlarmRationalisation = () => {
             <h3 className="text-sm font-semibold">Alarm Rationalisation Register — High-Frequency Items</h3>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-[11px]">
+            <table className="w-full type-body-sm">
               <thead>
-                <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                  <th className="text-left py-2 px-3 font-medium">Tag</th>
-                  <th className="text-left py-2 px-3 font-medium">Parameter</th>
-                  <th className="text-left py-2 px-3 font-medium">Current</th>
-                  <th className="text-left py-2 px-3 font-medium">Proposed</th>
-                  <th className="text-left py-2 px-3 font-medium">Code</th>
-                  <th className="text-left py-2 px-3 font-medium min-w-[200px]">Rationale</th>
-                  <th className="text-right py-2 px-3 font-medium">Rate (7d)</th>
-                  <th className="text-center py-2 px-3 font-medium">P</th>
-                  <th className="text-left py-2 px-3 font-medium">Status</th>
+                <tr className="border-b border-hairline">
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Current</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Proposed</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Code</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[200px]">Rationale</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Rate (7d)</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">P</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {ALARM_POINTS.map(a => (
-                  <tr key={a.id} className={`border-b border-border/50 hover:bg-muted/20 ${a.alarmRate7d > 20 ? "bg-destructive/5" : ""}`}>
-                    <td className="py-2 px-3 font-mono text-primary font-medium">{a.tag}</td>
+                  <tr key={a.id} className={`border-b border-hairline hover:bg-raised ${a.alarmRate7d > 20 ? "bg-destructive/5" : ""}`}>
+                    <td className="py-2 px-3 tabular text-foreground font-medium whitespace-nowrap">{a.tag}</td>
                     <td className="py-2 px-3">{a.parameter}</td>
-                    <td className="py-2 px-3 font-mono">{a.currentSetpoint}</td>
-                    <td className="py-2 px-3 font-mono font-bold">{a.proposedSetpoint}</td>
-                    <td className="py-2 px-3 font-mono text-[10px]">{a.rationaleCode}</td>
-                    <td className="py-2 px-3 text-[10px]">{a.rationale}</td>
-                    <td className="py-2 px-3 text-right font-mono font-bold">{a.alarmRate7d}</td>
-                    <td className="py-2 px-3 text-center font-mono">{a.priority}</td>
-                    <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[a.status]}`}>{a.status}</span></td>
+                    <td className="py-2 px-3 tabular whitespace-nowrap">{a.currentSetpoint}</td>
+                    <td className="py-2 px-3 tabular font-bold whitespace-nowrap">{a.proposedSetpoint}</td>
+                    <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{a.rationaleCode}</td>
+                    <td className="py-2 px-3 type-body-sm">{a.rationale}</td>
+                    <td className="py-2 px-3 text-right tabular font-bold whitespace-nowrap">{a.alarmRate7d}</td>
+                    <td className="py-2 px-3 text-center tabular whitespace-nowrap">{a.priority}</td>
+                    <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full font-medium ${STATUS_COLORS[a.status]}`}>{a.status}</span></td>
                   </tr>
                 ))}
               </tbody>

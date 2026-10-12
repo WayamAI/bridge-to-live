@@ -86,43 +86,43 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
           <h3 className="text-sm font-semibold">Maintenance Recommendations — Priority Ranked</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-center py-2 px-2 font-medium w-8">#</th>
-                <th className="text-left py-2 px-3 font-medium">Tag</th>
-                <th className="text-left py-2 px-3 font-medium min-w-[200px]">Recommended Action</th>
-                <th className="text-left py-2 px-3 font-medium">Failure Mode</th>
-                <th className="text-right py-2 px-2 font-medium">Prob.</th>
-                <th className="text-right py-2 px-2 font-medium">Consequence (₹L)</th>
-                <th className="text-right py-2 px-2 font-medium">Action Cost (₹L)</th>
-                <th className="text-left py-2 px-3 font-medium">Deadline</th>
-                <th className="text-left py-2 px-3 font-medium">Status</th>
-                <th className="text-center py-2 px-2 font-medium">Actions</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary w-8">#</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[200px]">Recommended Action</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Failure Mode</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Prob.</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Consequence (₹L)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Action Cost (₹L)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Deadline</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Actions</th>
               </tr>
             </thead>
             <tbody>
               {RECOMMENDATIONS.map(rec => (
                 <>
                   <tr key={rec.id}
-                    className={`border-b border-border/50 hover:bg-muted/20 cursor-pointer ${rec.probability > 70 ? "bg-destructive/5" : rec.probability > 40 ? "bg-gap/5" : ""}`}
+                    className="border-b border-hairline hover:bg-raised cursor-pointer"
                     onClick={() => setExpandedRow(expandedRow === rec.id ? null : rec.id)}>
-                    <td className="text-center py-2 px-2 font-mono font-bold">{rec.rank}</td>
-                    <td className="py-2 px-3 font-mono font-medium text-primary">{rec.tag}</td>
+                    <td className="text-center py-2 px-3 tabular font-bold whitespace-nowrap">{rec.rank}</td>
+                    <td className="py-2 px-3 tabular font-medium text-foreground whitespace-nowrap">{rec.tag}</td>
                     <td className="py-2 px-3">{rec.action}</td>
                     <td className="py-2 px-3">{rec.failureMode}</td>
-                    <td className="py-2 px-2 text-right font-mono">
+                    <td className="py-2 px-3 text-right tabular whitespace-nowrap">
                       <span className={rec.probability > 70 ? "text-destructive font-bold" : rec.probability > 40 ? "text-gap" : ""}>{rec.probability}%</span>
                     </td>
-                    <td className="py-2 px-2 text-right font-mono">{rec.consequenceCost}</td>
-                    <td className="py-2 px-2 text-right font-mono">{rec.actionCost}</td>
-                    <td className="py-2 px-3 font-mono text-[10px]">{rec.deadline}</td>
+                    <td className="py-2 px-3 text-right tabular whitespace-nowrap">{rec.consequenceCost}</td>
+                    <td className="py-2 px-3 text-right tabular whitespace-nowrap">{rec.actionCost}</td>
+                    <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{rec.deadline}</td>
                     <td className="py-2 px-3">
-                      <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[rec.status]}`}>{rec.status}</span>
+                      <span className={`type-body-sm px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[rec.status]}`}>{rec.status}</span>
                     </td>
-                    <td className="py-2 px-2 text-center">
+                    <td className="py-2 px-3 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="text-[9px] bg-primary/10 text-primary px-2 py-0.5 rounded hover:bg-primary/20">
+                        <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="type-body-sm bg-primary/10 text-primary px-2 py-0.5 rounded hover:bg-primary/20">
                           Create WO
                         </button>
                         {expandedRow === rec.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
@@ -130,14 +130,14 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                     </td>
                   </tr>
                   {expandedRow === rec.id && (
-                    <tr key={`${rec.id}-detail`} className="bg-muted/10">
+                    <tr key={`${rec.id}-detail`} className="bg-raised">
                       <td colSpan={10} className="px-6 py-3">
-                        <div className="grid grid-cols-4 gap-4 text-[10px]">
-                          <div><p className="text-muted-foreground">Model Confidence</p><p className="font-mono font-bold">{rec.confidence}%</p></div>
-                          <div><p className="text-muted-foreground">Est. Labour Hours</p><p className="font-mono font-bold">{rec.labourHours} hr</p></div>
-                          <div><p className="text-muted-foreground">Assigned Team</p><p className="font-medium">{rec.team}</p></div>
+                        <div className="grid grid-cols-4 gap-4 type-body-sm">
+                          <div><p className="text-tertiary">Model Confidence</p><p className="tabular font-bold">{rec.confidence}%</p></div>
+                          <div><p className="text-tertiary">Est. Labour Hours</p><p className="tabular font-bold">{rec.labourHours} hr</p></div>
+                          <div><p className="text-tertiary">Assigned Team</p><p className="font-medium">{rec.team}</p></div>
                           <div>
-                            <p className="text-muted-foreground">Spare Parts</p>
+                            <p className="text-tertiary">Spare Parts</p>
                             <p className="font-medium">{rec.spareParts.length > 0 ? rec.spareParts.join(", ") : "None required"}</p>
                           </div>
                         </div>

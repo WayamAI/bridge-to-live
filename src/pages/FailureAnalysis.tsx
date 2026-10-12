@@ -101,27 +101,27 @@ const FailureAnalysis = ({ equipment }: Props) => {
             </ResponsiveContainer>
             {/* Pareto Table */}
             <div className="mt-3 overflow-auto">
-              <table className="w-full text-[10px]">
+              <table className="w-full type-body-sm">
                 <thead>
-                  <tr className="border-b border-border text-muted-foreground">
-                    <th className="text-left py-1.5 px-2">Failure Mode</th>
-                    <th className="text-right py-1.5 px-2">Count</th>
-                    <th className="text-right py-1.5 px-2">Downtime (hr)</th>
-                    <th className="text-right py-1.5 px-2">Cost (₹L)</th>
-                    <th className="text-right py-1.5 px-2">MTBF (hr)</th>
-                    <th className="text-center py-1.5 px-2">Trend</th>
+                  <tr className="border-b border-hairline">
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Failure Mode</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Count</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Downtime (hr)</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Cost (₹L)</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">MTBF (hr)</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Trend</th>
                   </tr>
                 </thead>
                 <tbody>
                   {FAILURE_MODES.map(f => (
-                    <tr key={f.mode} className="border-b border-border/50 hover:bg-muted/20 cursor-pointer"
+                    <tr key={f.mode} className="border-b border-hairline hover:bg-raised cursor-pointer"
                       onClick={() => setSelectedMode(selectedMode === f.mode ? null : f.mode)}>
-                      <td className={`py-1.5 px-2 font-medium ${selectedMode === f.mode ? "text-primary" : ""}`}>{f.mode}</td>
-                      <td className="text-right py-1.5 px-2 font-mono">{f.count}</td>
-                      <td className="text-right py-1.5 px-2 font-mono">{f.downtime}</td>
-                      <td className="text-right py-1.5 px-2 font-mono">{f.cost}</td>
-                      <td className="text-right py-1.5 px-2 font-mono">{f.mtbf.toLocaleString()}</td>
-                      <td className={`text-center py-1.5 px-2 ${f.trend === "↑" ? "text-destructive" : f.trend === "↓" ? "text-operational" : "text-muted-foreground"}`}>{f.trend}</td>
+                      <td className={`py-2 px-3 font-medium ${selectedMode === f.mode ? "text-foreground" : ""}`}>{f.mode}</td>
+                      <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.count}</td>
+                      <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.downtime}</td>
+                      <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.cost}</td>
+                      <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.mtbf.toLocaleString()}</td>
+                      <td className={`text-center py-2 px-3 ${f.trend === "↑" ? "text-destructive" : f.trend === "↓" ? "text-operational" : "text-tertiary"}`}>{f.trend}</td>
                     </tr>
                   ))}
                 </tbody>
