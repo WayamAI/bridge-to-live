@@ -47,7 +47,8 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
   }, []);
 
   return (
-    <header className="relative z-30 flex h-14 shrink-0 items-center justify-between gap-3 border-b border-hairline bg-page px-4 sm:px-5">
+    <div className="shrink-0">
+    <header className="relative z-30 flex h-14 items-center justify-between gap-3 border-b border-hairline bg-page px-4 sm:px-5">
       {/* Location: group eyebrow (no breadcrumbs in Chronus). The h1 is the page's only h1; the visible title is the PageHeader h2. */}
       <div className="flex min-w-0 items-center gap-3">
         <button type="button" aria-label="Open navigation" onClick={onOpenNav} className={`${iconBtn} lg:hidden`}>
@@ -66,7 +67,7 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
         <span className="type-body-sm tabular hidden text-tertiary md:inline">
           {time.toLocaleTimeString()} IST
         </span>
-        <span className="type-body-sm tabular hidden text-tertiary xl:inline">
+        <span className="type-body-sm tabular hidden text-tertiary lg:inline">
           42,400 tags active
         </span>
 
@@ -125,6 +126,12 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
         </div>
       </div>
     </header>
+    {/* Below lg the clock (below md) and tag count sit on a quiet second line instead of being hidden. */}
+    <div className="type-body-sm tabular flex h-7 items-center gap-3 border-b border-hairline bg-page px-4 text-quaternary sm:px-5 lg:hidden">
+      <span className="md:hidden">{time.toLocaleTimeString()} IST</span>
+      <span>42,400 tags active</span>
+    </div>
+    </div>
   );
 };
 
