@@ -34,7 +34,7 @@ const MaintenanceCost = () => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold">Maintenance Cost Tracker</h1>
+      <h2 className="text-lg font-bold">Maintenance Cost Tracker</h2>
       <p className="text-xs text-muted-foreground -mt-3">Budget tracking and cost allocation across maintenance activities</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

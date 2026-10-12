@@ -53,7 +53,7 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold">Remaining Useful Life (RUL)</h1>
+      <h2 className="text-lg font-bold">Remaining Useful Life (RUL)</h2>
       <p className="text-xs text-muted-foreground -mt-3">Predicted remaining operating life across the equipment fleet</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">

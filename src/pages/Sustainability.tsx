@@ -35,7 +35,7 @@ const Sustainability = () => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Leaf className="w-5 h-5 text-operational" /> Sustainability & Emissions</h1>
+      <h2 className="text-lg font-bold flex items-center gap-2"><Leaf className="w-5 h-5 text-operational" /> Sustainability & Emissions</h2>
       <p className="text-xs text-muted-foreground -mt-3">Environmental performance tracking — carbon emissions, water usage, waste management</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

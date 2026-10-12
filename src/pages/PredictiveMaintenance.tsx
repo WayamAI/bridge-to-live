@@ -60,7 +60,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto relative">
-      <h1 className="text-lg font-bold">Predictive Maintenance</h1>
+      <h2 className="text-lg font-bold">Predictive Maintenance</h2>
       <p className="text-xs text-muted-foreground -mt-3">AI-generated maintenance recommendations ranked by risk and value</p>
 
       {/* Summary Metrics */}

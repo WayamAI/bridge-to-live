@@ -46,7 +46,7 @@ const ComplianceDashboard = () => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Lock className="w-5 h-5 text-primary" /> Compliance Dashboard</h1>
+      <h2 className="text-lg font-bold flex items-center gap-2"><Lock className="w-5 h-5 text-primary" /> Compliance Dashboard</h2>
       <p className="text-xs text-muted-foreground -mt-3">IEC 62443 Industrial Cybersecurity Standard — compliance assessment</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

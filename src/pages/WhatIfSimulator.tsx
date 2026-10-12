@@ -69,7 +69,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Beaker className="w-5 h-5 text-primary" /> What-If Simulator</h1>
+      <h2 className="text-lg font-bold flex items-center gap-2"><Beaker className="w-5 h-5 text-primary" /> What-If Simulator</h2>
       <p className="text-xs text-muted-foreground -mt-3">Model operational scenarios and compare impact against current baseline</p>
 
       <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-4">

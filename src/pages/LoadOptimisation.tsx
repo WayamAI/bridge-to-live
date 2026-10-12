@@ -57,7 +57,7 @@ const LoadOptimisation = () => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold">Load Optimisation</h1>
+      <h2 className="text-lg font-bold">Load Optimisation</h2>
       <p className="text-xs text-muted-foreground -mt-3">Energy cost reduction opportunities ranked by annual value</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

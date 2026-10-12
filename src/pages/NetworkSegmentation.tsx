@@ -41,7 +41,7 @@ const STATUS_DOT = { green: "bg-operational", amber: "bg-gap", red: "bg-destruct
 
 const NetworkSegmentation = () => (
   <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-    <h1 className="text-lg font-bold flex items-center gap-2"><NetworkIcon className="w-5 h-5 text-primary" /> Network Segmentation Status</h1>
+    <h2 className="text-lg font-bold flex items-center gap-2"><NetworkIcon className="w-5 h-5 text-primary" /> Network Segmentation Status</h2>
     <p className="text-xs text-muted-foreground -mt-3">Purdue model — OT network zone visualization and inter-zone connection monitoring</p>
 
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

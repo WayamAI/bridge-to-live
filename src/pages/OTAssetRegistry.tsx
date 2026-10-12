@@ -79,7 +79,7 @@ const OTAssetRegistry = () => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><MonitorSpeaker className="w-5 h-5 text-primary" /> OT Asset Registry</h1>
+      <h2 className="text-lg font-bold flex items-center gap-2"><MonitorSpeaker className="w-5 h-5 text-primary" /> OT Asset Registry</h2>
       <p className="text-xs text-muted-foreground -mt-3">Comprehensive inventory of all OT assets — IEC 62443 asset management</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

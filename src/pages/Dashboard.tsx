@@ -151,7 +151,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
       {/* OEE + Quick Actions */}
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4">
         <OEEDashboard oee={oee} />
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {quickActions.map((action) => {
             const Icon = action.icon;
             return (

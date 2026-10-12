@@ -44,7 +44,7 @@ const ThreatMonitor = () => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Shield className="w-5 h-5 text-destructive" /> Threat Monitor</h1>
+      <h2 className="text-lg font-bold flex items-center gap-2"><Shield className="w-5 h-5 text-destructive" /> Threat Monitor</h2>
       <p className="text-xs text-muted-foreground -mt-3">OT security event log — MITRE ATT&CK for ICS framework mapping</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

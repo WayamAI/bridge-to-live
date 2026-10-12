@@ -67,7 +67,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold">Failure Analysis</h1>
+      <h2 className="text-lg font-bold">Failure Analysis</h2>
       <p className="text-xs text-muted-foreground -mt-3">Statistical failure analysis across equipment classes — systemic issue identification</p>
 
       {/* Quick Stats */}

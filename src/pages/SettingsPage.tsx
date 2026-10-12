@@ -34,11 +34,11 @@ const SettingsPage = () => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><SettingsIcon className="w-5 h-5 text-primary" /> Settings & Configuration</h1>
+      <h2 className="text-lg font-bold flex items-center gap-2"><SettingsIcon className="w-5 h-5 text-primary" /> Settings & Configuration</h2>
       <p className="text-xs text-muted-foreground -mt-3">System configuration, thresholds, alert rules, and model parameters</p>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-border pb-0">
+      <div className="flex gap-2 overflow-x-auto border-b border-border pb-0">
         {tabs.map(t => {
           const Icon = t.icon;
           return (

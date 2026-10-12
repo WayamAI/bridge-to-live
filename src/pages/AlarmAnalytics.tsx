@@ -51,7 +51,7 @@ const AlarmAnalytics = ({ alerts }: Props) => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold">Alarm History & Analytics</h1>
+      <h2 className="text-lg font-bold">Alarm History & Analytics</h2>
       <p className="text-xs text-muted-foreground -mt-3">Historical alarm performance analysis and chattering alarm identification</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

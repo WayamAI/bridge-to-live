@@ -38,7 +38,7 @@ const DataQuality = () => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Gauge className="w-5 h-5 text-primary" /> Data Quality Monitor</h1>
+      <h2 className="text-lg font-bold flex items-center gap-2"><Gauge className="w-5 h-5 text-primary" /> Data Quality Monitor</h2>
       <p className="text-xs text-muted-foreground -mt-3">Real-time monitoring of data source health, freshness, and ingestion quality</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

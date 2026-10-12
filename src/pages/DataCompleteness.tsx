@@ -20,7 +20,7 @@ const DataCompleteness = () => {
 
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><FileCheck className="w-5 h-5 text-primary" /> Data Completeness Monitor</h1>
+      <h2 className="text-lg font-bold flex items-center gap-2"><FileCheck className="w-5 h-5 text-primary" /> Data Completeness Monitor</h2>
       <p className="text-xs text-muted-foreground -mt-3">Tracking data completeness across all engineering and operational data categories</p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">

@@ -50,7 +50,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
   return (
     <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
       {/* KPI bar */}
-      <div className="flex items-center gap-4">
+      <div className="flex flex-wrap items-center gap-4">
         <div className="rounded-lg border border-border bg-card px-4 py-2">
           <p className="text-[9px] text-muted-foreground">Unacknowledged</p>
           <p className="text-lg font-bold font-mono text-destructive">{unacknowledged}</p>
