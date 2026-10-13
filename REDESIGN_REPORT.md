@@ -1,6 +1,6 @@
 # REDESIGN_REPORT.md
 
-Chronus-style UI redesign of PlantMind (Wayam AI), the app in this repo (`bridge-to-live`). Baseline: `aeabd3f`. Head: the commit that adds this update (the one before it is `f46101c`, Step 7 icons).
+Chronus-style UI redesign of PlantMind (Wayam AI), the app in this repo (`bridge-to-live`). Baseline: `aeabd3f`. Head: the commit that adds the Tickets section and the decisions (the one before it is `60b007d`).
 
 Claims were checked against git (`git diff aeabd3f HEAD`, `git ls-files`) and against the running app where possible. Corrections to numbers or statements in earlier reports and in internal docs (not in repo) are marked **Corrected**. The internal docs (not in repo) keep the per-page log (every wording change, page by page); this file is the summary.
 
@@ -8,7 +8,7 @@ Claims were checked against git (`git diff aeabd3f HEAD`, `git ls-files`) and ag
 
 Hashes in this section are from the original local history. The pushed branch carries the same commits rebased onto the team's main, with the internal docs left out, so its hashes differ.
 
-45 commits before this update.
+46 commits before the final docs commit (47 in total).
 
 | Commit | Message |
 |---|---|
@@ -57,6 +57,8 @@ Hashes in this section are from the original local history. The pushed branch ca
 | 93bd213 | docs: redesign report |
 | f3c4ccc | ui: final qa fixes |
 | f46101c | ui: step 7 icons |
+| 60b007d | docs: redesign report update |
+| this commit | docs: redesign tickets and decisions |
 
 ## Diff stat against aeabd3f, by area
 
@@ -199,7 +201,7 @@ The internal docs (not in repo) ("Step 4 page log") have the full per-page list.
 7. The OEE rings keep their 1 s fill animation (logic inside the component).
 8. Login brand panel is a solid colour (no hero image in the repo).
 9. Tailwind stays on 3.4 (Chronus is v4).
-10. Fonts stay Google-hosted.
+10. Fonts stay Google-hosted (decision, see Decisions). Chronus self-hosts its fonts at build time through `next/font`; this app is Vite, so an offline or air-gapped deployment would need the font files self-hosted later (`.woff2` plus `@font-face`, and the Google links removed).
 
 ## Cleanup ticket (unused files, left in place on purpose)
 
@@ -258,13 +260,74 @@ Full-height QA: every route captured at its full scroll height (the script grows
 - Failure Analysis: the event timeline panel is empty (pre-existing scatter bug).
 - Handover Tracker shows 83% readiness while the Dashboard tile shows 73% (hard-coded, pre-existing).
 
+## Tickets
+
+One entry per pre-existing bug (numbers match the "Pre-existing bugs" list above). None was fixed in this redesign. Line numbers are at the head commit.
+
+### High
+
+**T1. Chart and mock data change on every render or reload (bug 2).**
+- Where: `components/dashboard/AlarmFrequencyChart.tsx:15-17`, `PlantHealthTrend.tsx:13`, `EquipmentHeatMap.tsx:48`, `pages/AlarmAnalytics.tsx:12-14,22-23`, `FailureAnalysis.tsx:22-23`, `LoadOptimisation.tsx:40-41`, `RemainingUsefulLife.tsx:44-47`; the sensor jitter in `hooks/usePlantData.ts:111,649` is intended (live feel).
+- Reproduce: open the Dashboard and reload; the Alarm Frequency bars, the Plant Health line and the heat-map scores are different each time (heat map and Plant Health also change when the 2 s sensor tick re-renders).
+- Fix: replace `Math.random()` with a seeded generator or fixed arrays in `useMemo`/module scope (or fetch real series once backend data exists).
+- Priority: High (numbers on screen are not reproducible).
+
+**T2. Dashboard "Handover Readiness" is hard-coded to 73% while the Handover page shows 83% (bug 8).**
+- Where: `pages/Dashboard.tsx:38` (`const handoverPct = 73`) against `pages/HandoverTracker.tsx:18-20` (computed from the scorecard data).
+- Reproduce: open `/` (73%) and `/handover` (83%).
+- Fix: compute the Dashboard value from the same data (move the handover data to a shared hook or module) and drop the constant. "Ratnagiri LNG Phase 2" and "42,400 tags active" are also static text.
+- Priority: High (two screens disagree about the same number).
+
+**T3. Charts that do not draw what their legend or caption says (bug 3).**
+- Where: Weibull survival `Line` inside an `AreaChart` (`pages/FailureAnalysis.tsx:117-124`); failure event scatter shows nothing (`FailureAnalysis.tsx:156-162`, no points match the filter data); Sustainability "Target" `Line` inside a `BarChart` (`pages/Sustainability.tsx:97`); RUL fleet-age `Line` inside an `AreaChart` (`pages/RemainingUsefulLife.tsx:92`); Plant Health legend lists "Forecast" and "PM Events" that are not drawn; RUL caption mentions a dashed PM line.
+- Reproduce: open `/failure-analysis` (Weibull shows a band only, timeline panel is empty) and `/sustainability` (no target line over the water chart).
+- Fix: use `ComposedChart` where a line sits on bars or areas; give the scatter data matching `x`/`y` keys; remove legend entries for series that do not exist.
+- Priority: High (missing information).
+
+**T4. Alarm type shows "Rate Of_change" (bug 1).**
+- Where: `pages/AlarmManagement.tsx:117` (`alert.type.replace("_", " ")` replaces only the first underscore; `rate_of_change` becomes "rate of_change", capitalised by CSS).
+- Reproduce: open `/alarms`, look at the Type column of the COMP-B-001 row.
+- Fix: `replace(/_/g, " ")`.
+- Priority: High (visible typo, one-line fix).
+
+### Medium
+
+**T5. Settings inputs reset when you leave the tab (bug 5).** `pages/SettingsPage.tsx:79-80` (uncontrolled `defaultValue`) with the panel unmounted on tab change (`activeTab === ... &&`). Reproduce: type a threshold, switch tab and back; the value is back to the original. Also "Save changes" only shows a toast. Fix: hold values in state (or a form) above the tabs and persist on save. Reproduced at `aeabd3f`.
+
+**T6. Toasts ignore the app theme (bug 4).** `components/ui/sonner.tsx:1,7` reads the theme from `next-themes` with no provider, so it is always "system". Reproduce: set the app to dark with the OS in light mode and trigger "Save changes". Fix: read `useTheme` from `hooks/useTheme` instead.
+
+**T7. Keyboard access (bug 6).** Rows with `onClick` and no key handler: `pages/EquipmentHealth.tsx:120`, `FailureAnalysis.tsx:101`, `LoadOptimisation.tsx:87`, `PredictiveMaintenance.tsx:94`, `components/dashboard/EquipmentHeatMap.tsx:75`, `pages/Dashboard.tsx:126`, What-If saved scenarios; sortable headers `EquipmentHealth.tsx:57-60`; chart bars. Reproduce: Tab through `/equipment`; rows and headers cannot be focused or activated. Fix: make the activating element a button (or add `tabIndex`, `role` and Enter/Space handlers).
+
+**T8. React duplicate-key warning on /predictive-maintenance (bug 7).** `pages/PredictiveMaintenance.tsx:93-94` puts the key on the inner `<tr>` of a `<>` fragment. Reproduce: open the page with the console open. Fix: `<Fragment key={rec.id}>`.
+
+**T9. Mock dates are in the past (bug 11).** `hooks/usePlantData.ts:156 onwards ` (maintenance and failure dates in April and May 2026) and `pages/WorkOrders.tsx` due dates. Reproduce: `/work-orders` shows 8 overdue; an equipment detail shows negative "days" (`components/twin/EquipmentDetail.tsx:14-17`). Fix: generate mock dates relative to today.
+
+**T10. Low-contrast tertiary text (bug 19).** `--text-quaternary` is about 3.4:1 on white (`styles/tokens.css:22`), below WCAG AA for small text. A Chronus token value; raise it or stop using it for small text.
+
+### Low
+
+**T11. Six baseline lint errors (bug 13).** `pages/FailureAnalysis.tsx:82,161` (`any`), `pages/LoadOptimisation.tsx:46` (expression statement), `tailwind.config.ts` (`require`), `components/ui/command.tsx`, `components/ui/textarea.tsx` (empty interfaces). Reproduce: `npm run lint`. Fix each as listed.
+
+**T12. Weak type and test coverage (bug 15, plus tests).** Root `tsconfig.json:15` has `"files": []`, so `npx tsc --noEmit` checks nothing (use `-p tsconfig.app.json`); `strictNullChecks` and `noImplicitAny` are off; the only baseline test asserted `true`. This redesign added 47 tests (status, formats, icons, primitives), none for pages. Fix: point the root script at the app config, turn strictness on in steps, add page smoke tests.
+
+**T13. One 1.1 MB JS chunk.** `npm run build` warns (1,119 kB, 311 kB gzip). Fix: route-level `React.lazy` and split recharts.
+
+**T14. Horizontal bar charts are cramped at 390 px (bug 18).** Fixed left margins: `FailureAnalysis.tsx:77` (120), `ComplianceDashboard.tsx:68` (140), `DataCompleteness.tsx:42` (150). Reproduce: open them at 390 px wide. Fix: smaller margin or a shorter label column on narrow screens.
+
+**T15. Housekeeping (bugs 9, 10, 14, 16, 17).** Duplicate routes render identical pages (`/equipment` and `/equipment/detail`, `/handover` and `/data-sources`; `App.tsx`); `animate-pulse-subtle` is not defined anywhere; the top bar re-renders every second (`components/layout/TopBar.tsx:31,46`); `playwright.config.ts:4` points to a missing `./tests`; `README.md` and the package name `vite_react_shadcn_ts` are template leftovers.
+
 ## Decisions and open questions
 
-Answered:
-1. Medium severity and P3 stay blue (info).
-2. Unused files stay; they are listed under Cleanup ticket above.
-3. Horizontal scroll at 1440: the two regressions are fixed; the Dashboard heat map also scrolled at baseline, so it is listed.
+Decided:
+1. **Fonts: keep Google Fonts, no change.** Chronus self-hosts through `next/font` at build time; this Vite app would need self-hosting for an offline deployment (see Deviations 10).
+2. **Pre-existing bugs: fix none.** Tickets above.
+3. Medium severity and P3 stay blue (info).
+4. Unused files stay (Cleanup ticket above).
 
-Not answered (your last message had template placeholders in these two places, so I changed nothing):
-4. **Fonts.** The message read "[self-host Geist and Michroma as .woff2 under src/assets/fonts … OR keep Google Fonts]". Fonts are still loaded from Google Fonts at runtime (as at baseline). Say "self-host" and I will add the .woff2 files, the `@font-face` rules and drop the Google links; it needs the font files fetched once.
-5. **Pre-existing bugs.** The message had "[your answers to the other three]". They remain listed above; say which ones should be fixed or ticketed (the visible ones are "Rate Of_change", the `Math.random()` chart data and the charts that do not render).
+Open, with the default applied (changes no behaviour, data or dependencies; revisit if you disagree):
+5. **Dashboard heat map and other wide tables at 390 px.** Open: default applied: left as scrolling inside their panels (the heat map also scrolled at baseline); no code change.
+6. **Sidebar starts expanded on desktop (Chronus starts as the rail).** Open: default applied: expanded, as already shipped.
+7. **Tailwind stays on 3.4, not Chronus' v4.** Open: default applied: stay on 3.4 (the upgrade changes dependencies).
+8. **Form labels in Title Case ("Predictive-Only Maintenance", "Simulate Equipment Failure", What-If sliders).** Open: default applied: left as is; the wording rule covers buttons, placeholders and messages only.
+9. **The top-bar clock pinned to IST.** Open: default applied: pinned to `Asia/Kolkata`, as shipped; a viewer-local clock would need the label dropped.
+10. **Page header icons, restored tab icons and the alarm and event icons.** Open: default applied: as shipped in Step 7 (one mapping file); change an icon in `src/lib/icons.ts`.
