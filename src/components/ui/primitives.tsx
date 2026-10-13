@@ -1,4 +1,5 @@
-import type { ButtonHTMLAttributes, ReactNode } from "react";
+import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import { ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
 import type { EquipmentStatus } from "@/hooks/usePlantData";
@@ -146,4 +147,34 @@ export const EmptyState = ({ title = "Nothing to show", detail, className }: { t
     <p className="type-body-md text-tertiary">{title}</p>
     {detail && <p className="type-body-sm text-quaternary">{detail}</p>}
   </div>
+);
+
+/** Pill select: a native select (so options, value and onChange are unchanged) with a Chronus chevron. */
+export const PillSelect = ({ className, children, ...props }: SelectHTMLAttributes<HTMLSelectElement>) => (
+  <span className="relative inline-flex">
+    <select
+      {...props}
+      className={cn(
+        "h-8 appearance-none rounded-full border border-hairline bg-action pl-3 pr-8 type-label-sm text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 focus-visible:border-strong focus-visible:ring-2 focus-visible:ring-active",
+        className,
+      )}
+    >
+      {children}
+    </select>
+    <ChevronDown aria-hidden className="pointer-events-none absolute right-2.5 top-1/2 size-3 -translate-y-1/2 text-quaternary" />
+  </span>
+);
+
+/** Search pill: a plain text input with a leading search icon. */
+export const SearchField = ({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) => (
+  <span className="relative inline-flex">
+    <Search aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 size-[13px] -translate-y-1/2 text-quaternary" />
+    <input
+      {...props}
+      className={cn(
+        "h-8 w-52 rounded-full border border-hairline bg-action pl-8 pr-3 type-label-sm text-foreground outline-none transition-colors duration-[180ms] placeholder:text-quaternary hover:border-strong focus-visible:border-strong focus-visible:ring-2 focus-visible:ring-active",
+        className,
+      )}
+    />
+  </span>
 );

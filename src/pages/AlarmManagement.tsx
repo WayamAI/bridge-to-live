@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Alert } from "@/hooks/usePlantData";
-import { StatusDot, EmptyState } from "@/components/ui/primitives";
+import PageHeader from "@/components/layout/PageHeader";
+import { EmptyState, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
 import { priorityTone, severityTone, toneBadgeClass } from "@/lib/status";
 import { Bell, AlertTriangle, Shield, Wrench, BrainCircuit, CheckCircle2, Search, Filter } from "lucide-react";
 
@@ -44,45 +45,40 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
   const avgRate = (alerts.length / 24).toFixed(1);
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      {/* KPI bar */}
-      <div className="flex flex-wrap items-center gap-4">
-        <div className="rounded-lg border border-border bg-card px-4 py-2">
-          <p className="text-[9px] text-muted-foreground">Unacknowledged</p>
-          <p className="text-lg font-bold font-mono text-destructive">{unacknowledged}</p>
-        </div>
-        <div className="rounded-lg border border-border bg-card px-4 py-2">
-          <p className="text-[9px] text-muted-foreground">Critical Active</p>
-          <p className="text-lg font-bold font-mono text-destructive">{critical}</p>
-        </div>
-        <div className="rounded-lg border border-border bg-card px-4 py-2">
-          <p className="text-[9px] text-muted-foreground">Alarm Rate</p>
-          <p className="text-lg font-bold font-mono text-foreground">{avgRate}/hr</p>
-        </div>
-        <div className="rounded-lg border border-border bg-card px-4 py-2">
-          <p className="text-[9px] text-muted-foreground">Total (24h)</p>
-          <p className="text-lg font-bold font-mono text-foreground">{alerts.length}</p>
-        </div>
-        <div className="flex-1" />
-        <select
-          value={filterSeverity}
-          onChange={(e) => setFilterSeverity(e.target.value)}
-          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-card"
-        >
-          <option value="All">All Severity</option>
-          <option value="critical">Critical</option>
-          <option value="warning">Warning</option>
-          <option value="info">Info</option>
-        </select>
-        <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <input type="checkbox" checked={showAcknowledged} onChange={(e) => setShowAcknowledged(e.target.checked)} className="rounded" />
-          Show acknowledged
-        </label>
+    <PageHeader
+      title="Active Alarms"
+      subtitle="Review, filter and acknowledge plant alarms"
+      actions={
+        <>
+          <PillSelect value={filterSeverity} onChange={(e) => setFilterSeverity(e.target.value)} aria-label="Filter by severity">
+            <option value="All">All severities</option>
+            <option value="critical">Critical</option>
+            <option value="warning">Warning</option>
+            <option value="info">Info</option>
+          </PillSelect>
+          <label className="type-label-sm flex h-8 items-center gap-1.5 text-tertiary">
+            <input
+              type="checkbox"
+              checked={showAcknowledged}
+              onChange={(e) => setShowAcknowledged(e.target.checked)}
+              className="size-4 rounded-[4px] accent-action-primary"
+            />
+            Show acknowledged
+          </label>
+        </>
+      }
+    >
+      {/* KPI row */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <KpiTile label="Unacknowledged" value={unacknowledged} valueClassName={unacknowledged > 0 ? "text-error" : ""} />
+        <KpiTile label="Critical Active" value={critical} valueClassName={critical > 0 ? "text-error" : ""} />
+        <KpiTile label="Alarm Rate" value={avgRate} unit="/hr" />
+        <KpiTile label="Total (24h)" value={alerts.length} />
       </div>
 
       {/* Alarm console table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
+      <Panel title="Alarm Console" padded={false}>
+        <div className="max-h-[600px] overflow-x-auto overflow-y-auto">
           <table className="w-full type-body-sm">
             <thead className="sticky top-0 z-10 bg-container">
               <tr className="border-b border-hairline">
@@ -104,7 +100,10 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                     className={`border-b border-hairline last:border-0 transition-colors hover:bg-raised ${alert.acknowledged ? "opacity-60" : ""}`}
                   >
                     <td className="px-3 py-2">
-                      <span className={`inline-flex size-5 items-center justify-center rounded-full type-caption ${toneBadgeClass[priorityTone(alert.priority)]}`}>
+                      <span
+                        title={`Priority ${alert.priority}`}
+                        className={`inline-flex size-5 items-center justify-center rounded-full type-caption ${toneBadgeClass[priorityTone(alert.priority)]}`}
+                      >
                         {alert.priority}
                       </span>
                     </td>
@@ -114,7 +113,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                     <td className="px-3 py-2">
                       <button
                         onClick={() => onSelectEquipment(alert.equipmentId)}
-                        className="tabular text-primary hover:underline font-medium"
+                        className="tabular whitespace-nowrap rounded-sm font-medium text-foreground outline-none hover:underline focus-visible:ring-2 focus-visible:ring-active"
                       >
                         {alert.equipmentTag}
                       </button>
@@ -123,21 +122,21 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                       <span className="flex items-center gap-1.5 text-tertiary">
                         <StatusDot tone={severityTone[alert.severity]} className="mr-0.5" />
                         <span className="sr-only">{alert.severity}</span>
-                        <Icon className="w-3 h-3" />
+                        <Icon className="size-3 text-quaternary" aria-hidden />
                         <span className="capitalize">{alert.type.replace("_", " ")}</span>
                       </span>
                     </td>
-                    <td className="px-3 py-2 max-w-[400px] truncate">{alert.message}</td>
+                    <td className="max-w-[400px] truncate px-3 py-2" title={alert.message}>{alert.message}</td>
                     <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{alert.duration}</td>
                     <td className="px-3 py-2">
                       {alert.acknowledged ? (
-                        <span className="type-body-sm text-operational tabular">ACK</span>
+                        <span className="type-body-sm tabular text-quaternary">ACK</span>
                       ) : (
                         <button
                           onClick={() => onAcknowledge(alert.id)}
-                          className="type-body-sm font-medium text-primary hover:underline flex items-center gap-0.5"
+                          className="type-label-sm inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                         >
-                          <CheckCircle2 className="w-3 h-3" /> Acknowledge
+                          <CheckCircle2 className="size-3" aria-hidden /> Acknowledge
                         </button>
                       )}
                     </td>
@@ -152,8 +151,8 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 
