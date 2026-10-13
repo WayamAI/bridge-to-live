@@ -141,3 +141,15 @@ export const threatStatus: Record<string, WorkflowTone> = {
 
 /** Network zone and flow state: green allowed, amber monitored with warnings, red policy violation. */
 export const zoneTone: Record<"green" | "amber" | "red", Tone> = { green: "success", amber: "warning", red: "error" };
+
+/** Handover requirement status: At risk needs attention (solid). */
+export const handoverItemStatus: Record<string, WorkflowTone> = {
+  Complete: { tone: "success" },
+  "On track": { tone: "info" },
+  Warning: { tone: "warning" },
+  "At risk": { tone: "error", solid: true },
+};
+
+/** Connected system status: Active success, Degraded warning, anything else (down) error and solid. */
+export const connectedSystemTone = (status: string): WorkflowTone =>
+  status === "Active" ? { tone: "success" } : status === "Degraded" ? { tone: "warning" } : { tone: "error", solid: true };

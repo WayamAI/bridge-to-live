@@ -1,5 +1,10 @@
 import type { HandoverItem, ConnectedSystem } from "@/hooks/usePlantData";
 import { ArrowRightLeft, Check, AlertTriangle, Clock, RefreshCw } from "lucide-react";
+import { useLocation } from "react-router-dom";
+import PageHeader from "@/components/layout/PageHeader";
+import { locate } from "@/components/layout/nav";
+import { Panel, ToneStatus, Unit } from "@/components/ui/primitives";
+import { connectedSystemTone, handoverItemStatus } from "@/lib/status";
 
 interface HandoverPageProps {
   handoverData: HandoverItem[];
@@ -7,38 +12,30 @@ interface HandoverPageProps {
   plantInfo: { name: string; operator: string; handoverTarget: string; daysRemaining: number };
 }
 
-const statusColors: Record<string, string> = {
-  "Complete": "text-operational bg-operational/10 border-operational/30",
-  "On track": "text-engineering bg-engineering/10 border-engineering/30",
-  "Warning": "text-gap bg-gap/10 border-gap/30",
-  "At risk": "text-destructive bg-destructive/10 border-destructive/30",
-};
-
 const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPageProps) => {
+  const { pathname } = useLocation();
   const completedPct = Math.round(
     handoverData.reduce((a, h) => a + h.completed, 0) / handoverData.reduce((a, h) => a + h.target, 0) * 100
   );
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      {/* Project header */}
-      <div className="rounded-xl border border-border bg-card p-4 flex items-center justify-between">
-        <div>
-          <p className="text-[10px] text-muted-foreground font-mono uppercase">Active Handover Project</p>
-          <h2 className="text-lg font-bold mt-0.5">{plantInfo.name} — Phase 2</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">Client: {plantInfo.operator} | Target: {plantInfo.handoverTarget} | {plantInfo.daysRemaining} days remaining</p>
+    <PageHeader title={locate(pathname).title} subtitle="Handover readiness against target and the status of connected systems">
+      {/* Project summary */}
+      <Panel title="Active Handover Project">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="min-w-0">
+            <p className="type-body-lg font-medium text-foreground">{plantInfo.name} — Phase 2</p>
+            <p className="type-body-sm mt-0.5 text-tertiary">Client: {plantInfo.operator} | Target: {plantInfo.handoverTarget} | {plantInfo.daysRemaining} days remaining</p>
+          </div>
+          <div className="text-right">
+            <p className="type-display-2xl tabular text-foreground">{completedPct}<Unit>%</Unit></p>
+            <p className="type-caption text-quaternary">Overall readiness</p>
+          </div>
         </div>
-        <div className="text-right">
-          <p className="text-3xl font-bold font-mono text-gap">{completedPct}%</p>
-          <p className="text-[10px] text-muted-foreground">Overall readiness</p>
-        </div>
-      </div>
+      </Panel>
 
       {/* Readiness Scorecard */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Handover Readiness Scorecard</h3>
-        </div>
+      <Panel title="Handover Readiness Scorecard" padded={false}>
         <div className="overflow-x-auto">
           <table className="w-full type-body-sm">
             <thead>
@@ -62,12 +59,10 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
                     <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{(item.target - item.completed).toLocaleString()} {item.unit}</td>
                     <td className="px-3 py-2 w-32">
                       <div className="flex items-center gap-2">
-                        <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
+                        <div className="flex-1 h-1.5 rounded-full bg-raised-2 overflow-hidden">
                           <div
                             className={`h-full rounded-full ${
-                              item.status === "Complete" ? "bg-operational" :
-                              item.status === "On track" ? "bg-engineering" :
-                              item.status === "Warning" ? "bg-gap" : "bg-destructive"
+                              item.status === "Warning" ? "bg-warning" : item.status === "At risk" ? "bg-error" : "bg-quaternary"
                             }`}
                             style={{ width: `${pct}%` }}
                           />
@@ -76,9 +71,7 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
                       </div>
                     </td>
                     <td className="px-3 py-2">
-                      <span className={`type-body-sm px-2 py-0.5 rounded-full border font-medium ${statusColors[item.status]}`}>
-                        {item.status}
-                      </span>
+                      <ToneStatus tone={handoverItemStatus[item.status].tone} solid={handoverItemStatus[item.status].solid}>{item.status}</ToneStatus>
                     </td>
                   </tr>
                 );
@@ -86,16 +79,18 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
             </tbody>
           </table>
         </div>
-      </div>
+      </Panel>
 
-      {/* Connected Systems */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-          <h3 className="text-sm font-semibold">Connected Systems</h3>
-          <button className="text-[10px] text-primary hover:underline flex items-center gap-1">
-            <RefreshCw className="w-3 h-3" /> Force sync
+      {/* Connected systems */}
+      <Panel
+        title="Connected Systems"
+        padded={false}
+        action={
+          <button className="type-caption inline-flex items-center gap-1 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
+            <RefreshCw className="size-3" aria-hidden /> Force sync
           </button>
-        </div>
+        }
+      >
         <div className="overflow-x-auto">
           <table className="w-full type-body-sm">
             <thead>
@@ -113,14 +108,7 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
                   <td className="px-3 py-2 font-medium">{sys.name}</td>
                   <td className="px-3 py-2 text-tertiary">{sys.type}</td>
                   <td className="px-3 py-2">
-                    <span className={`flex items-center gap-1.5 ${
-                      sys.status === "Active" ? "text-operational" : sys.status === "Degraded" ? "text-gap" : "text-destructive"
-                    }`}>
-                      <span className={`w-2 h-2 rounded-full ${
-                        sys.status === "Active" ? "bg-operational" : sys.status === "Degraded" ? "bg-gap" : "bg-destructive"
-                      }`} />
-                      {sys.status}
-                    </span>
+                    <ToneStatus tone={connectedSystemTone(sys.status).tone} solid={connectedSystemTone(sys.status).solid}>{sys.status}</ToneStatus>
                   </td>
                   <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{sys.lastSync}</td>
                   <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{sys.recordsPer24h}</td>
@@ -129,8 +117,8 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 
