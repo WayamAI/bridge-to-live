@@ -36,8 +36,8 @@ const PlantHealthTrend = () => {
           <span className="flex items-center gap-1"><span className="w-3 h-0.5 border-t border-dashed border-quaternary inline-block" /> PM Events</span>
       </div>
       <ResponsiveContainer width="100%" height={180}>
-        <ComposedChart data={data} margin={{ top: 5, right: 10, left: -15, bottom: 0 }}>
-          <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval={14} />
+        <ComposedChart data={data} margin={{ top: 5, right: 30, left: -15, bottom: 0 }}>
+          <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
           <YAxis domain={[75, 100]} tick={axisTick} tickLine={false} axisLine={false} />
           <Tooltip
             contentStyle={chartTooltipStyle}

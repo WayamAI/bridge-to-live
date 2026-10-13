@@ -58,6 +58,9 @@ export const Panel = ({
   </section>
 );
 
+/** Words and brackets after a value ("days ago", "(L0–L4+DMZ)") keep a word space; short units (%, hr, kW) sit tight. */
+const unitGap = (u?: string) => (u && (/[\s(]/.test(u) || u.length > 4) ? "ml-1.5" : undefined);
+
 /** Splits "₹1.2 Cr", "82%", "14,200 hr" into prefix, number and unit so the sign and unit render in Geist. */
 const splitValue = (v: ReactNode) => {
   if (typeof v !== "string") return null;
@@ -102,7 +105,7 @@ export const KpiTile = ({
       <span className={cn("type-display-xl sm:type-display-2xl tabular text-foreground", valueClassName)}>
         {(parts ? parts.prefix : prefix) && <Unit className="ml-0 mr-0.5">{parts ? parts.prefix : prefix}</Unit>}
         {parts ? parts.num : value}
-        {(parts ? parts.unit : unit) && <Unit>{parts ? parts.unit : unit}</Unit>}
+        {(parts ? parts.unit : unit) && <Unit className={unitGap(parts ? parts.unit : unit)}>{parts ? parts.unit : unit}</Unit>}
       </span>
       {(delta || hint) && (
         <span className="flex items-baseline gap-2">

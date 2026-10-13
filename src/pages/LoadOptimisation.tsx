@@ -72,20 +72,20 @@ const LoadOptimisation = () => {
             <table className="w-full type-body-sm">
               <thead>
                 <tr className="border-b border-hairline">
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-8"></th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[200px]">Opportunity</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">System</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Annual Saving</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Complexity</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Payback</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary w-8"></th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary min-w-[160px]">Opportunity</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Category</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">System</th>
+                  <th className="type-eyebrow px-2 py-2 text-right text-quaternary">Annual Saving</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Complexity</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Payback</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {OPPORTUNITIES.map(o => (
                   <tr key={o.id} className={`border-b border-hairline hover:bg-raised cursor-pointer ${selected.has(o.id) ? "bg-raised" : ""}`} onClick={() => toggle(o.id)}>
-                    <td className="py-2 px-3 text-center">
+                    <td className="py-2 px-2 text-center">
                       <div
                         role="checkbox"
                         aria-checked={selected.has(o.id)}
@@ -95,13 +95,13 @@ const LoadOptimisation = () => {
                         {selected.has(o.id) && <Check className="size-2.5" strokeWidth={3} aria-hidden />}
                       </div>
                     </td>
-                    <td className="py-2 px-3">{o.opportunity}</td>
-                    <td className="py-2 px-3 type-body-sm">{o.category}</td>
-                    <td className="py-2 px-3 type-body-sm">{o.system}</td>
-                    <td className="py-2 px-3 text-right tabular text-success font-semibold whitespace-nowrap">₹{o.annualSaving}L</td>
-                    <td className="py-2 px-3"><ToneStatus tone={toneOf(complexityTone, o.complexity)}>{o.complexity}</ToneStatus></td>
-                    <td className="py-2 px-3 type-body-sm">{o.payback}</td>
-                    <td className="py-2 px-3"><ToneStatus tone={workflowTone(opportunityStatus, o.status).tone}>{o.status}</ToneStatus></td>
+                    <td className="py-2 px-2">{o.opportunity}</td>
+                    <td className="py-2 px-2 type-body-sm">{o.category}</td>
+                    <td className="py-2 px-2 type-body-sm">{o.system}</td>
+                    <td className="py-2 px-2 text-right tabular text-success font-semibold whitespace-nowrap">₹{o.annualSaving}L</td>
+                    <td className="py-2 px-2"><ToneStatus tone={toneOf(complexityTone, o.complexity)}>{o.complexity}</ToneStatus></td>
+                    <td className="py-2 px-2 type-body-sm">{o.payback}</td>
+                    <td className="py-2 px-2"><ToneStatus tone={workflowTone(opportunityStatus, o.status).tone}>{o.status}</ToneStatus></td>
                   </tr>
                 ))}
               </tbody>

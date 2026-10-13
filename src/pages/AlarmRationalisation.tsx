@@ -64,29 +64,29 @@ const AlarmRationalisation = () => {
             <table className="w-full type-body-sm">
               <thead>
                 <tr className="border-b border-hairline">
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Current</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Proposed</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Code</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[200px]">Rationale</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Rate (7d)</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">P</th>
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Tag</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Parameter</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Current</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Proposed</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Code</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary min-w-[160px]">Rationale</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-right text-quaternary">Rate (7d)</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-center text-quaternary">P</th>
+                  <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {ALARM_POINTS.map(a => (
                   <tr key={a.id} className="border-b border-hairline hover:bg-raised">
-                    <td className="py-2 px-3 tabular text-foreground font-medium whitespace-nowrap">{a.tag}</td>
-                    <td className="py-2 px-3">{a.parameter}</td>
-                    <td className="py-2 px-3 tabular whitespace-nowrap">{a.currentSetpoint}</td>
-                    <td className="py-2 px-3 tabular font-semibold whitespace-nowrap">{a.proposedSetpoint}</td>
-                    <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{a.rationaleCode}</td>
-                    <td className="py-2 px-3 type-body-sm">{a.rationale}</td>
-                    <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">{a.alarmRate7d}</td>
-                    <td className="py-2 px-3 text-center tabular whitespace-nowrap">{a.priority}</td>
-                    <td className="py-2 px-3"><ToneStatus tone={workflowTone(rationalisationStatus, a.status).tone}>{a.status}</ToneStatus></td>
+                    <td className="py-2 px-2 tabular text-foreground font-medium whitespace-nowrap">{a.tag}</td>
+                    <td className="py-2 px-2">{a.parameter}</td>
+                    <td className="py-2 px-2 tabular whitespace-nowrap">{a.currentSetpoint}</td>
+                    <td className="py-2 px-2 tabular font-semibold whitespace-nowrap">{a.proposedSetpoint}</td>
+                    <td className="py-2 px-2 tabular type-body-sm whitespace-nowrap">{a.rationaleCode}</td>
+                    <td className="py-2 px-2 type-body-sm">{a.rationale}</td>
+                    <td className="py-2 px-2 text-right tabular font-semibold whitespace-nowrap">{a.alarmRate7d}</td>
+                    <td className="py-2 px-2 text-center tabular whitespace-nowrap">{a.priority}</td>
+                    <td className="py-2 px-2"><ToneStatus tone={workflowTone(rationalisationStatus, a.status).tone}>{a.status}</ToneStatus></td>
                   </tr>
                 ))}
               </tbody>

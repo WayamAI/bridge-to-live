@@ -80,7 +80,7 @@ const AlarmAnalytics = ({ alerts }: Props) => {
         <Panel title="30-Day Alarm Trend + Avg Acknowledgment Time">
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={DAILY_TREND}>
-                <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval={4} />
+                <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
                 <YAxis yAxisId="left" tick={axisTick} tickLine={false} axisLine={false} />
                 <YAxis yAxisId="right" orientation="right" tick={axisTick} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />

@@ -30,8 +30,8 @@ const AlarmFrequencyChart = () => {
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-series-1 inline-block" /> Minor</span>
       </div>
       <ResponsiveContainer width="100%" height={180}>
-        <BarChart data={data} margin={{ top: 5, right: 10, left: -15, bottom: 0 }}>
-          <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval={6} />
+        <BarChart data={data} margin={{ top: 5, right: 24, left: -15, bottom: 0 }}>
+          <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
           <YAxis tick={axisTick} tickLine={false} axisLine={false} />
           <Tooltip
             contentStyle={chartTooltipStyle}
