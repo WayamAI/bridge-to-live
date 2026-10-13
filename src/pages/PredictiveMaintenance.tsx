@@ -2,6 +2,9 @@ import { useState } from "react";
 import { AlertTriangle, CheckCircle, Clock, Wrench, X, ChevronDown, ChevronUp } from "lucide-react";
 import { toast } from "sonner";
 import type { Equipment } from "@/hooks/usePlantData";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { recommendationStatus } from "@/lib/status";
 
 interface Props {
   equipment: Equipment[];
@@ -35,14 +38,6 @@ const RECOMMENDATIONS: Recommendation[] = [
   { id: "r8", rank: 8, tag: "SUB-E-001", action: "Install capacitor bank — power factor 0.74 below 0.85 limit", failureMode: "Power quality", probability: 18, consequenceCost: 62, actionCost: 22.0, deadline: "2026-05-15", team: "Electrical", status: "Pending", confidence: 88, labourHours: 40, spareParts: ["Capacitor bank 200kVAR", "Switchgear panel"] },
 ];
 
-const STATUS_COLORS: Record<string, string> = {
-  Pending: "bg-gap/10 text-gap",
-  Scheduled: "bg-secondary/10 text-secondary",
-  "In-Progress": "bg-primary/10 text-primary",
-  Completed: "bg-operational/10 text-operational",
-  Deferred: "bg-muted text-muted-foreground",
-};
-
 const PredictiveMaintenance = ({ equipment }: Props) => {
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [woPanel, setWoPanel] = useState<Recommendation | null>(null);
@@ -59,32 +54,24 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
   };
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto relative">
-      <h2 className="text-lg font-bold">Predictive Maintenance</h2>
-      <p className="text-xs text-muted-foreground -mt-3">AI-generated maintenance recommendations ranked by risk and value</p>
+    <PageHeader title="Predictive Maintenance" subtitle="AI-generated maintenance recommendations ranked by risk and value">
 
       {/* Summary Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3">
         {[
           { label: "Actions This Week", value: totalActions.toString() },
           { label: "Est. Action Cost", value: `₹${totalActionCost.toFixed(1)}L` },
           { label: "Consequence Cost (No Action)", value: `₹${(totalConsequence / 100).toFixed(2)} Cr` },
           { label: "Projected Savings", value: `₹${((totalConsequence - totalActionCost * 10) / 100).toFixed(2)} Cr` },
           { label: "Completed This Month", value: `${completed + 67}` },
-          { label: "Compliance Rate", value: "74%", color: "text-gap" },
+          { label: "Compliance Rate", value: "74%", color: "text-warning" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-lg font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
       {/* Recommendations Table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Maintenance Recommendations — Priority Ranked</h3>
-        </div>
+      <Panel title="Maintenance Recommendations · Priority Ranked" padded={false}>
         <div className="overflow-x-auto">
           <table className="w-full type-body-sm">
             <thead>
@@ -107,25 +94,25 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                   <tr key={rec.id}
                     className="border-b border-hairline hover:bg-raised cursor-pointer"
                     onClick={() => setExpandedRow(expandedRow === rec.id ? null : rec.id)}>
-                    <td className="text-center py-2 px-3 tabular font-bold whitespace-nowrap">{rec.rank}</td>
+                    <td className="text-center py-2 px-3 tabular font-semibold whitespace-nowrap">{rec.rank}</td>
                     <td className="py-2 px-3 tabular font-medium text-foreground whitespace-nowrap">{rec.tag}</td>
                     <td className="py-2 px-3">{rec.action}</td>
                     <td className="py-2 px-3">{rec.failureMode}</td>
                     <td className="py-2 px-3 text-right tabular whitespace-nowrap">
-                      <span className={rec.probability > 70 ? "text-destructive font-bold" : rec.probability > 40 ? "text-gap" : ""}>{rec.probability}%</span>
+                      <span className={rec.probability > 70 ? "text-error font-semibold" : rec.probability > 40 ? "text-warning" : ""}>{rec.probability}%</span>
                     </td>
                     <td className="py-2 px-3 text-right tabular whitespace-nowrap">{rec.consequenceCost}</td>
                     <td className="py-2 px-3 text-right tabular whitespace-nowrap">{rec.actionCost}</td>
                     <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{rec.deadline}</td>
                     <td className="py-2 px-3">
-                      <span className={`type-body-sm px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[rec.status]}`}>{rec.status}</span>
+                      <ToneStatus tone={recommendationStatus[rec.status].tone} solid={recommendationStatus[rec.status].solid}>{rec.status}</ToneStatus>
                     </td>
                     <td className="py-2 px-3 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="type-body-sm bg-primary/10 text-primary px-2 py-0.5 rounded hover:bg-primary/20">
+                        <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="type-label-sm inline-flex h-7 items-center whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
                           Create WO
                         </button>
-                        {expandedRow === rec.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                        {expandedRow === rec.id ? <ChevronUp className="size-3 text-quaternary" aria-hidden /> : <ChevronDown className="size-3 text-quaternary" aria-hidden />}
                       </div>
                     </td>
                   </tr>
@@ -133,8 +120,8 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                     <tr key={`${rec.id}-detail`} className="bg-raised">
                       <td colSpan={10} className="px-6 py-3">
                         <div className="grid grid-cols-4 gap-4 type-body-sm">
-                          <div><p className="text-tertiary">Model Confidence</p><p className="tabular font-bold">{rec.confidence}%</p></div>
-                          <div><p className="text-tertiary">Est. Labour Hours</p><p className="tabular font-bold">{rec.labourHours} hr</p></div>
+                          <div><p className="text-tertiary">Model Confidence</p><p className="tabular font-semibold">{rec.confidence}%</p></div>
+                          <div><p className="text-tertiary">Est. Labour Hours</p><p className="tabular font-semibold">{rec.labourHours} hr</p></div>
                           <div><p className="text-tertiary">Assigned Team</p><p className="font-medium">{rec.team}</p></div>
                           <div>
                             <p className="text-tertiary">Spare Parts</p>
@@ -149,38 +136,51 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
             </tbody>
           </table>
         </div>
-      </div>
+      </Panel>
 
       {/* Work Order Side Panel */}
       {woPanel && (
-        <div className="fixed inset-0 bg-background/60 backdrop-blur-sm z-50 flex justify-end" onClick={() => setWoPanel(null)}>
-          <div className="w-[420px] bg-card border-l border-border h-full p-6 space-y-4 overflow-auto" onClick={e => e.stopPropagation()}>
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-bold">Create Work Order</h3>
-              <button onClick={() => setWoPanel(null)}><X className="w-4 h-4 text-muted-foreground" /></button>
+        <div className="fixed inset-0 z-50 flex justify-end bg-black/50" onClick={() => setWoPanel(null)}>
+          <div className="flex h-full w-[420px] max-w-full flex-col overflow-auto border-l border-strong bg-container" onClick={e => e.stopPropagation()}>
+            <div className="flex items-start justify-between gap-3 border-b border-hairline px-5 py-4">
+              <div>
+                <p className="type-eyebrow text-quaternary">Work Order</p>
+                <h3 className="type-display-lg mt-1 text-foreground">Create Work Order</h3>
+              </div>
+              <button
+                onClick={() => setWoPanel(null)}
+                aria-label="Close"
+                className="flex size-7 shrink-0 items-center justify-center rounded-full text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised-2 hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active"
+              >
+                <X className="size-4" aria-hidden />
+              </button>
             </div>
-            <div className="space-y-3 text-xs">
-              <div><p className="text-muted-foreground text-[10px]">Equipment Tag</p><p className="font-mono font-bold text-primary">{woPanel.tag}</p></div>
-              <div><p className="text-muted-foreground text-[10px]">Action</p><p>{woPanel.action}</p></div>
+            <div className="type-body-sm flex-1 space-y-3 px-5 py-4">
+              <div><p className="type-eyebrow text-quaternary">Equipment Tag</p><p className="tabular mt-1 font-medium text-foreground">{woPanel.tag}</p></div>
+              <div><p className="type-eyebrow text-quaternary">Action</p><p className="mt-1">{woPanel.action}</p></div>
               <div className="grid grid-cols-2 gap-3">
-                <div><p className="text-muted-foreground text-[10px]">Priority</p><p className="font-bold">P{woPanel.rank}</p></div>
-                <div><p className="text-muted-foreground text-[10px]">Est. Hours</p><p className="font-mono">{woPanel.labourHours} hr</p></div>
+                <div><p className="type-eyebrow text-quaternary">Priority</p><p className="mt-1 font-medium text-foreground">P{woPanel.rank}</p></div>
+                <div><p className="type-eyebrow text-quaternary">Est. Hours</p><p className="tabular mt-1">{woPanel.labourHours} hr</p></div>
               </div>
-              <div><p className="text-muted-foreground text-[10px]">Spare Parts</p>
-                {woPanel.spareParts.map(p => <p key={p} className="font-mono text-[10px]">• {p}</p>)}
-                {woPanel.spareParts.length === 0 && <p className="text-muted-foreground">None required</p>}
+              <div><p className="type-eyebrow text-quaternary">Spare Parts</p>
+                {woPanel.spareParts.map(p => <p key={p} className="tabular type-caption mt-1">• {p}</p>)}
+                {woPanel.spareParts.length === 0 && <p className="mt-1 text-tertiary">None required</p>}
               </div>
-              <div><p className="text-muted-foreground text-[10px]">Assigned Team</p><p>{woPanel.team}</p></div>
-              <div><p className="text-muted-foreground text-[10px]">Deadline</p><p className="font-mono">{woPanel.deadline}</p></div>
+              <div><p className="type-eyebrow text-quaternary">Assigned Team</p><p className="mt-1">{woPanel.team}</p></div>
+              <div><p className="type-eyebrow text-quaternary">Deadline</p><p className="tabular mt-1">{woPanel.deadline}</p></div>
             </div>
-            <button onClick={() => createWorkOrder(woPanel)}
-              className="w-full py-2.5 rounded-lg bg-primary text-primary-foreground font-medium text-sm hover:opacity-90 transition-opacity">
-              Confirm — Create Work Order
-            </button>
+            <div className="border-t border-hairline px-5 py-4">
+              <button
+                onClick={() => createWorkOrder(woPanel)}
+                className="type-label-md h-11 w-full rounded-full bg-action-primary text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active"
+              >
+                Confirm and create work order
+              </button>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </PageHeader>
   );
 };
 

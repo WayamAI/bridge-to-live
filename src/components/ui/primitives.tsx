@@ -58,6 +58,13 @@ export const Panel = ({
   </section>
 );
 
+/** Splits "₹1.2 Cr", "82%", "14,200 hr" into prefix, number and unit so the sign and unit render in Geist. */
+const splitValue = (v: ReactNode) => {
+  if (typeof v !== "string") return null;
+  const m = v.match(/^([₹$€]?)s*([+-−]?[d,]+(?:.d+)?)s*(.*)$/);
+  return m && (m[1] || m[3]) ? { prefix: m[1], num: m[2], unit: m[3] } : null;
+};
+
 /**
  * KPI tile: eyebrow label, Michroma tabular value, signed delta and hint.
  * `prefix` is for currency (₹) and `unit` for %, hr, /hr and similar; both render in Geist.
@@ -86,13 +93,14 @@ export const KpiTile = ({
   className?: string;
   valueClassName?: string;
 }) => {
+  const parts = prefix === undefined && unit === undefined ? splitValue(value) : null;
   const body = (
     <>
       <span className="type-eyebrow text-quaternary">{label}</span>
       <span className={cn("type-display-xl sm:type-display-2xl tabular text-foreground", valueClassName)}>
-        {prefix && <Unit className="ml-0 mr-0.5">{prefix}</Unit>}
-        {value}
-        {unit && <Unit>{unit}</Unit>}
+        {(parts ? parts.prefix : prefix) && <Unit className="ml-0 mr-0.5">{parts ? parts.prefix : prefix}</Unit>}
+        {parts ? parts.num : value}
+        {(parts ? parts.unit : unit) && <Unit>{parts ? parts.unit : unit}</Unit>}
       </span>
       {(delta || hint) && (
         <span className="flex items-baseline gap-2">
@@ -201,3 +209,7 @@ export const Chip = ({
     {children}
   </button>
 );
+
+/** Quiet dot and text by default; a solid badge only when the state needs attention (solid). */
+export const ToneStatus = ({ tone, solid, children }: { tone: Tone; solid?: boolean; children: ReactNode }) =>
+  solid ? <Badge variant={tone}>{children}</Badge> : <QuietStatus tone={tone}>{children}</QuietStatus>;

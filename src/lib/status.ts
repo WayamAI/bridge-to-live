@@ -52,3 +52,17 @@ export const toneChart: Record<Tone, string> = {
   error: "var(--analytics-series-4)",
   neutral: "var(--analytics-series-5)",
 };
+
+/**
+ * Workflow states for tables (recommendation, work order, data quality, twin sync and similar).
+ * Quiet dot and text by default; `solid` marks the states that need attention (solid badge).
+ */
+export interface WorkflowTone { tone: Tone; solid?: boolean }
+
+export const recommendationStatus: Record<string, WorkflowTone> = {
+  Pending: { tone: "warning" },
+  Scheduled: { tone: "info" },
+  "In-Progress": { tone: "info" },
+  Completed: { tone: "success" },
+  Deferred: { tone: "neutral" },
+};
