@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
-import { recommendationStatus } from "@/lib/status";
+import { recommendationStatus, workflowTone } from "@/lib/status";
 
 interface Props {
   equipment: Equipment[];
@@ -105,7 +105,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                     <td className="py-2 px-3 text-right tabular whitespace-nowrap">{rec.actionCost}</td>
                     <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{rec.deadline}</td>
                     <td className="py-2 px-3">
-                      <ToneStatus tone={recommendationStatus[rec.status].tone} solid={recommendationStatus[rec.status].solid}>{rec.status}</ToneStatus>
+                      <ToneStatus tone={workflowTone(recommendationStatus, rec.status).tone} solid={workflowTone(recommendationStatus, rec.status).solid}>{rec.status}</ToneStatus>
                     </td>
                     <td className="py-2 px-3 text-center">
                       <div className="flex items-center justify-center gap-1">

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
 import { Chip, EmptyState, KpiTile, Panel, SearchField, ToneStatus } from "@/components/ui/primitives";
-import { patchStatus } from "@/lib/status";
+import { patchStatus, workflowTone } from "@/lib/status";
 import { MonitorSpeaker, Shield, AlertTriangle, Search } from "lucide-react";
 
 interface OTAsset {
@@ -128,7 +128,7 @@ const OTAssetRegistry = () => {
                   <td className="py-2 px-3 type-body-sm">{a.lastSeen}</td>
                   <td className="py-2 px-3 text-center tabular whitespace-nowrap">{a.purdueLevel}</td>
                   <td className="py-2 px-3 type-body-sm">{a.protocols.join(", ")}</td>
-                  <td className="py-2 px-3"><ToneStatus tone={patchStatus[a.patchStatus].tone} solid={patchStatus[a.patchStatus].solid}>{a.patchStatus}</ToneStatus></td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(patchStatus, a.patchStatus).tone} solid={workflowTone(patchStatus, a.patchStatus).solid}>{a.patchStatus}</ToneStatus></td>
                   <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">
                     <span className={a.riskScore > 50 ? "text-error" : a.riskScore > 30 ? "text-warning" : ""}>{a.riskScore}</span>
                   </td>

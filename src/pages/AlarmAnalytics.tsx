@@ -1,7 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import type { Alert } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
-import { toneChart } from "@/lib/status";
+import { toneChart, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { chatteringStatus } from "@/lib/status";
@@ -114,7 +114,7 @@ const AlarmAnalytics = ({ alerts }: Props) => {
                   <td className="py-2 px-3">{a.parameter}</td>
                   <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">{a.count}</td>
                   <td className="py-2 px-3 tabular whitespace-nowrap">{a.avgDuration}</td>
-                  <td className="py-2 px-3"><ToneStatus tone={chatteringStatus[a.status].tone} solid={chatteringStatus[a.status].solid}>{a.status}</ToneStatus></td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(chatteringStatus, a.status).tone} solid={workflowTone(chatteringStatus, a.status).solid}>{a.status}</ToneStatus></td>
                 </tr>
               ))}
             </tbody>

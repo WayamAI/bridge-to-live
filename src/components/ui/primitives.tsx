@@ -3,7 +3,7 @@ import { ChevronDown, Search } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
 import type { EquipmentStatus } from "@/hooks/usePlantData";
-import { equipmentLabel, equipmentTone, type Tone } from "@/lib/status";
+import { equipmentLabel, equipmentTone, type Tone, toneOf, labelOf } from "@/lib/status";
 
 // Chronus shared primitives (CHRONUS_DESIGN_SYSTEM.md section 4), adapted for PlantMind.
 // Components use semantic tokens only: bg-container, border-hairline, text-quaternary...
@@ -146,10 +146,10 @@ export const QuietStatus = ({ tone = "success", children, className }: { tone?: 
  */
 export const EquipmentStatusLabel = ({ status }: { status?: EquipmentStatus | null }) => {
   if (!status) return <span className="type-body-sm text-quaternary">—</span>;
-  const label = equipmentLabel[status];
+  const label = labelOf(equipmentLabel, status);
   if (status === "warning") return <Badge variant="warning">{label}</Badge>;
   if (status === "critical") return <Badge variant="error">{label}</Badge>;
-  return <QuietStatus tone={equipmentTone[status]}>{label}</QuietStatus>;
+  return <QuietStatus tone={toneOf(equipmentTone, status)}>{label}</QuietStatus>;
 };
 
 /** Plain statement, no illustration, no call to action. */

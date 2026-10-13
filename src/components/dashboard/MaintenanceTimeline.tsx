@@ -2,6 +2,7 @@ import type { MaintenanceEvent } from "@/hooks/usePlantData";
 import { Wrench, Brain, FileWarning } from "lucide-react";
 import { EmptyState, Panel, StatusDot } from "@/components/ui/primitives";
 import type { Tone } from "@/lib/status";
+import { toneOf } from "@/lib/status";
 import { formatDate } from "@/lib/format";
 
 interface MaintenanceTimelineProps {
@@ -43,7 +44,7 @@ const MaintenanceTimeline = ({ events }: MaintenanceTimelineProps) => {
             return (
               <div key={event.id} className="w-52 shrink-0 rounded-lg border border-hairline bg-raised p-3">
                 <div className="mb-1.5 flex items-center gap-1.5">
-                  <StatusDot tone={urgencyTone[event.urgency]} />
+                  <StatusDot tone={toneOf(urgencyTone, event.urgency)} />
                   <span className="sr-only">{event.urgency} urgency</span>
                   <Icon className="size-3 text-quaternary" aria-hidden />
                   <span className="type-eyebrow truncate text-quaternary">{event.type}</span>

@@ -2,7 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Gauge, AlertTriangle, CheckCircle } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
-import { sourceHealth } from "@/lib/status";
+import { sourceHealth, workflowTone } from "@/lib/status";
 
 const DATA_SOURCES = [
   { source: "Honeywell Experion DCS", freshness: 100, completeness: 99.8, accuracy: 99.9, status: "Healthy" },
@@ -67,7 +67,7 @@ const DataQuality = () => {
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap"><span className={d.freshness >= 90 ? "" : d.freshness >= 70 ? "text-warning" : "text-error"}>{d.freshness}</span></td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap"><span className={d.completeness >= 95 ? "" : "text-warning"}>{d.completeness}</span></td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap"><span className={d.accuracy >= 98 ? "" : "text-warning"}>{d.accuracy}</span></td>
-                  <td className="py-2 px-3"><ToneStatus tone={sourceHealth[d.status].tone} solid={sourceHealth[d.status].solid}>{d.status}</ToneStatus></td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(sourceHealth, d.status).tone} solid={workflowTone(sourceHealth, d.status).solid}>{d.status}</ToneStatus></td>
                 </tr>
               ))}
             </tbody>

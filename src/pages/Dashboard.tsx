@@ -11,7 +11,7 @@ import PlantHealthTrend from "@/components/dashboard/PlantHealthTrend";
 import AlarmFrequencyChart from "@/components/dashboard/AlarmFrequencyChart";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
-import { severityTone } from "@/lib/status";
+import { severityTone, toneOf } from "@/lib/status";
 import { useNavigate } from "react-router-dom";
 
 interface DashboardProps {
@@ -127,7 +127,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
                   onClick={() => onSelectEquipment(alert.equipmentId)}
                 >
                   <div className="flex items-start gap-2">
-                    <StatusDot tone={severityTone[alert.severity]} className="mt-1.5" />
+                    <StatusDot tone={toneOf(severityTone, alert.severity)} className="mt-1.5" />
                     <span className="sr-only">{alert.severity}</span>
                     <div className="min-w-0 flex-1">
                       <p className="type-body-sm truncate text-secondary-foreground">

@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 import PageHeader from "@/components/layout/PageHeader";
 import { locate } from "@/components/layout/nav";
 import { Panel, ToneStatus, Unit } from "@/components/ui/primitives";
-import { connectedSystemTone, handoverItemStatus } from "@/lib/status";
+import { connectedSystemTone, handoverItemStatus, workflowTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 
 interface HandoverPageProps {
@@ -72,7 +72,7 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
                       </div>
                     </td>
                     <td className="px-3 py-2">
-                      <ToneStatus tone={handoverItemStatus[item.status].tone} solid={handoverItemStatus[item.status].solid}>{item.status}</ToneStatus>
+                      <ToneStatus tone={workflowTone(handoverItemStatus, item.status).tone} solid={workflowTone(handoverItemStatus, item.status).solid}>{item.status}</ToneStatus>
                     </td>
                   </tr>
                 );

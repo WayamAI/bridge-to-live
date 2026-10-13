@@ -13,9 +13,10 @@ describe("format", () => {
     expect(formatYearMonth(new Date(2025, 4, 1))).toBe("2025-05");
   });
 
-  it("formats time as 24-hour HH:mm", () => {
-    expect(formatTime(new Date(2026, 0, 5, 7, 4))).toBe("07:04");
-    expect(formatTime(new Date(2026, 0, 5, 19, 30))).toBe("19:30");
+  it("formats time as 24-hour HH:mm in IST whatever the viewer zone", () => {
+    expect(formatTime(new Date(Date.UTC(2026, 0, 5, 13, 34)))).toBe("19:04");
+    expect(formatTime(new Date(Date.UTC(2026, 0, 5, 18, 30)))).toBe("00:00");
+    expect(formatTime(new Date(Date.UTC(2026, 0, 5, 1, 5)))).toBe("06:35");
   });
 
   it("keeps short month names", () => {

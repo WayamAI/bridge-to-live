@@ -174,3 +174,16 @@ export const sourceHealth: Record<string, WorkflowTone> = {
   Warning: { tone: "warning" },
   Degraded: { tone: "error", solid: true },
 };
+
+// Lookups with a fallback. A value that is not in a map (new or unexpected data) renders as quiet neutral text
+// showing the raw label, like the baseline did (an unmapped colour class meant plain text). They never throw.
+const NEUTRAL: WorkflowTone = { tone: "neutral" };
+
+/** Workflow state for `key`, or quiet neutral when the map does not know it. */
+export const workflowTone = (map: Record<string, WorkflowTone>, key: string): WorkflowTone => map[key] ?? NEUTRAL;
+
+/** Tone for `key`, or neutral when the map does not know it. */
+export const toneOf = (map: Record<string, Tone>, key: string): Tone => map[key] ?? "neutral";
+
+/** Display label for `key`, or the raw key when the map does not know it. */
+export const labelOf = (map: Record<string, string>, key: string): string => map[key] ?? key;

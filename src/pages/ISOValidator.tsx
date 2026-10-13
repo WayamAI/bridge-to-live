@@ -2,7 +2,7 @@ import { useState } from "react";
 import { ClipboardCheck, AlertTriangle, CheckCircle, Search } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
-import { validationStatus } from "@/lib/status";
+import { validationStatus, workflowTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 
 interface ValidationRecord {
@@ -119,7 +119,7 @@ const ISOValidator = () => {
                   <td className="py-2 px-3 tabular text-foreground font-medium whitespace-nowrap">{r.tag}</td>
                   <td className="py-2 px-3">{r.category}</td>
                   <td className="py-2 px-3 type-body-sm">{r.rule}</td>
-                  <td className="py-2 px-3"><ToneStatus tone={validationStatus[r.status].tone} solid={validationStatus[r.status].solid}>{r.status}</ToneStatus></td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(validationStatus, r.status).tone} solid={workflowTone(validationStatus, r.status).solid}>{r.status}</ToneStatus></td>
                   <td className="py-2 px-3 type-body-sm">{r.details}</td>
                 </tr>
               ))}

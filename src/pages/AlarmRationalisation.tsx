@@ -2,7 +2,7 @@ import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Target, AlertTriangle, CheckCircle } from "lucide-react";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
-import { toneChart } from "@/lib/status";
+import { toneChart, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { rationalisationStatus } from "@/lib/status";
@@ -86,7 +86,7 @@ const AlarmRationalisation = () => {
                     <td className="py-2 px-3 type-body-sm">{a.rationale}</td>
                     <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">{a.alarmRate7d}</td>
                     <td className="py-2 px-3 text-center tabular whitespace-nowrap">{a.priority}</td>
-                    <td className="py-2 px-3"><ToneStatus tone={rationalisationStatus[a.status].tone}>{a.status}</ToneStatus></td>
+                    <td className="py-2 px-3"><ToneStatus tone={workflowTone(rationalisationStatus, a.status).tone}>{a.status}</ToneStatus></td>
                   </tr>
                 ))}
               </tbody>

@@ -2,7 +2,7 @@ import { Network as NetworkIcon, Shield, ArrowRight } from "lucide-react";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
-import { zoneTone } from "@/lib/status";
+import { zoneTone, toneOf } from "@/lib/status";
 
 interface PurdueLevel {
   level: string;
@@ -68,7 +68,7 @@ const NetworkSegmentation = () => (
               <div className="flex flex-wrap gap-2">
                 {level.devices.map(d => (
                   <div key={d.name} className="flex items-center gap-1.5 type-caption px-2 py-1 rounded border border-hairline bg-raised">
-                    <StatusDot tone={zoneTone[d.status]} />
+                    <StatusDot tone={toneOf(zoneTone, d.status)} />
                     {d.name}
                   </div>
                 ))}
@@ -78,7 +78,7 @@ const NetworkSegmentation = () => (
               <div className="flex items-center gap-2 py-1 pl-8">
                 <div className="h-4 border-l border-dashed border-hairline" />
                 <span className="type-caption text-tertiary tabular">{CONNECTIONS[li]?.protocol}</span>
-                <StatusDot tone={zoneTone[CONNECTIONS[li]?.status || "green"]} />
+                <StatusDot tone={toneOf(zoneTone, CONNECTIONS[li]?.status || "green")} />
               </div>
             )}
           </div>
@@ -103,7 +103,7 @@ const NetworkSegmentation = () => (
                 <td className="py-2 px-3 font-medium">{c.from} → {c.to}</td>
                 <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{c.protocol}</td>
                 <td className="py-2 px-3">
-                  <ToneStatus tone={zoneTone[c.status]} solid={c.status === "red"}>
+                  <ToneStatus tone={toneOf(zoneTone, c.status)} solid={c.status === "red"}>
                     {c.status === "green" ? "Allowed" : c.status === "amber" ? "Warning" : "Violation"}
                   </ToneStatus>
                 </td>

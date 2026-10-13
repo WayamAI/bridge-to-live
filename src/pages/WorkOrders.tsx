@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
-import { workOrderStatus, workOrderType } from "@/lib/status";
+import { workOrderStatus, workOrderType, workflowTone } from "@/lib/status";
 import { CheckCircle, Clock, AlertTriangle, Wrench, ArrowUpDown } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 
@@ -88,9 +88,9 @@ const WorkOrders = () => {
                   <td className="py-2 px-3 tabular font-medium whitespace-nowrap">{wo.id}</td>
                   <td className="py-2 px-3 tabular text-foreground whitespace-nowrap">{wo.tag}</td>
                   <td className="py-2 px-3">{wo.description}</td>
-                  <td className="py-2 px-3"><ToneStatus tone={workOrderType[wo.type].tone} solid={workOrderType[wo.type].solid}>{wo.type}</ToneStatus></td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(workOrderType, wo.type).tone} solid={workflowTone(workOrderType, wo.type).solid}>{wo.type}</ToneStatus></td>
                   <td className="py-2 px-3 text-center tabular font-semibold whitespace-nowrap">{wo.priority}</td>
-                  <td className="py-2 px-3"><ToneStatus tone={workOrderStatus[wo.status].tone} solid={workOrderStatus[wo.status].solid}>{wo.status}</ToneStatus></td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(workOrderStatus, wo.status).tone} solid={workflowTone(workOrderStatus, wo.status).solid}>{wo.status}</ToneStatus></td>
                   <td className={`py-2 px-3 tabular type-body-sm whitespace-nowrap ${wo.status !== "Completed" && new Date(wo.due) < new Date() ? "text-error" : ""}`}>{wo.due}</td>
                   <td className="py-2 px-3">{wo.assignee}</td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">{wo.cost}</td>

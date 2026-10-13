@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { Alert } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
-import { priorityTone, severityTone, toneBadgeClass } from "@/lib/status";
+import { priorityTone, severityTone, toneBadgeClass, toneOf } from "@/lib/status";
 import { Bell, AlertTriangle, Shield, Wrench, BrainCircuit, CheckCircle2, Search, Filter } from "lucide-react";
 
 const typeIcons = {
@@ -120,7 +120,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                     </td>
                     <td className="px-3 py-2">
                       <span className="flex items-center gap-1.5 text-tertiary">
-                        <StatusDot tone={severityTone[alert.severity]} className="mr-0.5" />
+                        <StatusDot tone={toneOf(severityTone, alert.severity)} className="mr-0.5" />
                         <span className="sr-only">{alert.severity}</span>
                         <Icon className="size-3 text-quaternary" aria-hidden />
                         <span className="capitalize">{alert.type.replace("_", " ")}</span>

@@ -1,7 +1,7 @@
 import { Lock, CheckCircle, AlertTriangle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
-import { toneChart } from "@/lib/status";
+import { toneChart, toneOf } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
 import { zoneTone } from "@/lib/status";
@@ -85,7 +85,7 @@ const ComplianceDashboard = () => {
             padded={false}
             title={
               <span className="flex items-center gap-2">
-                <StatusDot tone={zoneTone[d.status]} />
+                <StatusDot tone={toneOf(zoneTone, d.status)} />
                 {d.domain}
               </span>
             }

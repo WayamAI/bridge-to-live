@@ -18,5 +18,9 @@ export const formatYearMonth = (date: Date): string => `${date.getFullYear()}-${
 /** Short month name (Apr), pinned to en-IN. */
 export const formatMonthName = (date: Date): string => date.toLocaleDateString(LOCALE, { month: "short" });
 
-/** Clock time as 24-hour HH:mm, in the viewer's local time. */
-export const formatTime = (date: Date): string => `${pad(date.getHours())}:${pad(date.getMinutes())}`;
+/**
+ * Clock time as 24-hour HH:mm in India Standard Time. The zone is pinned (not the viewer's) because the
+ * top bar labels the clock "IST".
+ */
+export const formatTime = (date: Date): string =>
+  new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Kolkata" }).format(date);

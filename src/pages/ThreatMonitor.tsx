@@ -1,7 +1,7 @@
 import { Shield, AlertTriangle, Clock } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
-import { threatSeverity, threatStatus } from "@/lib/status";
+import { threatSeverity, threatStatus, workflowTone } from "@/lib/status";
 
 interface ThreatEvent {
   id: string;
@@ -65,8 +65,8 @@ const ThreatMonitor = () => {
                   <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{e.timestamp}</td>
                   <td className="py-2 px-3 font-medium">{e.asset}</td>
                   <td className="py-2 px-3">{e.eventType}</td>
-                  <td className="py-2 px-3"><ToneStatus tone={threatSeverity[e.severity].tone} solid={threatSeverity[e.severity].solid}>{e.severity}</ToneStatus></td>
-                  <td className="py-2 px-3"><ToneStatus tone={threatStatus[e.status].tone} solid={threatStatus[e.status].solid}>{e.status}</ToneStatus></td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(threatSeverity, e.severity).tone} solid={workflowTone(threatSeverity, e.severity).solid}>{e.severity}</ToneStatus></td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(threatStatus, e.status).tone} solid={workflowTone(threatStatus, e.status).solid}>{e.status}</ToneStatus></td>
                   <td className="py-2 px-3 type-body-sm tabular whitespace-nowrap">{e.mitreTactic}</td>
                   <td className="py-2 px-3 type-body-sm">{e.details}</td>
                 </tr>

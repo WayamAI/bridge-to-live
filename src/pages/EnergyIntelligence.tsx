@@ -2,7 +2,7 @@ import { seriesColor } from "@/components/dashboard/chartTheme";
 import type { EnergyMetric } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
-import { complexityTone } from "@/lib/status";
+import { complexityTone, toneOf } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 
 interface EnergyPageProps {
@@ -98,7 +98,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
                   <td className="px-3 py-2 text-tertiary">{opp.system}</td>
                   <td className="px-3 py-2 text-right tabular font-medium text-foreground whitespace-nowrap">{opp.saving}</td>
                   <td className="px-3 py-2">
-                    <ToneStatus tone={complexityTone[opp.complexity]}>{opp.complexity}</ToneStatus>
+                    <ToneStatus tone={toneOf(complexityTone, opp.complexity)}>{opp.complexity}</ToneStatus>
                   </td>
                   <td className="px-3 py-2 text-tertiary">{opp.payback}</td>
                 </tr>

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import type { Equipment, EquipmentStatus } from "@/hooks/usePlantData";
-import { equipmentLabel } from "@/lib/status";
+import { equipmentLabel, labelOf } from "@/lib/status";
 
 const statusColors: Record<EquipmentStatus, string> = {
   running: "bg-success border-success",
@@ -59,7 +59,7 @@ const FactoryFloor = ({ equipment, selectedId, onSelect }: FactoryFloorProps) =>
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
               <div className="whitespace-nowrap rounded-md border border-hairline bg-container px-2.5 py-1.5 shadow-lg">
                 <p className="type-label-sm tabular text-foreground">{eq.tag}</p>
-                <p className="type-caption text-tertiary">{equipmentLabel[eq.status]} · {eq.health}%</p>
+                <p className="type-caption text-tertiary">{labelOf(equipmentLabel, eq.status)} · {eq.health}%</p>
               </div>
             </div>
           </motion.button>
@@ -70,7 +70,7 @@ const FactoryFloor = ({ equipment, selectedId, onSelect }: FactoryFloorProps) =>
         {(["running", "warning", "critical", "maintenance", "offline"] as EquipmentStatus[]).map((s) => (
           <div key={s} className="flex items-center gap-1">
             <span className={`w-2 h-2 rounded-full ${statusColors[s]}`} />
-            <span>{equipmentLabel[s]}</span>
+            <span>{labelOf(equipmentLabel, s)}</span>
           </div>
         ))}
       </div>

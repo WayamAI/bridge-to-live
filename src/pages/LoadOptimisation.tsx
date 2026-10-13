@@ -4,7 +4,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, ToneStatus, Unit } from "@/components/ui/primitives";
-import { complexityTone, opportunityStatus } from "@/lib/status";
+import { complexityTone, opportunityStatus, workflowTone, toneOf } from "@/lib/status";
 import { formatNumber, formatMonthName } from "@/lib/format";
 
 interface Opportunity {
@@ -99,9 +99,9 @@ const LoadOptimisation = () => {
                     <td className="py-2 px-3 type-body-sm">{o.category}</td>
                     <td className="py-2 px-3 type-body-sm">{o.system}</td>
                     <td className="py-2 px-3 text-right tabular text-success font-semibold whitespace-nowrap">₹{o.annualSaving}L</td>
-                    <td className="py-2 px-3"><ToneStatus tone={complexityTone[o.complexity]}>{o.complexity}</ToneStatus></td>
+                    <td className="py-2 px-3"><ToneStatus tone={toneOf(complexityTone, o.complexity)}>{o.complexity}</ToneStatus></td>
                     <td className="py-2 px-3 type-body-sm">{o.payback}</td>
-                    <td className="py-2 px-3"><ToneStatus tone={opportunityStatus[o.status].tone}>{o.status}</ToneStatus></td>
+                    <td className="py-2 px-3"><ToneStatus tone={workflowTone(opportunityStatus, o.status).tone}>{o.status}</ToneStatus></td>
                   </tr>
                 ))}
               </tbody>
