@@ -90,3 +90,11 @@ export const complexityTone: Record<string, Tone> = {
   Medium: "warning",
   High: "error",
 };
+
+/** Opportunity pipeline stage (Identified to Implemented). */
+export const opportunityStatus: Record<string, WorkflowTone> = {
+  Identified: { tone: "neutral" },
+  "Under Review": { tone: "warning" },
+  Approved: { tone: "info" },
+  Implemented: { tone: "success" },
+};

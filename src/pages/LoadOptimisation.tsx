@@ -2,6 +2,9 @@ import { useState } from "react";
 import { Zap, TrendingDown, ArrowRight, Check } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import PageHeader from "@/components/layout/PageHeader";
+import { EmptyState, KpiTile, Panel, ToneStatus, Unit } from "@/components/ui/primitives";
+import { complexityTone, opportunityStatus } from "@/lib/status";
 
 interface Opportunity {
   id: string;
@@ -26,19 +29,6 @@ const OPPORTUNITIES: Opportunity[] = [
   { id: "o6", opportunity: "Compressed air leak detection and repair program", category: "Leak/loss reduction", system: "Instrument Air", action: "Leak survey + repair", annualSaving: 22, complexity: "Low", payback: "2 months", status: "Under Review", baselineKwh: 18200, projectedKwh: 14800 },
 ];
 
-const COMPLEXITY_COLORS: Record<string, string> = {
-  Low: "bg-operational/10 text-operational",
-  Medium: "bg-gap/10 text-gap",
-  High: "bg-destructive/10 text-destructive",
-};
-
-const STATUS_COLORS: Record<string, string> = {
-  Identified: "bg-muted text-muted-foreground",
-  "Under Review": "bg-gap/10 text-gap",
-  Approved: "bg-primary/10 text-primary",
-  Implemented: "bg-operational/10 text-operational",
-};
-
 const LoadOptimisation = () => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const totalSaving = OPPORTUNITIES.reduce((s, o) => s + o.annualSaving, 0);
@@ -57,30 +47,26 @@ const LoadOptimisation = () => {
   };
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h2 className="text-lg font-bold">Load Optimisation</h2>
-      <p className="text-xs text-muted-foreground -mt-3">Energy cost reduction opportunities ranked by annual value</p>
+    <PageHeader title="Load Optimisation" subtitle="Energy cost reduction opportunities ranked by annual value">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Total Identified Savings", value: `₹${(totalSaving / 100).toFixed(2)} Cr/yr` },
-          { label: "Selected Scenario Savings", value: `₹${selectedSaving}L/yr`, color: selectedSaving > 0 ? "text-primary" : "text-muted-foreground" },
+          { label: "Selected Scenario Savings", value: `₹${selectedSaving}L/yr` },
           { label: "Opportunities Identified", value: OPPORTUNITIES.length.toString() },
-          { label: "Implemented", value: OPPORTUNITIES.filter(o => o.status === "Implemented").length.toString(), color: "text-operational" },
+          { label: "Implemented", value: OPPORTUNITIES.filter(o => o.status === "Implemented").length.toString() },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} />
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4">
         {/* Opportunities Table */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Optimisation Opportunities — Select to model combined impact</h3>
-          </div>
+        <Panel
+          title="Optimisation Opportunities"
+          padded={false}
+          action={<span className="type-caption text-quaternary">Select to model combined impact</span>}
+        >
           <div className="overflow-x-auto">
             <table className="w-full type-body-sm">
               <thead>
@@ -99,47 +85,49 @@ const LoadOptimisation = () => {
                 {OPPORTUNITIES.map(o => (
                   <tr key={o.id} className={`border-b border-hairline hover:bg-raised cursor-pointer ${selected.has(o.id) ? "bg-raised" : ""}`} onClick={() => toggle(o.id)}>
                     <td className="py-2 px-3 text-center">
-                      <div className={`w-4 h-4 rounded border flex items-center justify-center ${selected.has(o.id) ? "bg-primary border-primary" : "border-border"}`}>
-                        {selected.has(o.id) && <Check className="w-3 h-3 text-primary-foreground" />}
+                      <div
+                        role="checkbox"
+                        aria-checked={selected.has(o.id)}
+                        aria-label={`Select ${o.opportunity}`}
+                        className={`mx-auto flex size-4 items-center justify-center rounded-[4px] border ${selected.has(o.id) ? "border-transparent bg-action-primary text-on-color" : "border-strong bg-action"}`}
+                      >
+                        {selected.has(o.id) && <Check className="size-2.5" strokeWidth={3} aria-hidden />}
                       </div>
                     </td>
                     <td className="py-2 px-3">{o.opportunity}</td>
                     <td className="py-2 px-3 type-body-sm">{o.category}</td>
                     <td className="py-2 px-3 type-body-sm">{o.system}</td>
-                    <td className="py-2 px-3 text-right tabular text-operational font-bold whitespace-nowrap">₹{o.annualSaving}L</td>
-                    <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full ${COMPLEXITY_COLORS[o.complexity]}`}>{o.complexity}</span></td>
+                    <td className="py-2 px-3 text-right tabular text-success font-semibold whitespace-nowrap">₹{o.annualSaving}L</td>
+                    <td className="py-2 px-3"><ToneStatus tone={complexityTone[o.complexity]}>{o.complexity}</ToneStatus></td>
                     <td className="py-2 px-3 type-body-sm">{o.payback}</td>
-                    <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full ${STATUS_COLORS[o.status]}`}>{o.status}</span></td>
+                    <td className="py-2 px-3"><ToneStatus tone={opportunityStatus[o.status].tone}>{o.status}</ToneStatus></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </div>
+        </Panel>
 
         {/* Scenario Impact */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Scenario Impact</h3>
-          </div>
+        <Panel title="Scenario Impact" padded={false}>
           <div className="p-4 space-y-3">
             {selected.size === 0 ? (
-              <p className="text-xs text-muted-foreground text-center py-8">Select opportunities to model combined savings</p>
+              <EmptyState title="Select opportunities to model combined savings" />
             ) : (
               <>
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-lg border border-border p-2.5">
-                    <p className="text-[9px] text-muted-foreground">Current (₹/day)</p>
-                    <p className="text-sm font-bold font-mono">₹{Math.round(totalSaving / 365 * 100 + 8400).toLocaleString()}</p>
+                  <div className="rounded-lg border border-hairline bg-raised p-3">
+                    <p className="type-eyebrow text-quaternary">Current (₹/day)</p>
+                    <p className="type-display-lg tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{Math.round(totalSaving / 365 * 100 + 8400).toLocaleString()}</p>
                   </div>
-                  <div className="rounded-lg border border-primary/30 bg-primary/5 p-2.5">
-                    <p className="text-[9px] text-muted-foreground">After Changes (₹/day)</p>
-                    <p className="text-sm font-bold font-mono text-primary">₹{Math.round((totalSaving - selectedSaving) / 365 * 100 + 8400).toLocaleString()}</p>
+                  <div className="rounded-lg border border-strong bg-raised p-3">
+                    <p className="type-eyebrow text-quaternary">After Changes (₹/day)</p>
+                    <p className="type-display-lg tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{Math.round((totalSaving - selectedSaving) / 365 * 100 + 8400).toLocaleString()}</p>
                   </div>
                 </div>
-                <div className="rounded-lg border border-operational/30 bg-operational/5 p-3 text-center">
-                  <p className="text-[9px] text-muted-foreground">12-Month Net Savings</p>
-                  <p className="text-xl font-bold font-mono text-operational">₹{selectedSaving}L</p>
+                <div className="rounded-lg border border-hairline bg-raised p-3 text-center">
+                  <p className="type-eyebrow text-quaternary">12-Month Net Savings</p>
+                  <p className="type-display-xl tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{selectedSaving}<Unit>L</Unit></p>
                 </div>
                 <ResponsiveContainer width="100%" height={180}>
                   <AreaChart data={projectionData}>
@@ -153,9 +141,9 @@ const LoadOptimisation = () => {
               </>
             )}
           </div>
-        </div>
+        </Panel>
       </div>
-    </div>
+    </PageHeader>
   );
 };
 
