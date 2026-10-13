@@ -105,7 +105,7 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
                     key={key}
                     role="menuitem"
                     onClick={() => { onRoleChange(key as UserRole); setShowRoleMenu(false); }}
-                    className={`type-label-sm w-full rounded-md px-2 py-1.5 text-left transition-colors duration-150 hover:bg-raised hover:text-foreground ${
+                    className={`type-label-sm w-full rounded-md px-2 py-1.5 text-left outline-none transition-colors duration-150 hover:bg-raised hover:text-foreground focus-visible:ring-2 focus-visible:ring-active ${
                       key === userRole ? "bg-raised text-foreground" : "text-secondary-foreground"
                     }`}
                   >
@@ -116,7 +116,7 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
                 <button
                   role="menuitem"
                   onClick={handleLogout}
-                  className="type-label-sm flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-error transition-colors duration-150 hover:bg-raised"
+                  className="type-label-sm flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-error outline-none transition-colors duration-150 hover:bg-raised focus-visible:ring-2 focus-visible:ring-active"
                 >
                   <LogOut className="size-3.5" aria-hidden />
                   Log out

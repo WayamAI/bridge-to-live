@@ -29,7 +29,7 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Bell className="w-4 h-4 text-muted-foreground" />
+          <Bell className="w-4 h-4 text-muted-foreground" aria-hidden />
           <h3 className="text-sm font-semibold">Alerts</h3>
           {unacknowledged > 0 && (
             <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">
@@ -58,11 +58,11 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
                   <Icon className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${
                     alert.severity === "critical" ? "text-destructive" :
                     alert.severity === "warning" ? "text-gap" : "text-engineering"
-                  }`} />
+                  }`} aria-hidden />
                   <div className="flex-1 min-w-0">
                     <button
                       onClick={() => onSelectEquipment(alert.equipmentId)}
-                      className="text-xs font-semibold hover:underline"
+                      className="text-xs font-semibold hover:underline outline-none focus-visible:ring-2 focus-visible:ring-active"
                     >
                       {alert.equipmentName}
                     </button>
@@ -77,9 +77,9 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
                       {!alert.acknowledged && (
                         <button
                           onClick={() => onAcknowledge(alert.id)}
-                          className="text-[9px] font-medium text-operational hover:underline flex items-center gap-0.5"
+                          className="text-[9px] font-medium text-operational hover:underline flex items-center gap-0.5 outline-none focus-visible:ring-2 focus-visible:ring-active"
                         >
-                          <CheckCircle2 className="w-2.5 h-2.5" /> ACK
+                          <CheckCircle2 className="w-2.5 h-2.5" aria-hidden /> ACK
                         </button>
                       )}
                     </div>

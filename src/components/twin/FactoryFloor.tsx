@@ -38,7 +38,8 @@ const FactoryFloor = ({ equipment, selectedId, onSelect }: FactoryFloorProps) =>
           <motion.button
             key={eq.id}
             onClick={() => onSelect(eq.id)}
-            className="absolute group"
+            aria-label={eq.tag}
+            className="absolute group rounded-full outline-none focus-visible:ring-2 focus-visible:ring-active"
             style={{
               left: `${eq.position.x}%`,
               top: `${eq.position.y}%`,

@@ -61,7 +61,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
               type="checkbox"
               checked={showAcknowledged}
               onChange={(e) => setShowAcknowledged(e.target.checked)}
-              className="size-4 rounded-[4px] accent-action-primary"
+              className="size-4 rounded-[4px] accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active"
             />
             Show acknowledged
           </label>

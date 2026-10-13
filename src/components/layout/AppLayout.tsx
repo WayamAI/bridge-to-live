@@ -27,7 +27,7 @@ const AppLayout = ({ alerts, userRole, onRoleChange, breadcrumb }: AppLayoutProp
         <button
           type="button"
           aria-label="Close navigation"
-          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/50 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-active lg:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}

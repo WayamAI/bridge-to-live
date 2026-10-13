@@ -83,19 +83,18 @@ const WhatIfSimulator = ({ equipment }: Props) => {
           <div className="p-4 space-y-4">
             {/* PM Frequency */}
             <div>
-              <label className="type-label-sm text-secondary-foreground">PM Frequency Change: {config.pmFrequency > 0 ? "+" : ""}{config.pmFrequency}%</label>
-              <input type="range" min={-50} max={100} value={config.pmFrequency} onChange={e => setConfig(c => ({ ...c, pmFrequency: +e.target.value }))}
-                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary" />
+              <label htmlFor="whatif-pm-frequency" className="type-label-sm text-secondary-foreground">PM Frequency Change: {config.pmFrequency > 0 ? "+" : ""}{config.pmFrequency}%</label>
+              <input id="whatif-pm-frequency" type="range" min={-50} max={100} value={config.pmFrequency} onChange={e => setConfig(c => ({ ...c, pmFrequency: +e.target.value }))}
+                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
               <div className="flex justify-between type-caption text-tertiary"><span>−50%</span><span>Current</span><span>+100%</span></div>
             </div>
 
             {/* Predictive Only */}
             <div className="flex items-center justify-between">
-              <label className="type-label-sm text-secondary-foreground">Predictive-Only Maintenance</label>
-              <button onClick={() => setConfig(c => ({ ...c, predictiveOnly: !c.predictiveOnly }))}
+              <label htmlFor="whatif-predictive-only" className="type-label-sm text-secondary-foreground">Predictive-Only Maintenance</label>
+              <button id="whatif-predictive-only" onClick={() => setConfig(c => ({ ...c, predictiveOnly: !c.predictiveOnly }))}
                 role="switch"
                 aria-checked={config.predictiveOnly}
-                aria-label="Predictive-only maintenance"
                 className={`relative h-5 w-9 shrink-0 rounded-full border border-hairline outline-none transition-colors duration-[180ms] focus-visible:ring-2 focus-visible:ring-active ${config.predictiveOnly ? "bg-action-primary" : "bg-raised-2"}`}>
                 <span className={`absolute left-0.5 top-0.5 size-3.5 rounded-full bg-container transition-transform duration-[180ms] ${config.predictiveOnly ? "translate-x-4" : "translate-x-0"}`} />
               </button>
@@ -103,30 +102,30 @@ const WhatIfSimulator = ({ equipment }: Props) => {
 
             {/* Air Pressure */}
             <div>
-              <label className="type-label-sm text-secondary-foreground">Compressed Air Setpoint: {config.airPressure} bar</label>
-              <input type="range" min={6} max={10} step={0.1} value={config.airPressure} onChange={e => setConfig(c => ({ ...c, airPressure: +e.target.value }))}
-                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary" />
+              <label htmlFor="whatif-air-pressure" className="type-label-sm text-secondary-foreground">Compressed Air Setpoint: {config.airPressure} bar</label>
+              <input id="whatif-air-pressure" type="range" min={6} max={10} step={0.1} value={config.airPressure} onChange={e => setConfig(c => ({ ...c, airPressure: +e.target.value }))}
+                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
             </div>
 
             {/* Startup Shift */}
             <div>
-              <label className="type-label-sm text-secondary-foreground">Comp B Startup Shift: {config.startupShift} hr</label>
-              <input type="range" min={-4} max={4} value={config.startupShift} onChange={e => setConfig(c => ({ ...c, startupShift: +e.target.value }))}
-                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary" />
+              <label htmlFor="whatif-startup-shift" className="type-label-sm text-secondary-foreground">Comp B Startup Shift: {config.startupShift} hr</label>
+              <input id="whatif-startup-shift" type="range" min={-4} max={4} value={config.startupShift} onChange={e => setConfig(c => ({ ...c, startupShift: +e.target.value }))}
+                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
             </div>
 
             {/* Throughput */}
             <div>
-              <label className="type-label-sm text-secondary-foreground">Operating Throughput: {config.throughput}%</label>
-              <input type="range" min={60} max={110} value={config.throughput} onChange={e => setConfig(c => ({ ...c, throughput: +e.target.value }))}
-                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary" />
+              <label htmlFor="whatif-throughput" className="type-label-sm text-secondary-foreground">Operating Throughput: {config.throughput}%</label>
+              <input id="whatif-throughput" type="range" min={60} max={110} value={config.throughput} onChange={e => setConfig(c => ({ ...c, throughput: +e.target.value }))}
+                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
             </div>
 
             {/* Failure Sim */}
             <div>
-              <label className="type-label-sm text-secondary-foreground">Simulate Equipment Failure</label>
-              <PillSelect value={config.failureTag} onChange={e => setConfig(c => ({ ...c, failureTag: e.target.value }))}
-                wrapperClassName="mt-1 w-full" className="w-full" aria-label="Simulate equipment failure">
+              <label htmlFor="whatif-failure-tag" className="type-label-sm text-secondary-foreground">Simulate Equipment Failure</label>
+              <PillSelect id="whatif-failure-tag" value={config.failureTag} onChange={e => setConfig(c => ({ ...c, failureTag: e.target.value }))}
+                wrapperClassName="mt-1 w-full" className="w-full">
                 <option value="">None</option>
                 {equipment.filter(e => e.criticalityTier !== "Non-critical").slice(0, 10).map(e => (
                   <option key={e.id} value={e.tag}>{e.tag} · {e.name}</option>
