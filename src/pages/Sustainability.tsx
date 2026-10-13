@@ -12,12 +12,12 @@ const MONTHLY_EMISSIONS = [
 ];
 
 const BY_SOURCE = [
-  { name: "Gas Turbine", value: 42, color: seriesColor(1) },
-  { name: "Flaring", value: 18, color: seriesColor(3) },
-  { name: "Grid Electricity", value: 24, color: seriesColor(0) },
-  { name: "Process Venting", value: 8, color: seriesColor(2) },
-  { name: "Fugitive", value: 5, color: seriesColor(5) },
-  { name: "Other", value: 3, color: seriesColor(4) },
+  { name: "Gas Turbine", value: 42, color: seriesColor(0) },
+  { name: "Flaring", value: 18, color: seriesColor(1) },
+  { name: "Grid Electricity", value: 24, color: seriesColor(5) },
+  { name: "Process Venting", value: 8, color: seriesColor(4) },
+  { name: "Fugitive", value: 5, color: seriesColor(2) },
+  { name: "Other", value: 3, color: seriesColor(3) },
 ];
 
 const WATER_DATA = [
@@ -65,9 +65,9 @@ const Sustainability = () => {
                 <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
                 <YAxis tick={axisTick} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-                <Bar isAnimationActive={false} dataKey="scope1" stackId="a" fill={seriesColor(1)} name="Scope 1 — Direct" />
-                <Bar isAnimationActive={false} dataKey="scope2" stackId="a" fill={seriesColor(0)} name="Scope 2 — Grid" />
-                <Bar isAnimationActive={false} dataKey="flaring" stackId="a" fill={seriesColor(3)} name="Flaring" radius={[4, 4, 0, 0]} />
+                <Bar isAnimationActive={false} dataKey="scope1" stackId="a" fill={seriesColor(0)} name="Scope 1 — Direct" />
+                <Bar isAnimationActive={false} dataKey="scope2" stackId="a" fill={seriesColor(1)} name="Scope 2 — Grid" />
+                <Bar isAnimationActive={false} dataKey="flaring" stackId="a" fill={seriesColor(5)} name="Flaring" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
@@ -113,7 +113,7 @@ const Sustainability = () => {
               <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
               <Bar isAnimationActive={false} dataKey="consumption" fill={seriesColor(0)} name="Total Consumption" />
               <Bar isAnimationActive={false} dataKey="recycled" fill={seriesColor(1)} name="Recycled" radius={[4, 4, 0, 0]} />
-              <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(3)} strokeDasharray="5 5" name="Target" />
+              <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(4)} strokeDasharray="5 5" name="Target" />
             </BarChart>
           </ResponsiveContainer>
         </div>

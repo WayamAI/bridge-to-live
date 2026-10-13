@@ -147,7 +147,7 @@ const LoadOptimisation = () => {
                     <YAxis tick={axisTick} tickLine={false} axisLine={false} />
                     <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                     <Area isAnimationActive={false} type="monotone" dataKey="baseline" stroke={seriesColor(4)} fill={seriesColor(4)} fillOpacity={0.1} name="Baseline (₹/day)" />
-                    <Area isAnimationActive={false} type="monotone" dataKey="projected" stroke={seriesColor(1)} fill={seriesColor(1)} fillOpacity={0.2} name="Projected (₹/day)" />
+                    <Area isAnimationActive={false} type="monotone" dataKey="projected" stroke={seriesColor(0)} fill={seriesColor(0)} fillOpacity={0.2} name="Projected (₹/day)" />
                   </AreaChart>
                 </ResponsiveContainer>
               </>

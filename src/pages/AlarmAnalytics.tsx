@@ -102,8 +102,8 @@ const AlarmAnalytics = ({ alerts }: Props) => {
                 <YAxis yAxisId="left" tick={axisTick} tickLine={false} axisLine={false} />
                 <YAxis yAxisId="right" orientation="right" tick={axisTick} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-                <Line isAnimationActive={false} yAxisId="left" type="monotone" dataKey="total" stroke={seriesColor(1)} strokeWidth={2} dot={false} name="Total Alarms" />
-                <Line isAnimationActive={false} yAxisId="right" type="monotone" dataKey="ackTime" stroke={seriesColor(2)} strokeWidth={2} dot={false} name="Avg Ack Time (min)" />
+                <Line isAnimationActive={false} yAxisId="left" type="monotone" dataKey="total" stroke={seriesColor(0)} strokeWidth={2} dot={false} name="Total Alarms" />
+                <Line isAnimationActive={false} yAxisId="right" type="monotone" dataKey="ackTime" stroke={seriesColor(1)} strokeWidth={2} dot={false} name="Avg Ack Time (min)" />
               </LineChart>
             </ResponsiveContainer>
           </div>

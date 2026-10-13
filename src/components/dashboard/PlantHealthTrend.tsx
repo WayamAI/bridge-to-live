@@ -29,8 +29,8 @@ const PlantHealthTrend = () => {
       <div className="flex items-center justify-between mb-3">
         <h3 className="text-sm font-semibold">Plant Health Trend — 90 Days</h3>
         <div className="flex items-center gap-3 text-[9px] text-muted-foreground">
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-2 inline-block" /> Health Score</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-2 opacity-30 inline-block" /> Forecast</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 inline-block" /> Health Score</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 opacity-30 inline-block" /> Forecast</span>
           <span className="flex items-center gap-1"><span className="w-3 h-0.5 border-t border-dashed border-muted-foreground inline-block" /> PM Events</span>
         </div>
       </div>
@@ -42,8 +42,8 @@ const PlantHealthTrend = () => {
             contentStyle={chartTooltipStyle}
             labelStyle={chartTooltipLabelStyle}
           />
-          <ReferenceLine y={90} stroke={seriesColor(2)} strokeDasharray="5 5" strokeWidth={1} label={{ value: "Target 90%", position: "right", fontSize: 9, fill: seriesColor(2) }} />
-          <Line isAnimationActive={false} type="monotone" dataKey="health" stroke={seriesColor(1)} strokeWidth={1.5} dot={false} />
+          <ReferenceLine y={90} stroke={seriesColor(4)} strokeDasharray="5 5" strokeWidth={1} label={{ value: "Target 90%", position: "right", fontSize: 9, fill: "var(--text-quaternary)" }} />
+          <Line isAnimationActive={false} type="monotone" dataKey="health" stroke={seriesColor(0)} strokeWidth={1.5} dot={false} />
         </ComposedChart>
       </ResponsiveContainer>
     </div>

@@ -38,12 +38,12 @@ const SCATTER_DATA = [
 ];
 
 const MODE_COLORS: Record<string, string> = {
-  "Bearing failure": seriesColor(3),
-  "Seal degradation": seriesColor(2),
-  "Impeller fouling": seriesColor(1),
-  "Lube oil contamination": seriesColor(0),
-  "Coupling misalignment": seriesColor(5),
-  "Other": seriesColor(4),
+  "Bearing failure": seriesColor(0),
+  "Seal degradation": seriesColor(1),
+  "Impeller fouling": seriesColor(5),
+  "Lube oil contamination": seriesColor(4),
+  "Coupling misalignment": seriesColor(2),
+  "Other": seriesColor(3),
 };
 
 interface Props {
@@ -95,7 +95,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
                 <XAxis type="number" tick={axisTick} tickLine={false} axisLine={false} />
                 <YAxis type="category" dataKey="mode" tick={axisTick} tickLine={false} axisLine={false} width={110} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-                <Bar isAnimationActive={false} dataKey="count" fill={seriesColor(1)} radius={[0, 4, 4, 0]} cursor="pointer"
+                <Bar isAnimationActive={false} dataKey="count" fill={seriesColor(0)} radius={[0, 4, 4, 0]} cursor="pointer"
                   onClick={(d: any) => setSelectedMode(selectedMode === d.mode ? null : d.mode)} />
               </BarChart>
             </ResponsiveContainer>
@@ -141,9 +141,9 @@ const FailureAnalysis = ({ equipment }: Props) => {
                 <XAxis dataKey="hours" tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Operating Hours", position: "insideBottom", offset: -5, fill: "var(--text-quaternary)", fontSize: 11 }} />
                 <YAxis tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Survival %", angle: -90, position: "insideLeft", fill: "var(--text-quaternary)", fontSize: 11 }} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-                <Area isAnimationActive={false} type="monotone" dataKey="upper" stroke="none" fill={seriesColor(1)} fillOpacity={0.1} />
+                <Area isAnimationActive={false} type="monotone" dataKey="upper" stroke="none" fill={seriesColor(0)} fillOpacity={0.1} />
                 <Area isAnimationActive={false} type="monotone" dataKey="lower" stroke="none" fill="var(--surface-container)" fillOpacity={1} />
-                <Line isAnimationActive={false} type="monotone" dataKey="survival" stroke={seriesColor(1)} strokeWidth={2} dot={false} />
+                <Line isAnimationActive={false} type="monotone" dataKey="survival" stroke={seriesColor(0)} strokeWidth={2} dot={false} />
               </AreaChart>
             </ResponsiveContainer>
             <div className="mt-3 grid grid-cols-2 gap-3">
@@ -178,7 +178,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
               <ZAxis dataKey="cost" range={[40, 400]} name="Repair Cost (₹L)" />
               <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle}
                 formatter={(val: any, name: string) => [name === "Repair Cost (₹L)" ? `₹${val}L` : val, name]} />
-              <Scatter isAnimationActive={false} data={filteredScatter} fill={seriesColor(1)} />
+              <Scatter isAnimationActive={false} data={filteredScatter} fill={seriesColor(0)} />
             </ScatterChart>
           </ResponsiveContainer>
           <div className="flex flex-wrap gap-3 mt-3">

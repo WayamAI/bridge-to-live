@@ -43,7 +43,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
                   <polyline
                     points={m.trend.map((v, i) => `${(i / (m.trend.length - 1)) * 200},${24 - ((v - m.setpoint * 0.9) / (m.setpoint * 0.2)) * 24}`).join(" ")}
                     fill="none"
-                    stroke={seriesColor(1)}
+                    stroke={seriesColor(0)}
                     strokeWidth="1.5"
                   />
                 </svg>

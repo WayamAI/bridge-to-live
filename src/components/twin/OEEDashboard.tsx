@@ -30,9 +30,9 @@ const OEEDashboard = ({ oee }: { oee: OEEMetrics }) => (
   <div className="rounded-xl border border-border bg-card p-4">
     <h3 className="text-sm font-semibold mb-4">Overall Equipment Effectiveness</h3>
     <div className="flex items-center justify-around">
-      <OEEGauge label="Availability" value={oee.availability} color={seriesColor(1)} />
+      <OEEGauge label="Availability" value={oee.availability} color={seriesColor(0)} />
       <OEEGauge label="Performance" value={oee.performance} color={seriesColor(0)} />
-      <OEEGauge label="Quality" value={oee.quality} color={seriesColor(2)} />
+      <OEEGauge label="Quality" value={oee.quality} color={seriesColor(0)} />
       <div className="flex flex-col items-center">
         <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center glow-primary">
           <span className="text-xl font-bold font-mono text-primary">{oee.overall}%</span>
