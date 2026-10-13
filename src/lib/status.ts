@@ -98,3 +98,12 @@ export const opportunityStatus: Record<string, WorkflowTone> = {
   Approved: { tone: "info" },
   Implemented: { tone: "success" },
 };
+
+/** Alarm-quality classification: Chattering is the problem state (solid badge); the rest are quiet. */
+export const chatteringStatus: Record<string, WorkflowTone> = {
+  Chattering: { tone: "error", solid: true },
+  Fleeting: { tone: "warning" },
+  Stale: { tone: "warning" },
+  Standing: { tone: "info" },
+  Repeating: { tone: "neutral" },
+};
