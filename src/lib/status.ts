@@ -167,3 +167,10 @@ export const validationStatus: Record<string, WorkflowTone> = {
   Warning: { tone: "warning" },
   Fail: { tone: "error", solid: true },
 };
+
+/** Data source health: Degraded needs attention (solid). */
+export const sourceHealth: Record<string, WorkflowTone> = {
+  Healthy: { tone: "success" },
+  Warning: { tone: "warning" },
+  Degraded: { tone: "error", solid: true },
+};
