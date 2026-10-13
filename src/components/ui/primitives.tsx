@@ -81,6 +81,7 @@ export const KpiTile = ({
   onClick,
   className,
   valueClassName,
+  children,
 }: {
   label: string;
   value: ReactNode;
@@ -92,6 +93,7 @@ export const KpiTile = ({
   onClick?: ButtonHTMLAttributes<HTMLButtonElement>["onClick"];
   className?: string;
   valueClassName?: string;
+  children?: ReactNode;
 }) => {
   const parts = prefix === undefined && unit === undefined ? splitValue(value) : null;
   const body = (
@@ -108,6 +110,7 @@ export const KpiTile = ({
           {hint && <span className="type-caption min-w-0 text-quaternary">{hint}</span>}
         </span>
       )}
+      {children}
     </>
   );
   const base = "flex min-w-0 flex-col gap-1.5 rounded-lg border border-hairline bg-container px-4 py-3.5 text-left";

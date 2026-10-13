@@ -83,3 +83,10 @@ export const workOrderStatus: Record<string, WorkflowTone> = {
   Completed: { tone: "success" },
   Cancelled: { tone: "neutral" },
 };
+
+/** Implementation complexity (Low, Medium, High). A cost indicator, not an alert, so it stays quiet. */
+export const complexityTone: Record<string, Tone> = {
+  Low: "success",
+  Medium: "warning",
+  High: "error",
+};
