@@ -1,4 +1,4 @@
-// One status and severity mapping for the redesign (CHRONUS_DESIGN_SYSTEM.md section 4.9).
+// One status and severity mapping for the redesign (Wayam Chronus design system: badges and status).
 // Severity mapping: critical -> error, high -> warning, medium -> info, low -> neutral.
 // Old PlantMind colours: operational -> success, gap -> warning, destructive -> error, engineering -> info.
 import type { AlarmSeverity, EquipmentStatus } from "@/hooks/usePlantData";

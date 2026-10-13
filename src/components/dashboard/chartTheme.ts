@@ -1,4 +1,4 @@
-// Chronus chart styling constants (CHRONUS_DESIGN_SYSTEM.md section 4.14).
+// Chronus chart styling constants (Wayam Chronus design system: charts).
 // Always CSS variables, so charts follow the light/dark theme.
 
 /** Series colour by position: blue, green, orange, red, grey, purple, then repeat. */
