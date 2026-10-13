@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
-import { AlertTriangle, Calendar, ChevronRight, Zap, FileCheck } from "lucide-react";
+import { icons, iconForPath } from "@/lib/icons";
 import { usePlantData } from "@/hooks/usePlantData";
 import FactoryFloor from "@/components/twin/FactoryFloor";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
@@ -67,10 +67,10 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
   const topAlerts = alerts.filter(a => !a.acknowledged).slice(0, 5);
 
   const quickActions = [
-    { label: "Review active alarms", path: "/alarms", icon: AlertTriangle },
-    { label: "Run maintenance scenario", path: "/simulator", icon: Calendar },
-    { label: "Check handover status", path: "/handover", icon: FileCheck },
-    { label: "Energy optimisation", path: "/energy", icon: Zap },
+    { label: "Review active alarms", path: "/alarms", icon: iconForPath("/alarms") },
+    { label: "Run maintenance scenario", path: "/simulator", icon: iconForPath("/simulator") },
+    { label: "Check handover status", path: "/handover", icon: iconForPath("/handover") },
+    { label: "Energy optimisation", path: "/energy", icon: iconForPath("/energy") },
   ];
 
   return (
@@ -112,7 +112,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
               onClick={() => navigate("/alarms")}
               className="type-caption inline-flex items-center gap-0.5 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
             >
-              View all <ChevronRight className="size-3" aria-hidden />
+              View all <icons.chevronRight className="size-3" aria-hidden />
             </button>
           }
         >

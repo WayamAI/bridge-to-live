@@ -7,7 +7,7 @@ import { AnimatePresence } from "framer-motion";
 import type { Equipment } from "@/hooks/usePlantData";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
 import FactoryFloor from "@/components/twin/FactoryFloor";
-import { ArrowUpDown, Search } from "lucide-react";
+import { icons } from "@/lib/icons";
 
 interface EquipmentHealthPageProps {
   equipment: Equipment[];
@@ -61,7 +61,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
     >
       <span className="flex items-center gap-1">
         {label}
-        <ArrowUpDown className={`size-3 ${sortKey === k ? "text-foreground" : "text-quaternary opacity-50"}`} aria-hidden />
+        <icons.sort className={`size-3 ${sortKey === k ? "text-foreground" : "text-icon-quaternary opacity-50"}`} aria-hidden />
       </span>
     </th>
   );

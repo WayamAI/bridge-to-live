@@ -102,6 +102,13 @@ export default {
         // Text hierarchy beyond foreground / muted-foreground
         tertiary: "var(--text-tertiary)",
         quaternary: "var(--text-quaternary)",
+        // Icons are greyscale and share the text tokens (text-icon-*).
+        icon: {
+          primary: "var(--text-primary)",
+          secondary: "var(--text-secondary)",
+          tertiary: "var(--text-tertiary)",
+          quaternary: "var(--text-quaternary)",
+        },
         "on-color": "var(--text-on-color)",
         // Chart series
         series: {

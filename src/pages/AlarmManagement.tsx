@@ -4,16 +4,7 @@ import type { Alert } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
 import { priorityTone, severityTone, toneBadgeClass, toneOf } from "@/lib/status";
-import { Bell, AlertTriangle, Shield, Wrench, BrainCircuit, CheckCircle2, Search, Filter } from "lucide-react";
-
-const typeIcons = {
-  anomaly: AlertTriangle,
-  threshold: AlertTriangle,
-  predictive: BrainCircuit,
-  maintenance: Wrench,
-  safety: Shield,
-  rate_of_change: AlertTriangle,
-};
+import { icons, alarmIcon } from "@/lib/icons";
 
 interface AlarmManagementPageProps {
   alerts: Alert[];
@@ -93,7 +84,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
             </thead>
             <tbody>
               {filtered.map((alert) => {
-                const Icon = typeIcons[alert.type];
+                const Icon = alarmIcon(alert.type);
                 return (
                   <tr
                     key={alert.id}
@@ -136,7 +127,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                           onClick={() => onAcknowledge(alert.id)}
                           className="type-label-sm inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                         >
-                          <CheckCircle2 className="size-3" aria-hidden /> Acknowledge
+                          <icons.acknowledge className="size-[13px]" aria-hidden /> Acknowledge
                         </button>
                       )}
                     </td>

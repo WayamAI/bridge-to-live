@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, Line, Cell } from "recharts";
-import { AlertTriangle, Clock } from "lucide-react";
 import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";

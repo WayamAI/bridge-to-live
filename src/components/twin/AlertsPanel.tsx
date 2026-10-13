@@ -1,19 +1,11 @@
 import { motion, AnimatePresence } from "framer-motion";
 import type { Alert } from "@/hooks/useFactoryData";
-import { Bell, AlertTriangle, Shield, Wrench, BrainCircuit, CheckCircle2 } from "lucide-react";
+import { icons, alarmIcon } from "@/lib/icons";
 
 const severityStyles = {
   info: "border-engineering/30 bg-engineering/5",
   warning: "border-gap/30 bg-gap/5",
   critical: "border-destructive/30 bg-destructive/5",
-};
-
-const typeIcons = {
-  anomaly: AlertTriangle,
-  threshold: AlertTriangle,
-  predictive: BrainCircuit,
-  maintenance: Wrench,
-  safety: Shield,
 };
 
 interface AlertsPanelProps {
@@ -29,7 +21,7 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <Bell className="w-4 h-4 text-muted-foreground" aria-hidden />
+          <icons.alarms className="w-4 h-4 text-muted-foreground" aria-hidden />
           <h3 className="text-sm font-semibold">Alerts</h3>
           {unacknowledged > 0 && (
             <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">
@@ -43,7 +35,7 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
       <div className="max-h-[400px] overflow-y-auto">
         <AnimatePresence>
           {alerts.map((alert, i) => {
-            const Icon = typeIcons[alert.type];
+            const Icon = alarmIcon(alert.type);
             return (
               <motion.div
                 key={alert.id}
@@ -79,7 +71,7 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
                           onClick={() => onAcknowledge(alert.id)}
                           className="text-[9px] font-medium text-operational hover:underline flex items-center gap-0.5 outline-none focus-visible:ring-2 focus-visible:ring-active"
                         >
-                          <CheckCircle2 className="w-2.5 h-2.5" aria-hidden /> ACK
+                          <icons.acknowledge className="w-2.5 h-2.5" aria-hidden /> ACK
                         </button>
                       )}
                     </div>

@@ -1,5 +1,5 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
-import { ChevronDown, Search } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
 import type { EquipmentStatus } from "@/hooks/usePlantData";
@@ -175,14 +175,14 @@ export const PillSelect = ({ className, wrapperClassName, children, ...props }: 
     >
       {children}
     </select>
-    <ChevronDown aria-hidden className="pointer-events-none absolute right-2.5 top-1/2 size-3 -translate-y-1/2 text-quaternary" />
+    <icons.chevronDown aria-hidden className="pointer-events-none absolute right-2.5 top-1/2 size-3 -translate-y-1/2 text-icon-quaternary" />
   </span>
 );
 
 /** Search pill: a plain text input with a leading search icon. */
 export const SearchField = ({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) => (
   <span className="relative inline-flex">
-    <Search aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 size-[13px] -translate-y-1/2 text-quaternary" />
+    <icons.search aria-hidden className="pointer-events-none absolute left-2.5 top-1/2 size-[13px] -translate-y-1/2 text-icon-quaternary" />
     <input
       {...props}
       className={cn(

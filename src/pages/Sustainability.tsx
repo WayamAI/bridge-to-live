@@ -1,5 +1,4 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
-import { Leaf, TrendingDown, AlertTriangle, Droplets } from "lucide-react";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel , KpiTile } from "@/components/ui/primitives";

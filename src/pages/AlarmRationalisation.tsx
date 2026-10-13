@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { Target, AlertTriangle, CheckCircle } from "lucide-react";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";

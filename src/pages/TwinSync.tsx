@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Cable, RefreshCw, CheckCircle, AlertTriangle } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { toast } from "sonner";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
@@ -43,7 +43,7 @@ const TwinSync = () => {
           disabled={syncing}
           className="type-label-sm inline-flex h-8 items-center gap-1.5 rounded-full bg-action-primary px-3 text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active disabled:bg-action-primary-disabled"
         >
-          <RefreshCw className="size-[13px]" aria-hidden />
+          <icons.sync className="size-[13px]" aria-hidden />
           {syncing ? "Syncing…" : "Force sync now"}
         </button>
       }

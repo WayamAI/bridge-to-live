@@ -2,7 +2,6 @@ import { useState, useMemo } from "react";
 import PageHeader from "@/components/layout/PageHeader";
 import { Chip, KpiTile, Panel, Unit } from "@/components/ui/primitives";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart, ScatterChart, Scatter, ZAxis } from "recharts";
-import { TrendingDown, TrendingUp, AlertTriangle, ArrowRight, Clock } from "lucide-react";
 import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { formatNumber } from "@/lib/format";

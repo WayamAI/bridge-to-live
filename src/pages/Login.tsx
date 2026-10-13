@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { Mail, Lock, Eye, EyeOff } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { useAuth } from "@/hooks/useAuth";
 import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
 import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
@@ -70,7 +70,7 @@ const Login = () => {
                 Email
               </label>
               <div className="relative">
-                <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-quaternary" aria-hidden />
+                <icons.email className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-icon-quaternary" aria-hidden />
                 <input
                   id="email"
                   type="email"
@@ -88,7 +88,7 @@ const Login = () => {
                 Password
               </label>
               <div className="relative">
-                <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-quaternary" aria-hidden />
+                <icons.password className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-icon-quaternary" aria-hidden />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -104,7 +104,7 @@ const Login = () => {
                   className="absolute right-3 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}
+                  {showPassword ? <icons.hidePassword className="size-4" aria-hidden /> : <icons.showPassword className="size-4" aria-hidden />}
                 </button>
               </div>
             </div>

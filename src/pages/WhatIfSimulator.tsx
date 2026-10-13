@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { Beaker, ArrowRight, RotateCcw, ChevronRight } from "lucide-react";
+import { icons } from "@/lib/icons";
 import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel, PillSelect, Unit } from "@/components/ui/primitives";
@@ -77,7 +77,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
         <Panel title="Scenario Builder" padded={false}
           action={
             <button onClick={() => setConfig({ ...DEFAULT_CONFIG })} className="type-caption inline-flex items-center gap-1 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
-              <RotateCcw className="size-3" aria-hidden /> Reset
+              <icons.reset className="size-[13px]" aria-hidden /> Reset
             </button>
           }>
           <div className="p-4 space-y-4">
@@ -186,7 +186,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
                 {savedScenarios.map((s, i) => (
                   <div key={i} className="px-4 py-2 flex items-center justify-between hover:bg-raised cursor-pointer" onClick={() => setConfig({ ...s.config })}>
                     <span className="type-body-sm font-medium">{s.name}</span>
-                    <span className="type-caption inline-flex items-center gap-0.5 text-foreground">Load <ChevronRight className="size-3" aria-hidden /></span>
+                    <span className="type-caption inline-flex items-center gap-0.5 text-foreground">Load <icons.chevronRight className="size-3" aria-hidden /></span>
                   </div>
                 ))}
               </div>

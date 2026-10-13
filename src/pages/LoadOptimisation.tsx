@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Zap, TrendingDown, ArrowRight, Check } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
@@ -92,7 +92,7 @@ const LoadOptimisation = () => {
                         aria-label={`Select ${o.opportunity}`}
                         className={`mx-auto flex size-4 items-center justify-center rounded-[4px] border ${selected.has(o.id) ? "border-transparent bg-action-primary text-on-color" : "border-strong bg-action"}`}
                       >
-                        {selected.has(o.id) && <Check className="size-2.5" strokeWidth={3} aria-hidden />}
+                        {selected.has(o.id) && <icons.selected className="size-2.5" strokeWidth={3} aria-hidden />}
                       </div>
                     </td>
                     <td className="py-2 px-2">{o.opportunity}</td>

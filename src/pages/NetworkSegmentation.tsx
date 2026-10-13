@@ -1,4 +1,3 @@
-import { Network as NetworkIcon, Shield, ArrowRight } from "lucide-react";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";

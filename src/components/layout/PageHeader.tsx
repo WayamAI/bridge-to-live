@@ -1,4 +1,6 @@
 import type { ReactNode } from "react";
+import { useLocation } from "react-router-dom";
+import { iconForPath, iconSize } from "@/lib/icons";
 
 interface Props {
   title: string;
@@ -9,12 +11,17 @@ interface Props {
 
 // Chronus page pattern: a header with a hairline underneath, then a padded body.
 // The shell's sr-only h1 (TopBar) is the page's only h1, so the visible title is an h2.
-export const PageHeader = ({ title, subtitle, actions, children }: Props) => (
+export const PageHeader = ({ title, subtitle, actions, children }: Props) => {
+  const PageIcon = iconForPath(useLocation().pathname);
+  return (
   <>
     <header className="z-10 border-b border-hairline bg-page px-4 py-4 sm:px-5 md:sticky md:top-0">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
-          <h2 className="type-display-lg sm:type-display-xl text-foreground">{title}</h2>
+          <h2 className="type-display-lg sm:type-display-xl flex items-center gap-2.5 text-foreground">
+            {PageIcon && <PageIcon className={`${iconSize.bar} shrink-0 text-icon-tertiary`} aria-hidden />}
+            {title}
+          </h2>
           {subtitle && <p className="type-body-md mt-1 max-w-[70ch] text-tertiary">{subtitle}</p>}
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -22,6 +29,7 @@ export const PageHeader = ({ title, subtitle, actions, children }: Props) => (
     </header>
     <div className="space-y-4 p-4 sm:p-5">{children}</div>
   </>
-);
+  );
+};
 
 export default PageHeader;

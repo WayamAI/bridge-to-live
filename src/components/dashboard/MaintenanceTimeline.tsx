@@ -1,9 +1,9 @@
 import type { MaintenanceEvent } from "@/hooks/usePlantData";
-import { Wrench, Brain, FileWarning } from "lucide-react";
 import { EmptyState, Panel, StatusDot } from "@/components/ui/primitives";
 import type { Tone } from "@/lib/status";
 import { toneOf } from "@/lib/status";
 import { formatDate } from "@/lib/format";
+import { eventIcon } from "@/lib/icons";
 
 interface MaintenanceTimelineProps {
   events: MaintenanceEvent[];
@@ -15,12 +15,6 @@ const urgencyTone: Record<MaintenanceEvent["urgency"], Tone> = {
   medium: "info",
   high: "warning",
   critical: "error",
-};
-
-const typeIcons = {
-  "Planned PM": Wrench,
-  "Predictive": Brain,
-  "Warranty Expiry": FileWarning,
 };
 
 const MaintenanceTimeline = ({ events }: MaintenanceTimelineProps) => {
@@ -39,7 +33,7 @@ const MaintenanceTimeline = ({ events }: MaintenanceTimelineProps) => {
       ) : (
         <div className="flex gap-2 overflow-x-auto pb-2">
           {upcoming.map((event) => {
-            const Icon = typeIcons[event.type];
+            const Icon = eventIcon(event.type);
             const daysUntil = Math.ceil((event.date.getTime() - now) / 86400000);
             return (
               <div key={event.id} className="w-52 shrink-0 rounded-lg border border-hairline bg-raised p-3">

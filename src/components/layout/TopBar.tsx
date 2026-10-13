@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { User, ChevronDown, Sun, Moon, LogOut, Menu } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/hooks/useAuth";
 import type { UserRole } from "@/hooks/usePlantData";
@@ -53,7 +53,7 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
       {/* Location: group eyebrow (no breadcrumbs in Chronus). The h1 is the page's only h1; the visible title is the PageHeader h2. */}
       <div className="flex min-w-0 items-center gap-3">
         <button type="button" aria-label="Open navigation" onClick={onOpenNav} className={`${iconBtn} lg:hidden`}>
-          <Menu className="size-4" aria-hidden />
+          <icons.menu className="size-4" aria-hidden />
         </button>
         <h1 className="sr-only">{title}</h1>
         {group && <div className="type-eyebrow hidden truncate text-quaternary sm:block" aria-hidden>{group}</div>}
@@ -78,7 +78,7 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
           aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
           className={iconBtn}
         >
-          {theme === "dark" ? <Sun className="size-4" aria-hidden /> : <Moon className="size-4" aria-hidden />}
+          {theme === "dark" ? <icons.themeLight className="size-4" aria-hidden /> : <icons.themeDark className="size-4" aria-hidden />}
         </button>
 
         {/* Role selector */}
@@ -91,10 +91,10 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
             className="flex items-center gap-2 rounded-full bg-action py-0.5 pl-0.5 pr-0.5 outline-none transition-colors duration-[180ms] hover:bg-raised-2 focus-visible:ring-2 focus-visible:ring-active md:pr-3"
           >
             <span className="grid size-7 place-items-center rounded-full bg-raised-2 text-tertiary">
-              <User className="size-3.5" aria-hidden />
+              <icons.account className="size-4" aria-hidden />
             </span>
             <span className="type-label-sm hidden text-foreground md:inline">{ROLE_LABELS[userRole]}</span>
-            <ChevronDown className="hidden size-3 text-quaternary md:block" aria-hidden />
+            <icons.chevronDown className="hidden size-3 text-icon-quaternary md:block" aria-hidden />
           </button>
           {showRoleMenu && (
             <>
@@ -118,7 +118,7 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
                   onClick={handleLogout}
                   className="type-label-sm flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-error outline-none transition-colors duration-150 hover:bg-raised focus-visible:ring-2 focus-visible:ring-active"
                 >
-                  <LogOut className="size-3.5" aria-hidden />
+                  <icons.signOut className="size-3.5" aria-hidden />
                   Log out
                 </button>
               </div>

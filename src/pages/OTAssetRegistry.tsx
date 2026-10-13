@@ -2,7 +2,6 @@ import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
 import { Chip, EmptyState, KpiTile, Panel, SearchField, ToneStatus } from "@/components/ui/primitives";
 import { patchStatus, workflowTone } from "@/lib/status";
-import { MonitorSpeaker, Shield, AlertTriangle, Search } from "lucide-react";
 
 interface OTAsset {
   name: string;

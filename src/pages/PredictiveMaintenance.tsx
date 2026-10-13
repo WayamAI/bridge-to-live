@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { AlertTriangle, CheckCircle, Clock, Wrench, X, ChevronDown, ChevronUp } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { toast } from "sonner";
 import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
@@ -112,7 +112,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                         <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="type-label-sm inline-flex h-7 items-center whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
                           Create WO
                         </button>
-                        {expandedRow === rec.id ? <ChevronUp className="size-3 text-quaternary" aria-hidden /> : <ChevronDown className="size-3 text-quaternary" aria-hidden />}
+                        {expandedRow === rec.id ? <icons.chevronUp className="size-3 text-icon-quaternary" aria-hidden /> : <icons.chevronDown className="size-3 text-icon-quaternary" aria-hidden />}
                       </div>
                     </td>
                   </tr>
@@ -152,7 +152,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                 aria-label="Close"
                 className="flex size-7 shrink-0 items-center justify-center rounded-full text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised-2 hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active"
               >
-                <X className="size-4" aria-hidden />
+                <icons.close className="size-4" aria-hidden />
               </button>
             </div>
             <div className="type-body-sm flex-1 space-y-3 px-5 py-4">

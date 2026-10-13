@@ -1,5 +1,5 @@
 import type { HandoverItem, ConnectedSystem } from "@/hooks/usePlantData";
-import { ArrowRightLeft, Check, AlertTriangle, Clock, RefreshCw } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { useLocation } from "react-router-dom";
 import PageHeader from "@/components/layout/PageHeader";
 import { locate } from "@/components/layout/nav";
@@ -88,7 +88,7 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
         padded={false}
         action={
           <button className="type-caption inline-flex items-center gap-1 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
-            <RefreshCw className="size-3" aria-hidden /> Force sync
+            <icons.sync className="size-[13px]" aria-hidden /> Force sync
           </button>
         }
       >

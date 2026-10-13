@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { workOrderStatus, workOrderType, workflowTone } from "@/lib/status";
-import { CheckCircle, Clock, AlertTriangle, Wrench, ArrowUpDown } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 
 interface WorkOrder {

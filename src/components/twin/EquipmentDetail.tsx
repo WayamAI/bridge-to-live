@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import type { Equipment } from "@/hooks/usePlantData";
-import { X, Wrench, AlertTriangle, MapPin, Factory } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { EquipmentStatusLabel } from "@/components/ui/primitives";
 import SensorSparkline from "./SensorSparkline";
 import { formatNumber } from "@/lib/format";
@@ -32,10 +32,10 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
           <h3 className="type-display-base mt-1 text-foreground">{equipment.name}</h3>
           <div className="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1">
             <span className="type-caption flex items-center gap-1 text-quaternary">
-              <MapPin className="size-3" aria-hidden />{equipment.processUnit}
+              <icons.location className="size-3.5" aria-hidden />{equipment.processUnit}
             </span>
             <span className="type-caption flex items-center gap-1 text-quaternary">
-              <Factory className="size-3" aria-hidden />{equipment.manufacturer} {equipment.model}
+              <icons.manufacturer className="size-3.5" aria-hidden />{equipment.manufacturer} {equipment.model}
             </span>
           </div>
         </div>
@@ -44,7 +44,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
           aria-label="Close equipment detail"
           className="flex size-7 shrink-0 items-center justify-center rounded-full text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised-2 hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active"
         >
-          <X className="size-4" aria-hidden />
+          <icons.close className="size-4" aria-hidden />
         </button>
       </div>
 
@@ -104,7 +104,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
                 <span>Range: {s.normalMin}–{s.normalMax} {s.unit}</span>
                 {isOutOfRange && (
                   <span className="flex items-center gap-0.5 text-error">
-                    <AlertTriangle className="size-3" aria-hidden /> Out of range
+                    <icons.warning className="size-[13px]" aria-hidden /> Out of range
                   </span>
                 )}
               </div>
@@ -117,7 +117,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
       <div className="space-y-2 border-t border-hairline p-4">
         <h4 className="type-eyebrow text-quaternary">Maintenance</h4>
         <div className="type-body-sm flex items-center gap-2">
-          <Wrench className="size-3 text-quaternary" aria-hidden />
+          <icons.maintenance className="size-3.5 text-quaternary" aria-hidden />
           <span className="text-tertiary">Next scheduled:</span>
           <span className={`font-medium ${daysToMaintenance <= 7 ? "text-warning" : "text-foreground"}`}>
             {daysToMaintenance} days
@@ -125,7 +125,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
         </div>
         {daysToFailure !== null && (
           <div className="type-body-sm flex items-center gap-2">
-            <AlertTriangle className="size-3 text-error" aria-hidden />
+            <icons.warning className="size-3.5 text-error" aria-hidden />
             <span className="text-tertiary">Predicted failure:</span>
             <span className="font-medium text-error">{daysToFailure} days</span>
           </div>

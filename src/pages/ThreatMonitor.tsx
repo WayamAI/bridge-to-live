@@ -1,4 +1,3 @@
-import { Shield, AlertTriangle, Clock } from "lucide-react";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { threatSeverity, threatStatus, workflowTone } from "@/lib/status";

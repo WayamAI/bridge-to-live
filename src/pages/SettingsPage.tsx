@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Settings as SettingsIcon, Save, Bell, Sliders, Users, Database } from "lucide-react";
+import { icons, settingsTabIcon } from "@/lib/icons";
 import { Chip, Panel, StatusDot } from "@/components/ui/primitives";
 import { priorityTone } from "@/lib/status";
 import { toast } from "sonner";
@@ -32,10 +32,10 @@ const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("thresholds");
 
   const tabs = [
-    { id: "thresholds", label: "Sensor Thresholds", icon: Sliders },
-    { id: "alerts", label: "Alert Configuration", icon: Bell },
-    { id: "models", label: "Model Parameters", icon: Database },
-    { id: "users", label: "User Management", icon: Users },
+    { id: "thresholds", label: "Sensor Thresholds" },
+    { id: "alerts", label: "Alert Configuration" },
+    { id: "models", label: "Model Parameters" },
+    { id: "users", label: "User Management" },
   ];
 
   return (
@@ -43,18 +43,21 @@ const SettingsPage = () => {
 
       {/* Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
-        {tabs.map(t => (
-          <Chip key={t.id} active={activeTab === t.id} onClick={() => setActiveTab(t.id)} className="shrink-0">
-            {t.label}
+        {tabs.map(t => {
+          const TabIcon = settingsTabIcon[t.id];
+          return (
+          <Chip key={t.id} active={activeTab === t.id} onClick={() => setActiveTab(t.id)} className="shrink-0 gap-1.5">
+            <TabIcon className="size-[13px]" aria-hidden />{t.label}
           </Chip>
-        ))}
+          );
+        })}
       </div>
 
       {activeTab === "thresholds" && (
         <Panel title="Sensor Alarm Thresholds" padded={false}
           action={
             <button onClick={() => toast.success("Thresholds saved")} className="type-label-sm inline-flex h-7 items-center gap-1 rounded-full bg-action-primary px-3 text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active">
-              <Save className="size-3" aria-hidden /> Save changes
+              <icons.save className="size-[13px]" aria-hidden /> Save changes
             </button>
           }>
           <div className="overflow-x-auto">

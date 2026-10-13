@@ -1,6 +1,6 @@
 import { useState, type SyntheticEvent } from "react";
 import { Link, NavLink } from "react-router-dom";
-import { PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import type { Alert } from "@/hooks/usePlantData";
 import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
@@ -131,7 +131,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
           className="group flex w-full items-center gap-2.5 rounded-full outline-none focus-visible:ring-2 focus-visible:ring-active"
         >
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-action text-tertiary transition-colors duration-[180ms] ease-out group-hover:bg-raised-2 group-hover:text-secondary-foreground">
-            {expanded ? <PanelLeftClose className="size-[17px]" aria-hidden /> : <PanelLeftOpen className="size-[17px]" aria-hidden />}
+            {expanded ? <icons.collapse className="size-[17px]" aria-hidden /> : <icons.expand className="size-[17px]" aria-hidden />}
           </span>
           <span className={cn("type-label-sm text-tertiary group-hover:text-secondary-foreground", railOnly)}>
             {expanded ? "Collapse sidebar" : "Expand sidebar"}
