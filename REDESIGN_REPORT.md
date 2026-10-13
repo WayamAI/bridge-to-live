@@ -6,7 +6,7 @@ Claims were checked against git (`git diff aeabd3f HEAD`, `git ls-files`) and ag
 
 ## Commits (aeabd3f..HEAD, oldest first)
 
-Hashes in this section are from the original local history. The pushed branch carries the same commits rebased onto the team's main, with the internal docs left out, so its hashes differ.
+Hashes in this section are from the original local history. The pushed branch carries the same commits rebased onto the team's main, with the internal docs left out, so its hashes differ. Two commits that changed only the internal docs (`aa0650d`, `bb1b25d`) are not in the branch.
 
 46 commits before the final docs commit (47 in total).
 
