@@ -88,7 +88,7 @@ export const KpiTile = ({
 }) => {
   const body = (
     <>
-      <span className="type-eyebrow truncate text-quaternary">{label}</span>
+      <span className="type-eyebrow text-quaternary">{label}</span>
       <span className={cn("type-display-xl sm:type-display-2xl tabular text-foreground", valueClassName)}>
         {prefix && <Unit className="ml-0 mr-0.5">{prefix}</Unit>}
         {value}
@@ -177,4 +177,27 @@ export const SearchField = ({ className, ...props }: InputHTMLAttributes<HTMLInp
       )}
     />
   </span>
+);
+
+/** Toggle chip (filters and segmented controls): outline when idle, near-black fill when active. */
+export const Chip = ({
+  active,
+  className,
+  children,
+  ...props
+}: ButtonHTMLAttributes<HTMLButtonElement> & { active?: boolean }) => (
+  <button
+    type="button"
+    aria-pressed={active}
+    {...props}
+    className={cn(
+      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 type-label-sm outline-none transition-colors duration-[150ms] focus-visible:ring-2 focus-visible:ring-active",
+      active
+        ? "border-transparent bg-action-primary text-on-color"
+        : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground",
+      className,
+    )}
+  >
+    {children}
+  </button>
 );
