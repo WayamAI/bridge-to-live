@@ -1,6 +1,6 @@
 # REDESIGN_REPORT.md
 
-Chronus-style UI redesign of PlantMind (Wayam AI), the app in this repo (`bridge-to-live`). Baseline: `aeabd3f`. Head: the commit that adds this file (the one before it is `e9b9205`).
+Chronus-style UI redesign of PlantMind (Wayam AI), the app in this repo (`bridge-to-live`). Baseline: `aeabd3f`. Head: the commit that adds this update (the one before it is `f46101c`, Step 7 icons).
 
 Claims were checked against git (`git diff aeabd3f HEAD`, `git ls-files`) and against the running app where possible. Corrections to numbers or statements in earlier reports and in internal docs (not in repo) are marked **Corrected**. The internal docs (not in repo) keep the per-page log (every wording change, page by page); this file is the summary.
 
@@ -8,7 +8,7 @@ Claims were checked against git (`git diff aeabd3f HEAD`, `git ls-files`) and ag
 
 Hashes in this section are from the original local history. The pushed branch carries the same commits rebased onto the team's main, with the internal docs left out, so its hashes differ.
 
-42 commits before this one.
+45 commits before this update.
 
 | Commit | Message |
 |---|---|
@@ -54,22 +54,25 @@ Hashes in this section are from the original local history. The pushed branch ca
 | 1f074c1 | ui: step 5 wording |
 | 38953d8 | ui: step 5 a11y |
 | e9b9205 | ui: step 5 follow-ups |
+| 93bd213 | docs: redesign report |
+| f3c4ccc | ui: final qa fixes |
+| f46101c | ui: step 7 icons |
 
 ## Diff stat against aeabd3f, by area
 
-Excluding internal docs (not in repo) and this file: 57 files changed, 2985 insertions, 2124 deletions. With internal docs (not in repo): 58 files, 3389 insertions, 2125 deletions. 14 files added, 44 modified, none deleted or renamed.
+Excluding internal docs (not in repo) and this file: 59 files changed, 3169 insertions, 2178 deletions. 16 files added (not counting this file), 44 modified, none deleted or renamed.
 
 | Area | Files | Change |
 |---|---|---|
-| Config and global styles | `index.html`, `tailwind.config.ts`, `src/index.css`, `src/styles/tokens.css` (new) | 4 files, +324 −129 |
-| Layout shell | `AppLayout`, `Sidebar`, `TopBar`, `PageHeader` (new), `nav.ts` (new) | 5 files, +325 −202 |
-| UI primitives | `ui/badge.tsx`, `ui/primitives.tsx` (new) | 2 files, +232 −5 |
-| Dashboard components | `AlarmFrequencyChart`, `EquipmentHeatMap`, `MaintenanceTimeline`, `PlantHealthTrend`, `chartTheme.ts` (new) | 5 files, +117 −87 |
-| Twin components | `EquipmentDetail`, `FactoryFloor`, `OEEDashboard`, `SensorSparkline`, `AlertsPanel`, `EquipmentTable` | 6 files, +101 −104 |
-| Pages | 26 route pages | 26 files, +1367 −1597 |
-| Logic helpers | `lib/status.ts` (new), `lib/format.ts` (new) | 2 files, +215 |
+| Config and global styles | `index.html`, `tailwind.config.ts`, `src/index.css`, `src/styles/tokens.css` (new) | 4 files, +331 −129 |
+| Layout shell | `AppLayout`, `Sidebar`, `TopBar`, `PageHeader` (new), `nav.ts` (new) | 5 files, +330 −202 |
+| UI primitives | `ui/badge.tsx`, `ui/primitives.tsx` (new) | 2 files, +235 −5 |
+| Dashboard components | `AlarmFrequencyChart`, `EquipmentHeatMap`, `MaintenanceTimeline`, `PlantHealthTrend`, `chartTheme.ts` (new) | 5 files, +120 −96 |
+| Twin components | `EquipmentDetail`, `FactoryFloor`, `OEEDashboard`, `SensorSparkline`, `AlertsPanel`, `EquipmentTable` | 6 files, +103 −114 |
+| Pages | 26 route pages | 26 files, +1384 −1632 |
+| Logic helpers | `lib/status.ts`, `lib/format.ts`, `lib/icons.ts` (all new) | 3 files, +329 |
 | Brand assets | four new SVGs | 4 files, +126 |
-| Tests | `format.test.ts`, `primitives.test.tsx`, `status.test.ts` (all new) | 3 files, +178 |
+| Tests | `format.test.ts`, `icons.test.ts`, `primitives.test.tsx`, `status.test.ts` (all new) | 4 files, +211 |
 | Docs | internal docs (not in repo), this file | |
 
 ## New files
@@ -81,8 +84,9 @@ Excluding internal docs (not in repo) and this file: 57 files changed, 2985 inse
 - `src/components/dashboard/chartTheme.ts`
 - `src/lib/status.ts`
 - `src/lib/format.ts`
+- `src/lib/icons.ts`
 - `src/assets/brand/wayam-mark-light.svg`, `wayam-mark-dark.svg`, `wayam-wordmark-light.svg`, `wayam-wordmark-dark.svg`
-- `src/test/format.test.ts`, `src/test/primitives.test.tsx`, `src/test/status.test.ts`
+- `src/test/format.test.ts`, `src/test/icons.test.ts`, `src/test/primitives.test.tsx`, `src/test/status.test.ts`
 - `REDESIGN_REPORT.md`
 
 ## Untouched files
@@ -130,6 +134,8 @@ In `src/components/dashboard/chartTheme.ts`: `seriesColor`, `chartTooltipStyle`,
 
 In `src/lib/format.ts`: `formatNumber`, `formatDate`, `formatYearMonth`, `formatMonthName`, `formatTime`.
 
+In `src/lib/icons.ts`: `navIcon`, `iconForPath`, `alarmIcon`, `eventIcon`, `settingsTabIcon`, `icons`, `iconSize` (see Icons below).
+
 ## Mappings
 
 **Status colour mapping (`lib/status.ts`).** Old PlantMind colours: operational → success, gap → warning, destructive → error, engineering → info. Alarm severity: critical error, warning warning, info info. Priority P1 to P4: error, warning, info, neutral (**P3 changes from indigo to blue**). Equipment: running success, warning warning, critical error, offline neutral, maintenance info. Threat severity: critical error, high warning, medium info, low neutral. Workflow states (work order, recommendation, opportunity, chattering, rationalisation, patch, threat, handover, validation, data source, complexity, zone) each have one map. Quiet text and dot is the default; a solid badge marks the states that need attention (Emergency, Awaiting Parts, Chattering, End-of-life, Critical and High threats, Investigating, At risk, Fail, Degraded, At Risk completeness, red zones). Every lookup goes through `workflowTone`, `toneOf` or `labelOf`: an unknown value shows as quiet neutral text with the raw label and never throws (unit-tested per map).
@@ -146,6 +152,10 @@ In `src/lib/format.ts`: `formatNumber`, `formatDate`, `formatYearMonth`, `format
 | display base / lg / xl / 2xl | `type-display-*` (Michroma, weight 400) |
 | eyebrow | `type-eyebrow` + `text-quaternary` |
 | border muted / default | `border-hairline` / `border-strong` |
+
+**Icons (`lib/icons.ts`, Step 7).** One file maps every icon. `navIcon` gives each route one lucide icon; the sidebar, `nav.ts` and the page header (`PageHeader` looks the icon up by route) all read it, so a page shows the same icon in the sidebar and in its header. `alarmIcon()` and `eventIcon()` replace the three local `typeIcons` maps and return a `CircleHelp` fallback for an unknown type (no throw). Settings tabs show their icons again through `settingsTabIcon`. Stroke 1.75 comes from one rule in `index.css`. Icons are greyscale (`text-icon-primary` to `text-icon-quaternary`, tailwind colours aliasing the text tokens); colour only where the icon is itself a status. Sizes by context: sidebar 17, top bar and page header 16, rows 14, pills and buttons 13, chevrons 12. All decorative icons are `aria-hidden`. No entity marks: the repo has no PNG assets for them, and none were created.
+
+One icon, one meaning. Icons that had two meanings and how they were resolved (details in internal docs (not in repo), "Step 7 icons"): BarChart3 (Cost Tracker now Wallet), Clock (RUL now Hourglass), Lock (Compliance now BadgeCheck), Database (Settings models tab now Sigma), Bolt and Zap (Load Optimisation now Scale), Shield (safety alarm type now HardHat), AlertTriangle for three alarm types (now Radar, ArrowUpToLine, TrendingUp), Brain and BrainCircuit (now Brain), and the Dashboard quick actions (each now uses its destination's sidebar icon). Wrench, Brain, Bell and Zap are shared on purpose because the meaning is the same.
 
 ## Before and after per page
 
@@ -166,6 +176,8 @@ The internal docs (not in repo) ("Step 4 page log") have the full per-page list.
 - **Number formatting pinned to `en-IN`** through `lib/format.ts` (lakh grouping above 99,999); 25 `toLocaleString()` calls in 11 files replaced at the same precision. (**Corrected:** the Step 5 report said 30 call sites in 12 files; the shadcn `ui/chart.tsx` call was reverted because its value type does not fit, and the count was 25 in 11.) `ui/chart.tsx` keeps one unpinned call (unused component).
 - **Dates:** ISO `YYYY-MM-DD` in chart axes and the maintenance timeline; RUL axis `YYYY-MM` (was "May 25"); Load Optimisation keeps short month names ("Apr"), pinned to `en-IN`. Mock data untouched.
 - **Clock:** 24-hour `HH:mm`, seconds dropped, and **pinned to `Asia/Kolkata`** so the "IST" label is true for every viewer (before, it was the viewer's local time). A deliberate change, not a bug fix.
+- **Final QA fixes (Step 6b):** the KPI unit gap ("6 (L0–L4+DMZ)", "6 days ago") is a word space again; Alarm Rationalisation and Load Optimisation fit at 1440 again (cell padding `px-2`, narrower Rationale and Opportunity columns, wrapping Annual Saving header); the three date axes use `preserveStartEnd` with `minTickGap` so ISO labels no longer overlap or clip.
+- **Icons (Step 7):** see Icons under Mappings. Visible changes: icons in page headers and Settings tabs; Cost Tracker, RUL, Compliance, Load Optimisation, models-tab and the safety, anomaly, threshold and rate-of-change alarm icons changed to resolve duplicate meanings; row icons 12 to 14 and pill icons 12 to 13.
 - Pulse animations are static (live dot, FactoryFloor ring, sync spinner replaced by its label).
 - Decorative KPI and header icons removed.
 - Medium severity and P3 are blue (info), not indigo or orange.
@@ -189,7 +201,7 @@ The internal docs (not in repo) ("Step 4 page log") have the full per-page list.
 9. Tailwind stays on 3.4 (Chronus is v4).
 10. Fonts stay Google-hosted.
 
-## Unused files left untouched
+## Cleanup ticket (unused files, left in place on purpose)
 
 - **No importer anywhere, zero diff:** `Logo.tsx` (**new fact:** unused since the shell and login use the brand SVGs), `NavLink.tsx`, `EngagementTimeline.tsx`, `GapAnalysis.tsx`, `MetricsBar.tsx`, `PhaseTracker.tsx`, `TransitionRequirements.tsx`, `TwinComparison.tsx`, `twin/KPICards.tsx`, `pages/Index.tsx`, `pages/PlaceholderPage.tsx`, `App.css`, `hooks/useFactoryData.ts` (only the unused components import it).
 - **No importer, but edited for format or accessibility:** `twin/AlertsPanel.tsx`, `twin/EquipmentTable.tsx`.
@@ -209,7 +221,7 @@ The internal docs (not in repo) ("Step 4 page log") have the full per-page list.
 9. `/equipment` and `/equipment/detail`, and `/handover` and `/data-sources`, render identical pages.
 10. `animate-pulse-subtle` (AlarmManagement) is not defined anywhere.
 11. EquipmentDetail shows negative "days" for past mock dates; Work Orders shows all "overdue" because mock dates are in the past.
-12. `typeIcons[alert.type]` (AlarmManagement, MaintenanceTimeline) throws for an unknown alarm or event type, as it did at baseline; it is the one lookup not behind a fallback.
+12. ~~`typeIcons[alert.type]` throws for an unknown alarm or event type.~~ **Corrected:** fixed in Step 7; `alarmIcon()` and `eventIcon()` fall back to `CircleHelp`. Every lookup in the app now has a fallback.
 13. Six baseline lint errors (`any` x2 in FailureAnalysis, a ternary statement in LoadOptimisation, `require()` in the tailwind config, two empty interfaces in unused `ui/command.tsx` and `ui/textarea.tsx`) and nine react-refresh warnings.
 14. `TopBar` re-renders every second (clock state at the top of the shell tree).
 15. Root `tsc --noEmit` checks nothing (`files: []`); the real gate is `tsc -p tsconfig.app.json`.
@@ -223,32 +235,36 @@ The internal docs (not in repo) ("Step 4 page log") have the full per-page list.
 | Gate | Baseline `aeabd3f` | Final |
 |---|---|---|
 | `tsc -p tsconfig.app.json --noEmit` | 0 errors | 0 errors |
-| `npm test` | 1 file, 1 test | 4 files, 43 tests, all passing |
-| `npm run build` | OK, 2903 modules, JS 1,116.66 kB (308 kB gzip), CSS 71.24 kB | OK, 2911 modules, JS 1,114.59 kB (about 310 kB gzip), CSS 78.31 kB |
+| `npm test` | 1 file, 1 test | 5 files, 48 tests, all passing |
+| `npm run build` | OK, 2903 modules, JS 1,116.66 kB (308 kB gzip), CSS 71.24 kB | OK, JS 1,119.31 kB (about 311 kB gzip), CSS 78.52 kB |
 | `npm run lint` | 15 problems (6 errors, 9 warnings) | 15 problems (6 errors, 9 warnings), the same ones |
 | Route sweep (28 routes x light/dark x 1440/390 = 112 combos) | 48 failing combos (7 routes with h1=0, duplicate-key warning, 17 routes overflowing at 390px) | 4 failing combos, all the exempt `/predictive-maintenance` duplicate-key warning; every route has one h1 and no horizontal overflow |
 
-Test files: `example` (baseline), `primitives`, `status`, `format`.
+Test files: `example` (baseline), `primitives`, `status`, `format`, `icons`. The final sweep and all gates were run on the Step 7 commit.
 
-Sweep detail: a first sweep run alongside the screenshot script showed one transient `h1=0` on `/settings` (light, 1440); the same route passed on re-run and on a clean full sweep run by itself. The sweep script is the Step 1 script (load, 500 ms, then console errors except fonts and 404, h1 count, document and `main` overflow, theme class).
+Full-height QA: every route captured at its full scroll height (the script grows the viewport to `main`'s scroll height; no app change) in light and dark at 1440, plus 390 for the six tallest pages (Dashboard, OT Asset Registry, Compliance, Failure Analysis, Network Segmentation, Handover Tracker). Screenshots were looked at as light and dark contact sheets, again after Step 7.
 
-Screenshots: every route in light and dark at 1440 x 1100, looked at in 14 contact sheets. Below the fold is not captured (the scroll region is `main`).
+### Found and fixed in final QA (all regressions from earlier steps)
+
+- **Corrected:** the Step 5 and Step 6 reports said the Network tile reading "6(L0–L4+DMZ)" and the wide Alarm Rationalisation and Load Optimisation tables were just listed items. Compared with `aeabd3f` they were regressions (baseline had the space and both tables fitted at 1440), and are fixed.
+- **Corrected:** the Step 5 report said the ISO date labels were fine. At 390 px the Plant Health Trend labels overlapped and the last tick on both Dashboard charts was clipped; fixed.
+- The Dashboard heat map did scroll at baseline (463 in 404 px at 1440), so it is listed, not a regression; it is tighter now (603 in 386 px) because of the wider sidebar and the Chronus cell padding.
 
 ### Looks off (not fixed, listed)
 
-- Dashboard: the equipment heat map table is wider than its panel, so the last column ("Vibration") is cut off until you scroll the panel sideways (checked: the panel is `overflow-x: auto`, 603px of table in 386px).
-- Alarm Rationalisation and Load Optimisation: the tables are wider than their panels at 1440 (880 in 830px and 862 in 730px), so the last columns (Status, Payback) sit behind a horizontal scroll inside the panel.
+- Dashboard: the equipment heat map table is wider than its panel, so its last column ("Vibration") sits behind a horizontal scroll (baseline also scrolled).
+- At 390 px the wide tables (OT Assets, Handover, Failure Analysis, heat map) scroll inside their panels, which is accepted at 390.
 - Equipment Health and Dashboard: the right-hand detail column is an empty panel until a row is selected (same as baseline).
 - Failure Analysis: the event timeline panel is empty (pre-existing scatter bug).
-- Network Segmentation: the "Network zones" tile reads "6(L0–L4+DMZ)" with no space before the bracket (the KPI auto-split of value and unit).
 - Handover Tracker shows 83% readiness while the Dashboard tile shows 73% (hard-coded, pre-existing).
-- Compliance and other long pages are cut at 1100px in the screenshot only.
 
-## Questions for reviewer
+## Decisions and open questions
 
-1. The old Medium severity and P3 are now blue (info). Keep, or go back to amber and indigo?
-2. Delete the unused files (list above), or keep them?
-3. Should the dashboard heat map and the two wide tables wrap their columns instead of scrolling?
-4. Should the pre-existing bugs (list above) become separate tickets? The "Rate Of_change" label, `Math.random()` chart data and the non-rendering charts are the ones users can see.
-5. Fonts are still loaded from Google Fonts at runtime (as before). Self-host them?
-6. Step 7 (icons) next, after your review.
+Answered:
+1. Medium severity and P3 stay blue (info).
+2. Unused files stay; they are listed under Cleanup ticket above.
+3. Horizontal scroll at 1440: the two regressions are fixed; the Dashboard heat map also scrolled at baseline, so it is listed.
+
+Not answered (your last message had template placeholders in these two places, so I changed nothing):
+4. **Fonts.** The message read "[self-host Geist and Michroma as .woff2 under src/assets/fonts … OR keep Google Fonts]". Fonts are still loaded from Google Fonts at runtime (as at baseline). Say "self-host" and I will add the .woff2 files, the `@font-face` rules and drop the Google links; it needs the font files fetched once.
+5. **Pre-existing bugs.** The message had "[your answers to the other three]". They remain listed above; say which ones should be fixed or ticketed (the visible ones are "Rate Of_change", the `Math.random()` chart data and the charts that do not render).
