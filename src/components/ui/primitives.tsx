@@ -161,8 +161,8 @@ export const EmptyState = ({ title = "Nothing to show", detail, className }: { t
 );
 
 /** Pill select: a native select (so options, value and onChange are unchanged) with a Chronus chevron. */
-export const PillSelect = ({ className, children, ...props }: SelectHTMLAttributes<HTMLSelectElement>) => (
-  <span className="relative inline-flex">
+export const PillSelect = ({ className, wrapperClassName, children, ...props }: SelectHTMLAttributes<HTMLSelectElement> & { wrapperClassName?: string }) => (
+  <span className={cn("relative inline-flex", wrapperClassName)}>
     <select
       {...props}
       className={cn(
