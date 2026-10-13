@@ -49,7 +49,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
 
   const createWorkOrder = (rec: Recommendation) => {
     const woId = `WO-2026-${4400 + Math.floor(Math.random() * 100)}`;
-    toast.success(`Work order ${woId} created in Maximo`, { description: `${rec.tag} — ${rec.action.split("—")[0]}` });
+    toast.success(`Work order ${woId} created in Maximo`, { description: `${rec.tag} · ${rec.action.split("—")[0]}` });
     setWoPanel(null);
   };
 

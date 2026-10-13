@@ -25,7 +25,7 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
       <Panel title="Active Handover Project">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="min-w-0">
-            <p className="type-body-lg font-medium text-foreground">{plantInfo.name} — Phase 2</p>
+            <p className="type-body-lg font-medium text-foreground">{plantInfo.name} · Phase 2</p>
             <p className="type-body-sm mt-0.5 text-tertiary">Client: {plantInfo.operator} | Target: {plantInfo.handoverTarget} | {plantInfo.daysRemaining} days remaining</p>
           </div>
           <div className="text-right">

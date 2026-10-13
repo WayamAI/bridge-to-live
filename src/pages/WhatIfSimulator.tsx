@@ -129,7 +129,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
                 wrapperClassName="mt-1 w-full" className="w-full" aria-label="Simulate equipment failure">
                 <option value="">None</option>
                 {equipment.filter(e => e.criticalityTier !== "Non-critical").slice(0, 10).map(e => (
-                  <option key={e.id} value={e.tag}>{e.tag} — {e.name}</option>
+                  <option key={e.id} value={e.tag}>{e.tag} · {e.name}</option>
                 ))}
               </PillSelect>
             </div>
