@@ -3,6 +3,7 @@ import { ClipboardCheck, AlertTriangle, CheckCircle, Search } from "lucide-react
 import PageHeader from "@/components/layout/PageHeader";
 import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { validationStatus } from "@/lib/status";
+import { formatNumber } from "@/lib/format";
 
 interface ValidationRecord {
   id: string;
@@ -48,10 +49,10 @@ const ISOValidator = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Validation Checks", value: totalChecks.toLocaleString() },
-          { label: "Passing", value: totalPass.toLocaleString() },
-          { label: "Failures", value: totalFail.toLocaleString(), color: "text-error" },
-          { label: "Warnings", value: totalWarn.toLocaleString(), color: "text-warning" },
+          { label: "Total Validation Checks", value: formatNumber(totalChecks) },
+          { label: "Passing", value: formatNumber(totalPass) },
+          { label: "Failures", value: formatNumber(totalFail), color: "text-error" },
+          { label: "Warnings", value: formatNumber(totalWarn), color: "text-warning" },
         ].map(s => (
           <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
@@ -77,8 +78,8 @@ const ISOValidator = () => {
                 return (
                   <tr key={d.category} className="border-b border-hairline hover:bg-raised">
                     <td className="py-2 px-3 font-medium">{d.category}</td>
-                    <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.total.toLocaleString()}</td>
-                    <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.pass.toLocaleString()}</td>
+                    <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.total)}</td>
+                    <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.pass)}</td>
                     <td className="py-2 px-3 text-right tabular text-error whitespace-nowrap">{d.fail}</td>
                     <td className="py-2 px-3 text-right tabular text-warning whitespace-nowrap">{d.warning}</td>
                     <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">

@@ -5,6 +5,7 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, ToneStatus, Unit } from "@/components/ui/primitives";
 import { complexityTone, opportunityStatus } from "@/lib/status";
+import { formatNumber, formatMonthName } from "@/lib/format";
 
 interface Opportunity {
   id: string;
@@ -35,7 +36,7 @@ const LoadOptimisation = () => {
   const selectedSaving = OPPORTUNITIES.filter(o => selected.has(o.id)).reduce((s, o) => s + o.annualSaving, 0);
 
   const projectionData = Array.from({ length: 12 }, (_, i) => ({
-    month: new Date(2026, 3 + i).toLocaleDateString("en-IN", { month: "short" }),
+    month: formatMonthName(new Date(2026, 3 + i)),
     baseline: Math.round(4200 + Math.random() * 200),
     projected: Math.round(4200 - (selectedSaving / 12) * 10 + Math.random() * 200),
   }));
@@ -118,11 +119,11 @@ const LoadOptimisation = () => {
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-lg border border-hairline bg-raised p-3">
                     <p className="type-eyebrow text-quaternary">Current (₹/day)</p>
-                    <p className="type-display-lg tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{Math.round(totalSaving / 365 * 100 + 8400).toLocaleString()}</p>
+                    <p className="type-display-lg tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{formatNumber(Math.round(totalSaving / 365 * 100 + 8400))}</p>
                   </div>
                   <div className="rounded-lg border border-strong bg-raised p-3">
                     <p className="type-eyebrow text-quaternary">After Changes (₹/day)</p>
-                    <p className="type-display-lg tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{Math.round((totalSaving - selectedSaving) / 365 * 100 + 8400).toLocaleString()}</p>
+                    <p className="type-display-lg tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{formatNumber(Math.round((totalSaving - selectedSaving) / 365 * 100 + 8400))}</p>
                   </div>
                 </div>
                 <div className="rounded-lg border border-hairline bg-raised p-3 text-center">

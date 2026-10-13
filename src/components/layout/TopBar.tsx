@@ -5,6 +5,7 @@ import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/hooks/useAuth";
 import type { UserRole } from "@/hooks/usePlantData";
 import { locate } from "./nav";
+import { formatTime } from "@/lib/format";
 
 const ROLE_LABELS: Record<UserRole, string> = {
   plant_director: "Plant Director",
@@ -65,7 +66,7 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
           Live
         </div>
         <span className="type-body-sm tabular hidden text-tertiary md:inline">
-          {time.toLocaleTimeString()} IST
+          {formatTime(time)} IST
         </span>
         <span className="type-body-sm tabular hidden text-tertiary lg:inline">
           42,400 tags active
@@ -128,7 +129,7 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
     </header>
     {/* Below lg the clock (below md) and tag count sit on a quiet second line instead of being hidden. */}
     <div className="type-body-sm tabular flex h-7 items-center gap-3 border-b border-hairline bg-page px-4 text-quaternary sm:px-5 lg:hidden">
-      <span className="md:hidden">{time.toLocaleTimeString()} IST</span>
+      <span className="md:hidden">{formatTime(time)} IST</span>
       <span>42,400 tags active</span>
     </div>
     </div>

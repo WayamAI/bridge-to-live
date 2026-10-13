@@ -6,6 +6,7 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from
 import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, Panel } from "@/components/ui/primitives";
+import { formatNumber, formatYearMonth } from "@/lib/format";
 
 interface Props {
   equipment: Equipment[];
@@ -40,7 +41,7 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
     Array.from({ length: 12 }, (_, i) => {
       const month = new Date(2025, 4 + i, 1);
       return {
-        month: month.toLocaleDateString("en-IN", { month: "short", year: "2-digit" }),
+        month: formatYearMonth(month),
         young: Math.round(18 - i * 0.3 + Math.random() * 2),
         mid: Math.round(14 + i * 0.2 + Math.random()),
         old: Math.round(8 + i * 0.4 + Math.random()),
@@ -118,7 +119,7 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
                   <td className="py-2 px-3 tabular font-medium text-foreground whitespace-nowrap">{e.tag}</td>
                   <td className="py-2 px-3">{e.classLabel}</td>
                   <td className="py-2 px-3">{e.processUnit}</td>
-                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{e.runtimeHours.toLocaleString()}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(e.runtimeHours)}</td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">
                     <span className={e.rulDays! < 30 ? "font-medium text-error" : "text-warning"}>{e.rulDays}</span>
                   </td>

@@ -5,6 +5,7 @@ import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { completenessState } from "@/lib/status";
+import { formatNumber } from "@/lib/format";
 
 const COMPLETENESS_DATA = [
   { category: "Equipment tags", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
@@ -67,9 +68,9 @@ const DataCompleteness = () => {
               {COMPLETENESS_DATA.map(d => (
                 <tr key={d.category} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{d.category}</td>
-                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.total.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.complete.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{(d.total - d.complete).toLocaleString()}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.total)}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.complete)}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.total - d.complete)}</td>
                   <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">
                     <span className={d.pct >= 95 ? "" : d.pct >= 80 ? "text-warning" : "text-error"}>{d.pct}%</span>
                   </td>

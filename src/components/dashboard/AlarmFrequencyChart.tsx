@@ -3,6 +3,7 @@ import { Panel } from "@/components/ui/primitives";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
+import { formatDate } from "@/lib/format";
 
 const AlarmFrequencyChart = () => {
   const data = useMemo(() => {
@@ -10,7 +11,7 @@ const AlarmFrequencyChart = () => {
     for (let i = 29; i >= 0; i--) {
       const date = new Date(Date.now() - i * 86400000);
       points.push({
-        date: date.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
+        date: formatDate(date),
         Critical: Math.floor(Math.random() * 8 + 2),
         Major: Math.floor(Math.random() * 15 + 5),
         Minor: Math.floor(Math.random() * 30 + 10),

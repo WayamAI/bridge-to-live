@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { syncRunTone } from "@/lib/status";
+import { formatNumber } from "@/lib/format";
 
 const SYNC_LOG = [
   { timestamp: "2026-03-24 08:14:22", records: "240,412", newTags: 24, modified: 148, deleted: 0, errors: 2, status: "Completed" },
@@ -77,8 +78,8 @@ const TwinSync = () => {
                 <tr key={d.category} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{d.category}</td>
                   <td className="py-2 px-3 type-body-sm text-tertiary">{d.source}</td>
-                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.total.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.synced.toLocaleString()}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.total)}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.synced)}</td>
                   <td className="py-2 px-3 type-body-sm">
                     <span className={d.delta.includes("error") ? "text-error" : d.delta === "No change" ? "text-tertiary" : "text-foreground"}>{d.delta}</span>
                   </td>

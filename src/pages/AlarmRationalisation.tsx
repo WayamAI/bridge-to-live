@@ -6,6 +6,7 @@ import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { rationalisationStatus } from "@/lib/status";
+import { formatNumber } from "@/lib/format";
 
 interface AlarmPoint {
   id: string;
@@ -47,8 +48,8 @@ const AlarmRationalisation = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Alarm Points", value: total.toLocaleString() },
-          { label: "Reviewed", value: `${reviewed.toLocaleString()} (${Math.round(reviewed / total * 100)}%)` },
+          { label: "Total Alarm Points", value: formatNumber(total) },
+          { label: "Reviewed", value: `${formatNumber(reviewed)} (${Math.round(reviewed / total * 100)}%)` },
           { label: "Pending Review", value: "453" },
           { label: "Chattering Eliminated", value: "82" },
         ].map(s => (
@@ -107,7 +108,7 @@ const AlarmRationalisation = () => {
               {SUMMARY_PIE.map(d => (
                 <div key={d.name} className="flex items-center justify-between type-caption">
                   <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: d.color }} /><span>{d.name}</span></div>
-                  <span className="tabular">{d.value.toLocaleString()}</span>
+                  <span className="tabular">{formatNumber(d.value)}</span>
                 </div>
               ))}
             </div>

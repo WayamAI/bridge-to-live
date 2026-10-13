@@ -5,6 +5,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { TrendingDown, TrendingUp, AlertTriangle, ArrowRight, Clock } from "lucide-react";
 import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { formatNumber } from "@/lib/format";
 
 const FAILURE_MODES = [
   { mode: "Bearing failure", count: 84, pct: 34, downtime: 624, cost: 312, mtbf: 11200, trend: "↑" },
@@ -103,7 +104,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.count}</td>
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.downtime}</td>
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.cost}</td>
-                    <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.mtbf.toLocaleString()}</td>
+                    <td className="text-right py-2 px-3 tabular whitespace-nowrap">{formatNumber(f.mtbf)}</td>
                     <td className={`text-center py-2 px-3 ${f.trend === "↑" ? "text-error" : f.trend === "↓" ? "text-success" : "text-tertiary"}`}>{f.trend}</td>
                   </tr>
                 ))}

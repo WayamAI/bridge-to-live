@@ -5,6 +5,7 @@ import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { chatteringStatus } from "@/lib/status";
+import { formatDate } from "@/lib/format";
 
 const HOURLY_ALARMS = Array.from({ length: 24 }, (_, i) => ({
   hour: `${i.toString().padStart(2, "0")}:00`,
@@ -17,7 +18,7 @@ const DAILY_TREND = Array.from({ length: 30 }, (_, i) => {
   const d = new Date();
   d.setDate(d.getDate() - 29 + i);
   return {
-    date: d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
+    date: formatDate(d),
     total: Math.floor(Math.random() * 40 + 60),
     ackTime: Math.round((Math.random() * 20 + 5) * 10) / 10,
   };

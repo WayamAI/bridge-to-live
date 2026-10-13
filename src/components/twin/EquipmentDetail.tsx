@@ -3,6 +3,7 @@ import type { Equipment } from "@/hooks/usePlantData";
 import { X, Wrench, AlertTriangle, MapPin, Factory } from "lucide-react";
 import { EquipmentStatusLabel } from "@/components/ui/primitives";
 import SensorSparkline from "./SensorSparkline";
+import { formatNumber } from "@/lib/format";
 
 interface EquipmentDetailProps {
   equipment: Equipment;
@@ -53,7 +54,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
         <span className="type-body-sm text-tertiary">
           Health: <strong className="tabular font-medium text-foreground">{equipment.health}%</strong>
         </span>
-        <span className="type-body-sm tabular text-tertiary">{equipment.runtimeHours.toLocaleString()}h runtime</span>
+        <span className="type-body-sm tabular text-tertiary">{formatNumber(equipment.runtimeHours)}h runtime</span>
         {equipment.rulDays !== null && (
           <span className="type-body-sm tabular text-tertiary">
             RUL: <strong className={`font-medium ${equipment.rulDays < 30 ? "text-error" : "text-foreground"}`}>{equipment.rulDays}d</strong>

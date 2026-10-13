@@ -3,6 +3,7 @@ import type { EnergyMetric } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
 import { complexityTone } from "@/lib/status";
+import { formatNumber } from "@/lib/format";
 
 interface EnergyPageProps {
   energyMetrics: EnergyMetric[];
@@ -32,11 +33,11 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
             <KpiTile
               key={m.label}
               label={m.label}
-              value={m.value.toLocaleString()}
+              value={formatNumber(m.value)}
               unit={m.unit}
               delta={`${isOver ? "+" : ""}${deviation}%`}
               tone={isOver ? "error" : "neutral"}
-              hint={`Setpoint: ${m.setpoint.toLocaleString()}`}
+              hint={`Setpoint: ${formatNumber(m.setpoint)}`}
             >
               <div className="mt-1 h-6">
                 <svg viewBox="0 0 200 24" className="h-full w-full" preserveAspectRatio="none" aria-hidden>

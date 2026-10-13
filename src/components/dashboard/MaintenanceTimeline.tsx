@@ -2,6 +2,7 @@ import type { MaintenanceEvent } from "@/hooks/usePlantData";
 import { Wrench, Brain, FileWarning } from "lucide-react";
 import { EmptyState, Panel, StatusDot } from "@/components/ui/primitives";
 import type { Tone } from "@/lib/status";
+import { formatDate } from "@/lib/format";
 
 interface MaintenanceTimelineProps {
   events: MaintenanceEvent[];
@@ -53,7 +54,7 @@ const MaintenanceTimeline = ({ events }: MaintenanceTimelineProps) => {
                 <p className="type-label-sm tabular text-foreground">{event.equipmentTag}</p>
                 <p className="type-body-sm mt-0.5 leading-snug text-tertiary">{event.description}</p>
                 <p className="type-caption tabular mt-1.5 text-foreground">
-                  {event.date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                  {formatDate(event.date)}
                   <span className="ml-1 text-quaternary">({daysUntil}d)</span>
                 </p>
               </div>

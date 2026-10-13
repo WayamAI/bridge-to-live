@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Panel } from "@/components/ui/primitives";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { formatDate } from "@/lib/format";
 
 const PlantHealthTrend = () => {
   const data = useMemo(() => {
@@ -13,7 +14,7 @@ const PlantHealthTrend = () => {
       health = Math.max(78, Math.min(96, health));
       const date = new Date(now - i * 86400000);
       points.push({
-        date: date.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
+        date: formatDate(date),
         health: Math.round(health * 10) / 10,
         isForecast: i < 30,
       });

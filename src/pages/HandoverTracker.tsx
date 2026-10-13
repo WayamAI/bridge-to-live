@@ -5,6 +5,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { locate } from "@/components/layout/nav";
 import { Panel, ToneStatus, Unit } from "@/components/ui/primitives";
 import { connectedSystemTone, handoverItemStatus } from "@/lib/status";
+import { formatNumber } from "@/lib/format";
 
 interface HandoverPageProps {
   handoverData: HandoverItem[];
@@ -54,9 +55,9 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
                 return (
                   <tr key={i} className="border-b border-hairline last:border-0 hover:bg-raised cursor-pointer">
                     <td className="px-3 py-2 font-medium">{item.requirement}</td>
-                    <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{item.target.toLocaleString()} {item.unit}</td>
-                    <td className="px-3 py-2 tabular whitespace-nowrap">{item.completed.toLocaleString()} {item.unit}</td>
-                    <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{(item.target - item.completed).toLocaleString()} {item.unit}</td>
+                    <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{formatNumber(item.target)} {item.unit}</td>
+                    <td className="px-3 py-2 tabular whitespace-nowrap">{formatNumber(item.completed)} {item.unit}</td>
+                    <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{formatNumber(item.target - item.completed)} {item.unit}</td>
                     <td className="px-3 py-2 w-32">
                       <div className="flex items-center gap-2">
                         <div className="flex-1 h-1.5 rounded-full bg-raised-2 overflow-hidden">
