@@ -107,3 +107,11 @@ export const chatteringStatus: Record<string, WorkflowTone> = {
   Standing: { tone: "info" },
   Repeating: { tone: "neutral" },
 };
+
+/** Alarm rationalisation review state. */
+export const rationalisationStatus: Record<string, WorkflowTone> = {
+  Reviewed: { tone: "success" },
+  Pending: { tone: "warning" },
+  Approved: { tone: "info" },
+  Suppressed: { tone: "neutral" },
+};

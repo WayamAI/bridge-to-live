@@ -3,6 +3,9 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { Target, AlertTriangle, CheckCircle } from "lucide-react";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { rationalisationStatus } from "@/lib/status";
 
 interface AlarmPoint {
   id: string;
@@ -35,42 +38,27 @@ const SUMMARY_PIE = [
   { name: "Pending Review", value: 453, color: toneChart.neutral },
 ];
 
-const STATUS_COLORS: Record<string, string> = {
-  Reviewed: "bg-operational/10 text-operational",
-  Pending: "bg-gap/10 text-gap",
-  Approved: "bg-primary/10 text-primary",
-  Suppressed: "bg-muted text-muted-foreground",
-};
-
 const AlarmRationalisation = () => {
   const total = SUMMARY_PIE.reduce((s, d) => s + d.value, 0);
   const reviewed = total - 453;
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h2 className="text-lg font-bold flex items-center gap-2"><Target className="w-5 h-5 text-primary" /> Alarm Rationalisation</h2>
-      <p className="text-xs text-muted-foreground -mt-3">Systematic review of alarm setpoints per ISA-18.2 / IEC 62682 standards</p>
+    <PageHeader title="Alarm Rationalisation" subtitle="Systematic review of alarm setpoints per ISA-18.2 / IEC 62682 standards">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Total Alarm Points", value: total.toLocaleString() },
-          { label: "Reviewed", value: `${reviewed.toLocaleString()} (${Math.round(reviewed / total * 100)}%)`, color: "text-operational" },
-          { label: "Pending Review", value: "453", color: "text-gap" },
-          { label: "Chattering Eliminated", value: "82", color: "text-primary" },
+          { label: "Reviewed", value: `${reviewed.toLocaleString()} (${Math.round(reviewed / total * 100)}%)` },
+          { label: "Pending Review", value: "453" },
+          { label: "Chattering Eliminated", value: "82" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} />
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
         {/* Rationalisation Table */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Alarm Rationalisation Register — High-Frequency Items</h3>
-          </div>
+        <Panel title="Alarm Rationalisation Register · High-Frequency Items" padded={false}>
           <div className="overflow-x-auto">
             <table className="w-full type-body-sm">
               <thead>
@@ -88,29 +76,25 @@ const AlarmRationalisation = () => {
               </thead>
               <tbody>
                 {ALARM_POINTS.map(a => (
-                  <tr key={a.id} className={`border-b border-hairline hover:bg-raised ${a.alarmRate7d > 20 ? "bg-destructive/5" : ""}`}>
+                  <tr key={a.id} className="border-b border-hairline hover:bg-raised">
                     <td className="py-2 px-3 tabular text-foreground font-medium whitespace-nowrap">{a.tag}</td>
                     <td className="py-2 px-3">{a.parameter}</td>
                     <td className="py-2 px-3 tabular whitespace-nowrap">{a.currentSetpoint}</td>
-                    <td className="py-2 px-3 tabular font-bold whitespace-nowrap">{a.proposedSetpoint}</td>
+                    <td className="py-2 px-3 tabular font-semibold whitespace-nowrap">{a.proposedSetpoint}</td>
                     <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{a.rationaleCode}</td>
                     <td className="py-2 px-3 type-body-sm">{a.rationale}</td>
-                    <td className="py-2 px-3 text-right tabular font-bold whitespace-nowrap">{a.alarmRate7d}</td>
+                    <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">{a.alarmRate7d}</td>
                     <td className="py-2 px-3 text-center tabular whitespace-nowrap">{a.priority}</td>
-                    <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full font-medium ${STATUS_COLORS[a.status]}`}>{a.status}</span></td>
+                    <td className="py-2 px-3"><ToneStatus tone={rationalisationStatus[a.status].tone}>{a.status}</ToneStatus></td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
-        </div>
+        </Panel>
 
         {/* Summary Pie */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Rationalisation Summary</h3>
-          </div>
-          <div className="p-4">
+        <Panel title="Rationalisation Summary">
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie isAnimationActive={false} data={SUMMARY_PIE} cx="50%" cy="50%" outerRadius={80} innerRadius={45} dataKey="value" paddingAngle={2}>
@@ -121,16 +105,15 @@ const AlarmRationalisation = () => {
             </ResponsiveContainer>
             <div className="space-y-1.5 mt-3">
               {SUMMARY_PIE.map(d => (
-                <div key={d.name} className="flex items-center justify-between text-[10px]">
+                <div key={d.name} className="flex items-center justify-between type-caption">
                   <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: d.color }} /><span>{d.name}</span></div>
-                  <span className="font-mono">{d.value.toLocaleString()}</span>
+                  <span className="tabular">{d.value.toLocaleString()}</span>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+        </Panel>
       </div>
-    </div>
+    </PageHeader>
   );
 };
 
