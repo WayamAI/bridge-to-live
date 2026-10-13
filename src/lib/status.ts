@@ -160,3 +160,10 @@ export const syncRunTone = (errors: number): Tone => (errors > 0 ? "warning" : "
 /** Data completeness state from a percentage: 100 Complete (success), 80 and above On Track (warning), below 80 At Risk (error, solid). */
 export const completenessState = (pct: number): { label: string } & WorkflowTone =>
   pct === 100 ? { label: "Complete", tone: "success" } : pct >= 80 ? { label: "On Track", tone: "warning" } : { label: "At Risk", tone: "error", solid: true };
+
+/** ISO / CFIHOS validation result: Fail needs attention (solid). */
+export const validationStatus: Record<string, WorkflowTone> = {
+  Pass: { tone: "success" },
+  Warning: { tone: "warning" },
+  Fail: { tone: "error", solid: true },
+};
