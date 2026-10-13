@@ -4,6 +4,8 @@ import { AlertTriangle, Clock } from "lucide-react";
 import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
+import PageHeader from "@/components/layout/PageHeader";
+import { EmptyState, Panel } from "@/components/ui/primitives";
 
 interface Props {
   equipment: Equipment[];
@@ -54,18 +56,12 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
   };
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h2 className="text-lg font-bold">Remaining Useful Life (RUL)</h2>
-      <p className="text-xs text-muted-foreground -mt-3">Predicted remaining operating life across the equipment fleet</p>
+    <PageHeader title="Remaining Useful Life (RUL)" subtitle="Predicted remaining operating life across the equipment fleet">
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* RUL Distribution */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">RUL Distribution — Equipment Fleet</h3>
-            <p className="text-[9px] text-muted-foreground mt-0.5">Dashed line = standard PM interval (3,000 hr)</p>
-          </div>
-          <div className="p-4">
+        <Panel title="RUL Distribution · Equipment Fleet">
+          <p className="type-caption mb-3 text-quaternary">Dashed line = standard PM interval (3,000 hr)</p>
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={distribution}>
                 <XAxis dataKey="range" tick={axisTick} tickLine={false} axisLine={false} />
@@ -76,20 +72,15 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
-            <div className="flex gap-4 mt-2 text-[9px] text-muted-foreground">
+            <div className="flex gap-4 mt-2 type-caption text-tertiary">
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-4" /> Critical (0–1k hr)</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-3" /> Watch (1k–3k hr)</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-2" /> Healthy (3k+ hr)</span>
             </div>
-          </div>
-        </div>
+        </Panel>
 
         {/* Fleet Age Profile */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Fleet Age Profile — Monthly Trend</h3>
-          </div>
-          <div className="p-4">
+        <Panel title="Fleet Age Profile · Monthly Trend">
             <ResponsiveContainer width="100%" height={280}>
               <AreaChart data={fleetAge}>
                 <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
@@ -98,20 +89,15 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
                 <Area isAnimationActive={false} type="monotone" dataKey="young" stackId="1" fill={toneChart.success} fillOpacity={0.6} stroke={toneChart.success} name="<5k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="mid" stackId="1" fill={toneChart.warning} fillOpacity={0.6} stroke={toneChart.warning} name="5k–15k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="old" stackId="1" fill={toneChart.error} fillOpacity={0.6} stroke={toneChart.error} name=">15k hr" />
-                <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke="var(--text-primary)" strokeWidth={2} dot={{ r: 3 }} name="Monthly Failures" />
+                <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke="var(--text-foreground)" strokeWidth={2} dot={{ r: 3 }} name="Monthly Failures" />
               </AreaChart>
             </ResponsiveContainer>
-          </div>
-        </div>
+        </Panel>
       </div>
 
       {/* Critical Equipment Table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border flex items-center gap-2">
-          <AlertTriangle className="w-4 h-4 text-destructive" />
-          <h3 className="text-sm font-semibold">Critical Equipment — Predicted End-of-Life within 90 Days</h3>
-          <span className="ml-auto text-[10px] bg-destructive/10 text-destructive px-2 py-0.5 rounded-full font-medium">{criticalEquip.length} items</span>
-        </div>
+      <Panel title="Critical Equipment · Predicted End-of-Life within 90 Days" padded={false}
+        action={<span className="type-caption tabular text-error">{criticalEquip.length} items</span>}>
         <div className="overflow-x-auto">
           <table className="w-full type-body-sm">
             <thead>
@@ -134,27 +120,27 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
                   <td className="py-2 px-3">{e.processUnit}</td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">{e.runtimeHours.toLocaleString()}</td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">
-                    <span className={e.rulDays! < 30 ? "text-destructive font-bold" : "text-gap"}>{e.rulDays}</span>
+                    <span className={e.rulDays! < 30 ? "font-medium text-error" : "text-warning"}>{e.rulDays}</span>
                   </td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">
-                    <span className={getFailureProb(e.rulDays!) > 70 ? "text-destructive" : "text-gap"}>{getFailureProb(e.rulDays!)}%</span>
+                    <span className={getFailureProb(e.rulDays!) > 70 ? "text-error" : "text-warning"}>{getFailureProb(e.rulDays!)}%</span>
                   </td>
                   <td className="py-2 px-3">{getDominantMode(e.equipmentClass)}</td>
                   <td className="py-2 px-3">
-                    <span className="type-body-sm bg-primary/10 text-primary px-2 py-0.5 rounded">
+                    <span className="type-body-sm text-foreground">
                       {e.rulDays! < 20 ? "Schedule immediate replacement" : "Increase monitoring frequency"}
                     </span>
                   </td>
                 </tr>
               ))}
               {criticalEquip.length === 0 && (
-                <tr><td colSpan={8} className="py-8 text-center">No equipment predicted to reach end-of-life within 90 days</td></tr>
+                <tr><td colSpan={8}><EmptyState title="No equipment predicted to reach end-of-life within 90 days" /></td></tr>
               )}
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 
