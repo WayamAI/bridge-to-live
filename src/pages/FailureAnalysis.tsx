@@ -41,9 +41,9 @@ const MODE_COLORS: Record<string, string> = {
   "Bearing failure": seriesColor(0),
   "Seal degradation": seriesColor(1),
   "Impeller fouling": seriesColor(5),
-  "Lube oil contamination": seriesColor(4),
+  "Lube oil contamination": seriesColor(3),
   "Coupling misalignment": seriesColor(2),
-  "Other": seriesColor(3),
+  "Other": seriesColor(4),
 };
 
 interface Props {

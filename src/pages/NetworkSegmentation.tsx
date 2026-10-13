@@ -1,30 +1,29 @@
 import { Network as NetworkIcon, Shield, ArrowRight } from "lucide-react";
-import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle } from "@/components/dashboard/chartTheme";
 
 interface PurdueLevel {
   level: string;
   label: string;
-  color: string;
   devices: { name: string; status: "green" | "amber" | "red" }[];
 }
 
 const PURDUE_LEVELS: PurdueLevel[] = [
-  { level: "Level 4", label: "Enterprise IT", color: seriesColor(0), devices: [
+  { level: "Level 4", label: "Enterprise IT", devices: [
     { name: "SAP ERP Server", status: "green" }, { name: "Maximo CMMS", status: "green" }, { name: "Email Gateway", status: "green" }, { name: "PlantMind Cloud", status: "green" },
   ]},
-  { level: "Level 3.5", label: "DMZ / Firewall", color: seriesColor(1), devices: [
+  { level: "Level 3.5", label: "DMZ / Firewall", devices: [
     { name: "FW-DMZ-01 (Palo Alto)", status: "green" }, { name: "FW-DMZ-02 (Palo Alto)", status: "amber" }, { name: "Jump Server JS-01", status: "green" },
   ]},
-  { level: "Level 3", label: "Plant Network / Historians", color: seriesColor(5), devices: [
+  { level: "Level 3", label: "Plant Network / Historians", devices: [
     { name: "PI Historian Server", status: "green" }, { name: "PI Interface Node 01", status: "amber" }, { name: "EW-001", status: "amber" }, { name: "EW-002", status: "amber" }, { name: "EW-003", status: "red" },
   ]},
-  { level: "Level 2", label: "SCADA / DCS / HMI", color: seriesColor(4), devices: [
+  { level: "Level 2", label: "SCADA / DCS / HMI", devices: [
     { name: "DCS DC-01", status: "green" }, { name: "DCS DC-02", status: "green" }, { name: "HMI-A-001", status: "green" }, { name: "HMI-A-002", status: "amber" }, { name: "HMI-B-001", status: "green" }, { name: "HMI-B-002", status: "red" }, { name: "SW-L2-01", status: "amber" },
   ]},
-  { level: "Level 1", label: "PLCs / RTUs / Controllers", color: seriesColor(2), devices: [
+  { level: "Level 1", label: "PLCs / RTUs / Controllers", devices: [
     { name: "PLC-A-01", status: "green" }, { name: "PLC-A-02", status: "green" }, { name: "PLC-B-01", status: "amber" }, { name: "PLC-B-02", status: "amber" }, { name: "PLC-CW-01", status: "green" }, { name: "PLC-F-01", status: "green" }, { name: "RTU-ML-01", status: "green" }, { name: "RTU-FW-01", status: "green" }, { name: "SIS-01", status: "green" }, { name: "SIS-02", status: "green" },
   ]},
-  { level: "Level 0", label: "Field Devices / Sensors", color: seriesColor(3), devices: [
+  { level: "Level 0", label: "Field Devices / Sensors", devices: [
     { name: "Gas Detectors (GD-01/02)", status: "green" }, { name: "Weather Station WS-01", status: "green" }, { name: "LDAR Detector", status: "green" }, { name: "Smart Transmitters (42,400 tags)", status: "green" },
   ]},
 ];
@@ -68,7 +67,7 @@ const NetworkSegmentation = () => (
       <div className="p-4 space-y-2">
         {PURDUE_LEVELS.map((level, li) => (
           <div key={level.level}>
-            <div className="rounded-lg border border-border p-3" style={{ borderLeftWidth: 3, borderLeftColor: level.color }}>
+            <div className="rounded-lg border border-strong border-l-[3px] p-3">
               <div className="flex items-center gap-3 mb-2">
                 <span className="text-[10px] font-mono font-bold text-muted-foreground w-16">{level.level}</span>
                 <span className="text-xs font-medium">{level.label}</span>

@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { render, screen } from "@testing-library/react";
-import { EmptyState, EquipmentStatusLabel, KpiTile, Panel, QuietStatus, StatusDot, Unit } from "@/components/ui/primitives";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { EmptyState, EquipmentStatusLabel, KpiTile, Panel, PillSelect, QuietStatus, SearchField, StatusDot, Unit } from "@/components/ui/primitives";
 
 describe("Chronus primitives", () => {
   it("Panel renders an eyebrow title, an action and its body", () => {
@@ -62,5 +62,41 @@ describe("Chronus primitives", () => {
     rerender(<EmptyState title="No alarms match this filter" detail="Clear the filter to see the rest." />);
     expect(screen.getByText("No alarms match this filter")).toBeTruthy();
     expect(screen.getByText("Clear the filter to see the rest.")).toBeTruthy();
+  });
+});
+
+describe("PillSelect and SearchField pass-through", () => {
+  it("PillSelect forwards id, name, aria-*, data-* and value handling to the native select", () => {
+    let picked = "";
+    const { container } = render(
+      <PillSelect id="sev" name="severity" aria-label="Filter by severity" data-testid="sev-select" value="All" onChange={(e) => { picked = e.target.value; }}>
+        <option value="All">All</option>
+        <option value="critical">Critical</option>
+      </PillSelect>,
+    );
+    const select = container.querySelector("select")!;
+    expect(select.id).toBe("sev");
+    expect(select.getAttribute("name")).toBe("severity");
+    expect(select.getAttribute("aria-label")).toBe("Filter by severity");
+    expect(select.getAttribute("data-testid")).toBe("sev-select");
+    expect(select.value).toBe("All");
+    fireEvent.change(select, { target: { value: "critical" } });
+    expect(picked).toBe("critical");
+  });
+
+  it("SearchField forwards id, name, placeholder, aria-*, data-* and onChange to the native input", () => {
+    let typed = "";
+    const { container } = render(
+      <SearchField id="q" name="search" type="text" placeholder="Search equipment…" aria-label="Search equipment" data-testid="q-input" value="" onChange={(e) => { typed = e.target.value; }} />,
+    );
+    const input = container.querySelector("input")!;
+    expect(input.id).toBe("q");
+    expect(input.getAttribute("name")).toBe("search");
+    expect(input.getAttribute("type")).toBe("text");
+    expect(input.getAttribute("placeholder")).toBe("Search equipment…");
+    expect(input.getAttribute("aria-label")).toBe("Search equipment");
+    expect(input.getAttribute("data-testid")).toBe("q-input");
+    fireEvent.change(input, { target: { value: "COMP" } });
+    expect(typed).toBe("COMP");
   });
 });
