@@ -153,3 +153,6 @@ export const handoverItemStatus: Record<string, WorkflowTone> = {
 /** Connected system status: Active success, Degraded warning, anything else (down) error and solid. */
 export const connectedSystemTone = (status: string): WorkflowTone =>
   status === "Active" ? { tone: "success" } : status === "Degraded" ? { tone: "warning" } : { tone: "error", solid: true };
+
+/** A sync run: quiet success, or quiet warning when it finished with errors. */
+export const syncRunTone = (errors: number): Tone => (errors > 0 ? "warning" : "success");

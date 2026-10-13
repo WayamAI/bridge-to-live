@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { Cable, RefreshCw, CheckCircle, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { syncRunTone } from "@/lib/status";
 
 const SYNC_LOG = [
   { timestamp: "2026-03-24 08:14:22", records: "240,412", newTags: 24, modified: 148, deleted: 0, errors: 2, status: "Completed" },
@@ -30,37 +33,34 @@ const TwinSync = () => {
   };
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h2 className="text-lg font-bold flex items-center gap-2"><Cable className="w-5 h-5 text-primary" /> Engineering Twin Sync</h2>
-      <p className="text-xs text-muted-foreground -mt-3">Synchronization status between Hexagon SmartPlant engineering twin and PlantMind operational twin</p>
+    <PageHeader
+      title="Engineering Twin Sync"
+      subtitle="Synchronization status between Hexagon SmartPlant engineering twin and PlantMind operational twin"
+      actions={
+        <button
+          onClick={handleSync}
+          disabled={syncing}
+          className="type-label-sm inline-flex h-8 items-center gap-1.5 rounded-full bg-action-primary px-3 text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active disabled:bg-action-primary-disabled"
+        >
+          <RefreshCw className="size-[13px]" aria-hidden />
+          {syncing ? "Syncing…" : "Force sync now"}
+        </button>
+      }
+    >
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Last Sync", value: "6 days ago" },
           { label: "Records Synced", value: "240,412" },
-          { label: "Sync Errors", value: "2", color: "text-gap" },
-          { label: "Coverage", value: "99.99%", color: "text-operational" },
+          { label: "Sync Errors", value: "2", color: "text-warning" },
+          { label: "Coverage", value: "99.99%" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
-      <div className="flex">
-        <button onClick={handleSync} disabled={syncing}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium text-xs hover:opacity-90 disabled:opacity-50 transition-opacity">
-          <RefreshCw className={`w-3.5 h-3.5 ${syncing ? "animate-spin" : ""}`} />
-          {syncing ? "Syncing..." : "Force Sync Now"}
-        </button>
-      </div>
-
       {/* Data Source Mapping */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Data Source Mapping — Current Sync State</h3>
-        </div>
+      <Panel title="Data Source Mapping · Current Sync State" padded={false}>
         <div className="overflow-x-auto">
           <table className="w-full type-body-sm">
             <thead>
@@ -80,20 +80,17 @@ const TwinSync = () => {
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.total.toLocaleString()}</td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.synced.toLocaleString()}</td>
                   <td className="py-2 px-3 type-body-sm">
-                    <span className={d.delta.includes("error") ? "text-destructive" : d.delta === "No change" ? "text-tertiary" : "text-primary"}>{d.delta}</span>
+                    <span className={d.delta.includes("error") ? "text-error" : d.delta === "No change" ? "text-tertiary" : "text-foreground"}>{d.delta}</span>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Panel>
 
       {/* Sync History */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Sync History</h3>
-        </div>
+      <Panel title="Sync History" padded={false}>
         <div className="overflow-x-auto">
           <table className="w-full type-body-sm">
             <thead>
@@ -115,17 +112,17 @@ const TwinSync = () => {
                   <td className="py-2 px-3 text-right tabular text-foreground whitespace-nowrap">{s.newTags}</td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.modified}</td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.deleted}</td>
-                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.errors > 0 ? <span className="text-destructive">{s.errors}</span> : "0"}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.errors > 0 ? <span className="text-error">{s.errors}</span> : "0"}</td>
                   <td className="py-2 px-3">
-                    <span className={`type-body-sm px-2 py-0.5 rounded-full font-medium ${s.errors > 0 ? "bg-gap/10 text-gap" : "bg-operational/10 text-operational"}`}>{s.status}</span>
+                    <ToneStatus tone={syncRunTone(s.errors)}>{s.status}</ToneStatus>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 
