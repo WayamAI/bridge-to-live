@@ -61,7 +61,7 @@ export const Panel = ({
 /** Splits "₹1.2 Cr", "82%", "14,200 hr" into prefix, number and unit so the sign and unit render in Geist. */
 const splitValue = (v: ReactNode) => {
   if (typeof v !== "string") return null;
-  const m = v.match(/^([₹$€]?)s*([+-−]?[d,]+(?:.d+)?)s*(.*)$/);
+  const m = v.match(/^([₹$€]?)\s*([+\-−]?[\d,]+(?:\.\d+)?)\s*(.*)$/);
   return m && (m[1] || m[3]) ? { prefix: m[1], num: m[2], unit: m[3] } : null;
 };
 
