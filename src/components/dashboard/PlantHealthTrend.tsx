@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Panel } from "@/components/ui/primitives";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 
@@ -25,14 +26,13 @@ const PlantHealthTrend = () => {
   }, []);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold">Plant Health Trend — 90 Days</h3>
-        <div className="flex items-center gap-3 text-[9px] text-muted-foreground">
+    <Panel
+      title="Plant Health Trend · 90 Days"
+    >
+      <div className="type-caption mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-quaternary">
           <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 inline-block" /> Health Score</span>
           <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 opacity-30 inline-block" /> Forecast</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 border-t border-dashed border-muted-foreground inline-block" /> PM Events</span>
-        </div>
+          <span className="flex items-center gap-1"><span className="w-3 h-0.5 border-t border-dashed border-quaternary inline-block" /> PM Events</span>
       </div>
       <ResponsiveContainer width="100%" height={180}>
         <ComposedChart data={data} margin={{ top: 5, right: 10, left: -15, bottom: 0 }}>
@@ -46,7 +46,7 @@ const PlantHealthTrend = () => {
           <Line isAnimationActive={false} type="monotone" dataKey="health" stroke={seriesColor(0)} strokeWidth={1.5} dot={false} />
         </ComposedChart>
       </ResponsiveContainer>
-    </div>
+    </Panel>
   );
 };
 

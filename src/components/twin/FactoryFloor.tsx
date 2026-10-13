@@ -1,15 +1,18 @@
 import { motion } from "framer-motion";
 import type { Equipment, EquipmentStatus } from "@/hooks/usePlantData";
+import { equipmentLabel } from "@/lib/status";
 
 const statusColors: Record<EquipmentStatus, string> = {
-  running: "bg-operational border-operational/50",
-  warning: "bg-gap border-gap/50",
-  critical: "bg-destructive border-destructive/50",
-  offline: "bg-muted-foreground border-muted-foreground/50",
-  maintenance: "bg-engineering border-engineering/50",
+  running: "bg-success border-success",
+  warning: "bg-warning border-warning",
+  critical: "bg-error border-error",
+  offline: "bg-quaternary border-quaternary",
+  maintenance: "bg-info border-info",
 };
 
-const statusPulse: Record<EquipmentStatus, boolean> = {
+// The old animate-ping marked alarm states (warning, critical). It is now a static outer ring:
+// same signal, no motion.
+const statusRing: Record<EquipmentStatus, boolean> = {
   running: false, warning: true, critical: true, offline: false, maintenance: false,
 };
 
@@ -21,16 +24,15 @@ interface FactoryFloorProps {
 
 const FactoryFloor = ({ equipment, selectedId, onSelect }: FactoryFloorProps) => {
   return (
-    <div className="relative w-full aspect-[16/9] rounded-xl border border-border bg-card overflow-hidden">
-      <div className="absolute inset-0 bg-grid opacity-40" />
-      <div className="absolute top-3 left-3 text-[10px] font-mono text-muted-foreground/50 uppercase tracking-widest">
-        Factory Floor — Live View
+    <div className="relative w-full aspect-[16/9] rounded-lg border border-hairline bg-container overflow-hidden">
+      <div className="type-eyebrow absolute left-3 top-3 text-quaternary">
+        Factory Floor · Live View
       </div>
 
       {equipment.map((eq) => {
         const isSelected = eq.id === selectedId;
         const colorClass = statusColors[eq.status];
-        const shouldPulse = statusPulse[eq.status];
+        const showRing = statusRing[eq.status];
 
         return (
           <motion.button
@@ -45,8 +47,8 @@ const FactoryFloor = ({ equipment, selectedId, onSelect }: FactoryFloorProps) =>
             whileHover={{ scale: 1.3 }}
             whileTap={{ scale: 0.95 }}
           >
-            {shouldPulse && (
-              <span className={`absolute inset-0 rounded-full ${colorClass} opacity-30 animate-ping`} />
+            {showRing && (
+              <span className={`absolute -inset-1 rounded-full ${colorClass} opacity-30`} />
             )}
             <span
               className={`relative block w-4 h-4 rounded-full border-2 ${colorClass} ${
@@ -54,20 +56,20 @@ const FactoryFloor = ({ equipment, selectedId, onSelect }: FactoryFloorProps) =>
               }`}
             />
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
-              <div className="bg-popover border border-border rounded-md px-2.5 py-1.5 text-[10px] whitespace-nowrap shadow-lg">
-                <p className="font-semibold text-foreground font-mono">{eq.tag}</p>
-                <p className="text-muted-foreground capitalize">{eq.status} · {eq.health}%</p>
+              <div className="whitespace-nowrap rounded-md border border-hairline bg-container px-2.5 py-1.5 shadow-lg">
+                <p className="type-label-sm tabular text-foreground">{eq.tag}</p>
+                <p className="type-caption text-tertiary">{equipmentLabel[eq.status]} · {eq.health}%</p>
               </div>
             </div>
           </motion.button>
         );
       })}
 
-      <div className="absolute bottom-3 right-3 flex items-center gap-3 text-[9px] text-muted-foreground font-mono">
+      <div className="type-caption absolute bottom-3 right-3 flex items-center gap-3 text-quaternary">
         {(["running", "warning", "critical", "maintenance", "offline"] as EquipmentStatus[]).map((s) => (
           <div key={s} className="flex items-center gap-1">
             <span className={`w-2 h-2 rounded-full ${statusColors[s]}`} />
-            <span className="capitalize">{s}</span>
+            <span>{equipmentLabel[s]}</span>
           </div>
         ))}
       </div>

@@ -11,7 +11,7 @@ interface Props {
 // The shell's sr-only h1 (TopBar) is the page's only h1, so the visible title is an h2.
 export const PageHeader = ({ title, subtitle, actions, children }: Props) => (
   <>
-    <header className="sticky top-0 z-10 border-b border-hairline bg-page px-4 py-4 sm:px-5">
+    <header className="z-10 border-b border-hairline bg-page px-4 py-4 sm:px-5 md:sticky md:top-0">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h2 className="type-display-lg sm:type-display-xl text-foreground">{title}</h2>

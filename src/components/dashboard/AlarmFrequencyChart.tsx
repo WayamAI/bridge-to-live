@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Panel } from "@/components/ui/primitives";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
@@ -19,14 +20,13 @@ const AlarmFrequencyChart = () => {
   }, []);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold">Alarm Frequency — 30 Days</h3>
-        <div className="flex items-center gap-3 text-[9px] text-muted-foreground">
+    <Panel
+      title="Alarm Frequency · 30 Days"
+    >
+      <div className="type-caption mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-quaternary">
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-series-4 inline-block" /> Critical</span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-series-3 inline-block" /> Major</span>
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-series-1 inline-block" /> Minor</span>
-        </div>
       </div>
       <ResponsiveContainer width="100%" height={180}>
         <BarChart data={data} margin={{ top: 5, right: 10, left: -15, bottom: 0 }}>
@@ -41,7 +41,7 @@ const AlarmFrequencyChart = () => {
           <Bar isAnimationActive={false} dataKey="Minor" stackId="a" fill={toneChart.info} radius={[4, 4, 0, 0]} />
         </BarChart>
       </ResponsiveContainer>
-    </div>
+    </Panel>
   );
 };
 

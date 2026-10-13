@@ -1,4 +1,5 @@
 import { useMemo } from "react";
+import { Panel } from "@/components/ui/primitives";
 import type { Equipment } from "@/hooks/usePlantData";
 
 interface EquipmentHeatMapProps {
@@ -21,16 +22,17 @@ const PROCESS_UNITS_MAP = [
   "Marine Loading Arms",
 ];
 
+// Quiet when healthy; a tinted chip only for scores that need attention (thresholds unchanged: 85 and 65).
 function getHealthColor(score: number): string {
-  if (score >= 85) return "bg-operational/80";
-  if (score >= 65) return "bg-gap/80";
-  return "bg-destructive/80";
+  if (score >= 85) return "";
+  if (score >= 65) return "bg-warning-surface";
+  return "bg-error-surface";
 }
 
 function getHealthTextColor(score: number): string {
-  if (score >= 85) return "text-operational-foreground";
-  if (score >= 65) return "text-gap-foreground";
-  return "text-destructive-foreground";
+  if (score >= 85) return "text-secondary-foreground";
+  if (score >= 65) return "text-warning";
+  return "text-error";
 }
 
 const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
@@ -57,17 +59,14 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
   }, [equipment]);
 
   return (
-    <div className="rounded-xl border border-border bg-card overflow-hidden">
-      <div className="px-4 py-3 border-b border-border">
-        <h3 className="text-sm font-semibold">Equipment Health Heat Map</h3>
-      </div>
+    <Panel title="Equipment Health Heat Map" padded={false}>
       <div className="overflow-x-auto">
         <table className="w-full type-body-sm">
           <thead>
             <tr className="border-b border-hairline">
               <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-40">Process Unit</th>
               {HEALTH_DIMENSIONS.map(d => (
-                <th key={d} className="text-center px-2 py-2 font-medium text-muted-foreground w-16">{d}</th>
+                <th key={d} className="type-eyebrow whitespace-nowrap px-2 py-2 text-center text-quaternary">{d}</th>
               ))}
             </tr>
           </thead>
@@ -78,10 +77,10 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
                 className="border-b border-hairline last:border-0 cursor-pointer hover:bg-raised"
                 onClick={() => onSelect(row.firstId)}
               >
-                <td className="px-3 py-2 font-medium type-body-sm">{row.processUnit}</td>
+                <td className="px-3 py-2 font-medium text-foreground">{row.processUnit}</td>
                 {row.dimensions.map((score, i) => (
                   <td key={i} className="px-1 py-2 text-center">
-                    <span className={`inline-block w-12 py-1 rounded type-body-sm font-bold tabular ${getHealthColor(score)} ${getHealthTextColor(score)}`}>
+                    <span className={`inline-block w-12 rounded-full py-0.5 type-label-sm tabular ${getHealthColor(score)} ${getHealthTextColor(score)}`}>
                       {score}%
                     </span>
                   </td>
@@ -91,7 +90,7 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
           </tbody>
         </table>
       </div>
-    </div>
+    </Panel>
   );
 };
 

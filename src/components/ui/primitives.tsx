@@ -96,7 +96,7 @@ export const KpiTile = ({
       {(delta || hint) && (
         <span className="flex items-baseline gap-2">
           {delta && <span className={cn("type-body-sm tabular", toneText[tone])}>{delta}</span>}
-          {hint && <span className="type-caption truncate text-quaternary">{hint}</span>}
+          {hint && <span className="type-caption min-w-0 text-quaternary">{hint}</span>}
         </span>
       )}
     </>

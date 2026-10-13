@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
-import { TrendingDown, TrendingUp, AlertTriangle, Calendar, ArrowRight, Zap, Activity, Shield, Clock, FileCheck } from "lucide-react";
+import { AlertTriangle, Calendar, ChevronRight, Zap, FileCheck } from "lucide-react";
 import { usePlantData } from "@/hooks/usePlantData";
 import FactoryFloor from "@/components/twin/FactoryFloor";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
@@ -9,6 +9,9 @@ import EquipmentHeatMap from "@/components/dashboard/EquipmentHeatMap";
 import MaintenanceTimeline from "@/components/dashboard/MaintenanceTimeline";
 import PlantHealthTrend from "@/components/dashboard/PlantHealthTrend";
 import AlarmFrequencyChart from "@/components/dashboard/AlarmFrequencyChart";
+import PageHeader from "@/components/layout/PageHeader";
+import { EmptyState, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
+import { severityTone } from "@/lib/status";
 import { useNavigate } from "react-router-dom";
 
 interface DashboardProps {
@@ -16,6 +19,9 @@ interface DashboardProps {
   selectedEquipmentId: string | null;
   onSelectEquipment: (id: string | null) => void;
 }
+
+const pill =
+  "inline-flex h-8 items-center gap-1.5 rounded-full border border-hairline bg-action px-3 type-label-sm text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active";
 
 const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardProps) => {
   const navigate = useNavigate();
@@ -31,36 +37,30 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
   const predictedFailures = equipment.filter(e => e.predictedFailure && e.predictedFailure > new Date() && e.predictedFailure < new Date(Date.now() + 30 * 86400000)).length;
   const handoverPct = 73;
 
+  // Values keep a status colour only when the old card did and the state needs attention.
   const kpis = [
     {
-      label: "Overall Plant Health", value: `${avgHealth}%`,
-      trend: "↓ 2.1% vs. last month", trendDir: "down" as const,
-      color: avgHealth >= 90 ? "text-operational" : "text-gap",
-      bgColor: avgHealth >= 90 ? "bg-operational/5 border-operational/20" : "bg-gap/5 border-gap/20",
+      label: "Overall Plant Health", value: avgHealth.toString(), unit: "%",
+      delta: "-2.1%", hint: "vs last month", tone: "error" as const,
+      valueClassName: avgHealth >= 90 ? "" : "text-warning",
     },
     {
       label: "Active Critical Alarms", value: criticalAlarms.toString(),
-      trend: "+3 vs. yesterday", trendDir: "up" as const,
-      color: criticalAlarms > 0 ? "text-destructive" : "text-operational",
-      bgColor: criticalAlarms > 0 ? "bg-destructive/5 border-destructive/20" : "bg-operational/5 border-operational/20",
+      delta: "+3", hint: "vs yesterday", tone: "error" as const,
+      valueClassName: criticalAlarms > 0 ? "text-error" : "",
     },
     {
       label: "Predicted Failures (30d)", value: predictedFailures.toString(),
-      trend: "12 components flagged", trendDir: "neutral" as const,
-      color: "text-gap",
-      bgColor: "bg-gap/5 border-gap/20",
+      hint: "12 components flagged",
     },
     {
-      label: "Energy Efficiency Index", value: "82.1%",
-      trend: "₹14.2L annual savings opp.", trendDir: "neutral" as const,
-      color: "text-gap",
-      bgColor: "bg-gap/5 border-gap/20",
+      label: "Energy Efficiency Index", value: "82.1", unit: "%",
+      hint: "₹14.2L annual savings opportunity",
     },
     {
-      label: "Handover Readiness", value: `${handoverPct}%`,
-      trend: "Ratnagiri LNG Phase 2", trendDir: "neutral" as const,
-      color: handoverPct >= 90 ? "text-operational" : "text-gap",
-      bgColor: handoverPct >= 90 ? "bg-operational/5 border-operational/20" : "bg-gap/5 border-gap/20",
+      label: "Handover Readiness", value: handoverPct.toString(), unit: "%",
+      hint: "Ratnagiri LNG Phase 2",
+      valueClassName: handoverPct >= 90 ? "" : "text-warning",
     },
   ];
 
@@ -74,61 +74,74 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
   ];
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      {/* KPI Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+    <PageHeader
+      title="Dashboard"
+      subtitle="Plant health, alarms and equipment status at a glance"
+      actions={quickActions.map((action) => {
+        const Icon = action.icon;
+        return (
+          <button key={action.path} onClick={() => navigate(action.path)} className={pill}>
+            <Icon className="size-[13px]" aria-hidden />
+            {action.label}
+          </button>
+        );
+      })}
+    >
+      {/* KPI row */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
         {kpis.map((kpi) => (
-          <div key={kpi.label} className={`rounded-xl border p-3 ${kpi.bgColor}`}>
-            <p className="text-[10px] text-muted-foreground font-medium mb-1">{kpi.label}</p>
-            <p className={`text-2xl font-bold font-mono ${kpi.color}`}>{kpi.value}</p>
-            <div className="flex items-center gap-1 mt-1">
-              {kpi.trendDir === "down" && <TrendingDown className="w-3 h-3 text-destructive" />}
-              {kpi.trendDir === "up" && <TrendingUp className="w-3 h-3 text-destructive" />}
-              <span className="text-[9px] text-muted-foreground">{kpi.trend}</span>
-            </div>
-          </div>
+          <KpiTile key={kpi.label} {...kpi} />
         ))}
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      {/* Charts row */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <PlantHealthTrend />
         <AlarmFrequencyChart />
       </div>
 
-      {/* Main Content Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_1fr_340px] gap-4">
-        {/* Equipment Heat Map */}
+      {/* Main content row */}
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1fr_340px]">
         <EquipmentHeatMap equipment={equipment} onSelect={onSelectEquipment} />
 
-        {/* Top Active Alerts */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-            <h3 className="text-sm font-semibold">Top Active Alerts</h3>
-            <button onClick={() => navigate("/alarms")} className="text-[10px] text-primary hover:underline flex items-center gap-1">
-              View all <ArrowRight className="w-3 h-3" />
+        <Panel
+          title="Top Active Alerts"
+          padded={false}
+          action={
+            <button
+              onClick={() => navigate("/alarms")}
+              className="type-caption inline-flex items-center gap-0.5 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
+            >
+              View all <ChevronRight className="size-3" aria-hidden />
             </button>
-          </div>
-          <div className="divide-y divide-border">
-            {topAlerts.map((alert) => (
-              <div key={alert.id} className="px-4 py-2.5 hover:bg-muted/20 cursor-pointer" onClick={() => onSelectEquipment(alert.equipmentId)}>
-                <div className="flex items-start gap-2">
-                  <span className={`mt-0.5 w-2 h-2 rounded-full shrink-0 ${
-                    alert.severity === "critical" ? "bg-destructive" : "bg-gap"
-                  }`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[11px] font-medium truncate">
-                      <span className="font-mono text-primary">{alert.equipmentTag}</span> {alert.message}
-                    </p>
-                    <p className="text-[9px] text-muted-foreground mt-0.5">{alert.duration}</p>
+          }
+        >
+          {topAlerts.length === 0 ? (
+            <EmptyState title="No active alerts" />
+          ) : (
+            <div>
+              {topAlerts.map((alert) => (
+                <div
+                  key={alert.id}
+                  className="cursor-pointer border-b border-hairline px-4 py-2.5 transition-colors duration-150 last:border-0 hover:bg-raised"
+                  onClick={() => onSelectEquipment(alert.equipmentId)}
+                >
+                  <div className="flex items-start gap-2">
+                    <StatusDot tone={severityTone[alert.severity]} className="mt-1.5" />
+                    <span className="sr-only">{alert.severity}</span>
+                    <div className="min-w-0 flex-1">
+                      <p className="type-body-sm truncate text-secondary-foreground">
+                        <span className="tabular font-medium text-foreground">{alert.equipmentTag}</span> {alert.message}
+                      </p>
+                      <p className="type-caption mt-0.5 text-quaternary">{alert.duration}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-        </div>
+              ))}
+            </div>
+          )}
+        </Panel>
 
-        {/* Equipment Detail */}
         <AnimatePresence mode="wait">
           {selectedEquipment ? (
             <EquipmentDetail
@@ -137,37 +150,17 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
               onClose={() => onSelectEquipment(null)}
             />
           ) : (
-            <div className="rounded-xl border border-border bg-card p-6 flex flex-col items-center justify-center text-center">
-              <Activity className="w-8 h-8 text-muted-foreground/30 mb-2" />
-              <p className="text-xs text-muted-foreground">Select equipment from the heat map or alerts to view details</p>
-            </div>
+            <Panel>
+              <EmptyState title="Select equipment from the heat map or alerts to view details" />
+            </Panel>
           )}
         </AnimatePresence>
       </div>
 
-      {/* Maintenance Timeline */}
       <MaintenanceTimeline events={maintenanceEvents} />
 
-      {/* OEE + Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-4">
-        <OEEDashboard oee={oee} />
-        <div className="flex flex-wrap items-center gap-2">
-          {quickActions.map((action) => {
-            const Icon = action.icon;
-            return (
-              <button
-                key={action.path}
-                onClick={() => navigate(action.path)}
-                className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-border bg-card hover:bg-muted/30 transition-colors text-xs font-medium"
-              >
-                <Icon className="w-3.5 h-3.5 text-primary" />
-                {action.label}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </div>
+      <OEEDashboard oee={oee} />
+    </PageHeader>
   );
 };
 

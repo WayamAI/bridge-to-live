@@ -1,15 +1,18 @@
 import type { MaintenanceEvent } from "@/hooks/usePlantData";
 import { Wrench, Brain, FileWarning } from "lucide-react";
+import { EmptyState, Panel, StatusDot } from "@/components/ui/primitives";
+import type { Tone } from "@/lib/status";
 
 interface MaintenanceTimelineProps {
   events: MaintenanceEvent[];
 }
 
-const urgencyColors = {
-  low: "border-muted-foreground/30 bg-muted/20",
-  medium: "border-engineering/30 bg-engineering/5",
-  high: "border-gap/30 bg-gap/5",
-  critical: "border-destructive/30 bg-destructive/5",
+// critical -> error, high -> warning, medium -> info, low -> neutral
+const urgencyTone: Record<MaintenanceEvent["urgency"], Tone> = {
+  low: "neutral",
+  medium: "info",
+  high: "warning",
+  critical: "error",
 };
 
 const typeIcons = {
@@ -25,35 +28,40 @@ const MaintenanceTimeline = ({ events }: MaintenanceTimelineProps) => {
   const upcoming = sorted.filter(e => e.date.getTime() > now && e.date.getTime() < now + sixtyDays);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold">Upcoming Maintenance — Next 60 Days</h3>
-        <span className="text-[10px] text-muted-foreground font-mono">{upcoming.length} events</span>
-      </div>
-      <div className="flex gap-2 overflow-x-auto pb-2">
-        {upcoming.map((event) => {
-          const Icon = typeIcons[event.type];
-          const daysUntil = Math.ceil((event.date.getTime() - now) / 86400000);
-          return (
-            <div key={event.id} className={`shrink-0 w-52 rounded-lg border p-3 ${urgencyColors[event.urgency]}`}>
-              <div className="flex items-center gap-1.5 mb-1.5">
-                <Icon className="w-3 h-3 text-muted-foreground" />
-                <span className="text-[9px] font-mono text-muted-foreground uppercase">{event.type}</span>
-                {event.probability && (
-                  <span className="text-[9px] font-mono text-gap ml-auto">{event.probability}% prob</span>
-                )}
+    <Panel
+      title="Upcoming Maintenance · Next 60 Days"
+      action={<span className="type-caption tabular text-quaternary">{upcoming.length} events</span>}
+    >
+      {upcoming.length === 0 ? (
+        <EmptyState title="No maintenance in the next 60 days" className="min-h-[96px]" />
+      ) : (
+        <div className="flex gap-2 overflow-x-auto pb-2">
+          {upcoming.map((event) => {
+            const Icon = typeIcons[event.type];
+            const daysUntil = Math.ceil((event.date.getTime() - now) / 86400000);
+            return (
+              <div key={event.id} className="w-52 shrink-0 rounded-lg border border-hairline bg-raised p-3">
+                <div className="mb-1.5 flex items-center gap-1.5">
+                  <StatusDot tone={urgencyTone[event.urgency]} />
+                  <span className="sr-only">{event.urgency} urgency</span>
+                  <Icon className="size-3 text-quaternary" aria-hidden />
+                  <span className="type-eyebrow truncate text-quaternary">{event.type}</span>
+                  {event.probability && (
+                    <span className="type-caption tabular ml-auto text-warning">{event.probability}% prob</span>
+                  )}
+                </div>
+                <p className="type-label-sm tabular text-foreground">{event.equipmentTag}</p>
+                <p className="type-body-sm mt-0.5 leading-snug text-tertiary">{event.description}</p>
+                <p className="type-caption tabular mt-1.5 text-foreground">
+                  {event.date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
+                  <span className="ml-1 text-quaternary">({daysUntil}d)</span>
+                </p>
               </div>
-              <p className="text-[10px] font-medium font-mono text-primary">{event.equipmentTag}</p>
-              <p className="text-[10px] text-muted-foreground mt-0.5 leading-snug">{event.description}</p>
-              <p className="text-[9px] font-mono mt-1.5 text-foreground">
-                {event.date.toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" })}
-                <span className="text-muted-foreground ml-1">({daysUntil}d)</span>
-              </p>
-            </div>
-          );
-        })}
-      </div>
-    </div>
+            );
+          })}
+        </div>
+      )}
+    </Panel>
   );
 };
 
