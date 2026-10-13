@@ -87,7 +87,8 @@ Excluding internal docs (not in repo) and this file: 59 files changed, 3169 inse
 - `src/lib/status.ts`
 - `src/lib/format.ts`
 - `src/lib/icons.ts`
-- `src/assets/brand/wayam-mark-light.svg`, `wayam-mark-dark.svg`, `wayam-wordmark-light.svg`, `wayam-wordmark-dark.svg`
+- `src/assets/brand/wayam-mark-light.svg`, `wayam-mark-dark.svg`, `wayam-wordmark-light.svg`, `wayam-wordmark-dark.svg`, `login-bg.jpg`
+- `src/assets/marks/mark-*.png` (25 page marks, see Assets)
 - `src/test/format.test.ts`, `src/test/icons.test.ts`, `src/test/primitives.test.tsx`, `src/test/status.test.ts`
 - `REDESIGN_REPORT.md`
 
@@ -231,6 +232,44 @@ The internal docs (not in repo) ("Step 4 page log") have the full per-page list.
 17. `README.md` and the package name `vite_react_shadcn_ts` are template leftovers.
 18. Horizontal bar charts keep fixed left margins and are cramped at 390px.
 19. `text-quaternary` is about 3.4:1 on white, below WCAG AA for small text. A Chronus token choice.
+
+## Assets (login image and page marks)
+
+Added after Step 7. Raw originals (25 page icons in `icons/`, `login-bg.jpg` in the repo root) stay untracked and are ignored by the root-anchored rules `/icons/` and `/login-bg.jpg` in `.gitignore`. Only the processed copies are tracked.
+
+- **Login image:** `src/assets/brand/login-bg.jpg`, 2400 x 1205, 175 kB (limit 400 kB). Used only by `Login.tsx` (brand panel, always dark, bottom gradient, logo top-left, "PlantMind" bottom-left).
+- **Page marks:** `src/assets/marks/mark-<slug>.png`, 25 files, 256 x 256 RGBA with transparent corners and no white halo on light or dark (checked on both contact sheets). 33 to 65 kB each. **Over 60 kB:** `mark-failure-analysis.png` (65 kB), `mark-threat-monitor.png` (64 kB), `mark-settings.png` (63 kB).
+- **Where they show:** only in `PageHeader` (44 px, `sm` and up, `alt=""`). Below `sm` and on any route without a mark, the lucide icon is shown instead. `markForPath` in `lib/icons.ts` maps route to file; a unit test checks every nav route has one.
+
+| Raw file (`icons/`) | Mark | Page(s) |
+|---|---|---|
+| Control_room_console | `mark-dashboard` | Dashboard |
+| Centrifugal_pump_3D_icon | `mark-equipment` | Plant Overview, Equipment Detail (shared) |
+| Magnifying_glass_analyzing_crack | `mark-failure-analysis` | Failure Analysis |
+| Hourglass_beside_gear | `mark-rul` | Remaining Useful Life |
+| Wrench_crossed_with_crystal_ball | `mark-predictive-maintenance` | Predictive Maintenance |
+| Clipboard_with_checklist_and_wrench | `mark-work-orders` | Work Orders |
+| Stack_of_coins_and_gear | `mark-maintenance-cost` | Maintenance Cost |
+| Lightning_bolt_in_electricity_meter | `mark-energy` | Energy Consumption |
+| Balance_scale_with_lightning_bolt | `mark-load-optimisation` | Load Optimisation |
+| Leaf_wrapped_around_factory_chimney | `mark-sustainability` | Sustainability |
+| Industrial_alarm_beacon_on_pole | `mark-alarms` | Active Alarms |
+| Bell_and_bar_chart_icon | `mark-alarm-analytics` | Alarm Analytics |
+| Bell_inside_funnel_3D_icon | `mark-alarm-rationalisation` | Alarm Rationalisation |
+| Industrial_controller_modules | `mark-ot-assets` | OT Asset Registry |
+| Shield_radar_sweep_icon | `mark-threat-monitor` | Threat Monitor |
+| Stacked_tiles_connected_by_cables | `mark-network` | Network Segmentation |
+| Compliance_badge_icon_rendering | `mark-compliance` | Compliance |
+| Hands_passing_document_folder | `mark-handover` | Handover Tracker |
+| Cubes_linked_by_circular_arrow | `mark-twin-sync` | Twin Sync |
+| Cylinder_database_3D_icon | `mark-data-completeness` | Data Completeness |
+| Document_with_check-mark_stamp | `mark-iso-validator` | ISO Validator |
+| Branching_path_icon_with_sliders | `mark-simulator` | Simulator |
+| Three_devices_linked_to_hub | `mark-data-sources` | Connected Systems |
+| Database_icon_with_check_mark | `mark-data-quality` | Data Quality |
+| Two_cogs_meshed_together | `mark-settings` | Settings |
+
+25 raw files, 25 marks, 26 routes (the pump serves two). No file maps to two different pages and no page lacks a file. `/login` and `/no-such-page` have no mark. **Corrected:** the Step 7 note "No entity marks: the repo has no PNG assets for them" no longer applies; page marks exist as above (still no per-entity marks).
 
 ## Verification
 
