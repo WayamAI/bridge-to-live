@@ -138,3 +138,6 @@ export const threatStatus: Record<string, WorkflowTone> = {
   Resolved: { tone: "success" },
   Monitoring: { tone: "info" },
 };
+
+/** Network zone and flow state: green allowed, amber monitored with warnings, red policy violation. */
+export const zoneTone: Record<"green" | "amber" | "red", Tone> = { green: "success", amber: "warning", red: "error" };

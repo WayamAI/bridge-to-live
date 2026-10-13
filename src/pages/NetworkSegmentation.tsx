@@ -1,5 +1,8 @@
 import { Network as NetworkIcon, Shield, ArrowRight } from "lucide-react";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle } from "@/components/dashboard/chartTheme";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
+import { zoneTone } from "@/lib/status";
 
 interface PurdueLevel {
   level: string;
@@ -37,45 +40,35 @@ const CONNECTIONS = [
   { from: "192.168.3.44 → DC-02", to: "Level 2", protocol: "OPC-UA (UNAUTHORIZED)", status: "red" as const },
 ];
 
-const STATUS_DOT = { green: "bg-operational", amber: "bg-gap", red: "bg-destructive" };
-
 const NetworkSegmentation = () => (
-  <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-    <h2 className="text-lg font-bold flex items-center gap-2"><NetworkIcon className="w-5 h-5 text-primary" /> Network Segmentation Status</h2>
-    <p className="text-xs text-muted-foreground -mt-3">Purdue model — OT network zone visualization and inter-zone connection monitoring</p>
+  <PageHeader title="Network Segmentation Status" subtitle="Purdue model: OT network zone visualization and inter-zone connection monitoring">
 
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {[
         { label: "Network Zones", value: "6 (L0–L4+DMZ)" },
         { label: "Monitored Connections", value: "48" },
-        { label: "Policy Violations", value: "1", color: "text-destructive" },
-        { label: "Unmonitored Flows", value: "0", color: "text-operational" },
+        { label: "Policy Violations", value: "1", color: "text-error" },
+        { label: "Unmonitored Flows", value: "0" },
       ].map(s => (
-        <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-          <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-          <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-        </div>
+        <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
       ))}
     </div>
 
     {/* Purdue Model */}
-    <div className="rounded-xl border border-border bg-card overflow-hidden">
-      <div className="px-4 py-3 border-b border-border">
-        <h3 className="text-sm font-semibold">Purdue Model — Network Zone Map</h3>
-        <p className="text-[9px] text-muted-foreground">Green = allowed & monitored · Amber = monitored with warnings · Red = policy violation</p>
-      </div>
+    <Panel title="Purdue Model · Network Zone Map" padded={false}>
+      <p className="type-caption px-4 py-3 text-quaternary">Green = allowed & monitored · Amber = monitored with warnings · Red = policy violation</p>
       <div className="p-4 space-y-2">
         {PURDUE_LEVELS.map((level, li) => (
           <div key={level.level}>
             <div className="rounded-lg border border-strong border-l-[3px] p-3">
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-[10px] font-mono font-bold text-muted-foreground w-16">{level.level}</span>
-                <span className="text-xs font-medium">{level.label}</span>
+                <span className="type-caption tabular font-semibold text-tertiary w-16">{level.level}</span>
+                <span className="type-body-sm font-medium">{level.label}</span>
               </div>
               <div className="flex flex-wrap gap-2">
                 {level.devices.map(d => (
-                  <div key={d.name} className="flex items-center gap-1.5 text-[10px] px-2 py-1 rounded border border-border bg-muted/20">
-                    <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[d.status]}`} />
+                  <div key={d.name} className="flex items-center gap-1.5 type-caption px-2 py-1 rounded border border-hairline bg-raised">
+                    <StatusDot tone={zoneTone[d.status]} />
                     {d.name}
                   </div>
                 ))}
@@ -83,21 +76,18 @@ const NetworkSegmentation = () => (
             </div>
             {li < PURDUE_LEVELS.length - 1 && (
               <div className="flex items-center gap-2 py-1 pl-8">
-                <div className="h-4 border-l border-dashed border-muted-foreground/30" />
-                <span className="text-[9px] text-muted-foreground font-mono">{CONNECTIONS[li]?.protocol}</span>
-                <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[CONNECTIONS[li]?.status || "green"]}`} />
+                <div className="h-4 border-l border-dashed border-hairline" />
+                <span className="type-caption text-tertiary tabular">{CONNECTIONS[li]?.protocol}</span>
+                <StatusDot tone={zoneTone[CONNECTIONS[li]?.status || "green"]} />
               </div>
             )}
           </div>
         ))}
       </div>
-    </div>
+    </Panel>
 
     {/* Inter-Zone Connections */}
-    <div className="rounded-xl border border-border bg-card overflow-hidden">
-      <div className="px-4 py-3 border-b border-border">
-        <h3 className="text-sm font-semibold">Inter-Zone Data Flows</h3>
-      </div>
+    <Panel title="Inter-Zone Data Flows" padded={false}>
       <div className="overflow-x-auto">
         <table className="w-full type-body-sm">
           <thead>
@@ -113,18 +103,17 @@ const NetworkSegmentation = () => (
                 <td className="py-2 px-3 font-medium">{c.from} → {c.to}</td>
                 <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{c.protocol}</td>
                 <td className="py-2 px-3">
-                  <span className={`inline-flex items-center gap-1.5 type-body-sm px-2 py-0.5 rounded-full font-medium ${c.status === "green" ? "bg-operational/10 text-operational" : c.status === "amber" ? "bg-gap/10 text-gap" : "bg-destructive/10 text-destructive"}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${STATUS_DOT[c.status]}`} />
+                  <ToneStatus tone={zoneTone[c.status]} solid={c.status === "red"}>
                     {c.status === "green" ? "Allowed" : c.status === "amber" ? "Warning" : "Violation"}
-                  </span>
+                  </ToneStatus>
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
-    </div>
-  </div>
+    </Panel>
+  </PageHeader>
 );
 
 export default NetworkSegmentation;
