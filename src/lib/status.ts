@@ -115,3 +115,10 @@ export const rationalisationStatus: Record<string, WorkflowTone> = {
   Approved: { tone: "info" },
   Suppressed: { tone: "neutral" },
 };
+
+/** OT patch status: End-of-life is the one that needs attention (solid badge). */
+export const patchStatus: Record<string, WorkflowTone> = {
+  "Up to date": { tone: "success" },
+  "Patch available": { tone: "warning" },
+  "End-of-life": { tone: "error", solid: true },
+};

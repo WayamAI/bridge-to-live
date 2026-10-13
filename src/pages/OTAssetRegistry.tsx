@@ -1,5 +1,7 @@
 import { useState } from "react";
-import { EmptyState } from "@/components/ui/primitives";
+import PageHeader from "@/components/layout/PageHeader";
+import { Chip, EmptyState, KpiTile, Panel, SearchField, ToneStatus } from "@/components/ui/primitives";
+import { patchStatus } from "@/lib/status";
 import { MonitorSpeaker, Shield, AlertTriangle, Search } from "lucide-react";
 
 interface OTAsset {
@@ -57,12 +59,6 @@ const OT_ASSETS: OTAsset[] = [
   { name: "Analyser System AN-01", type: "Smart sensor", vendor: "ABB", firmware: "Sensi+ v5.1", lastSeen: "Live", purdueLevel: 1, protocols: ["Modbus", "HART"], patchStatus: "Up to date", riskScore: 10 },
 ];
 
-const PATCH_COLORS: Record<string, string> = {
-  "Up to date": "bg-operational/10 text-operational",
-  "Patch available": "bg-gap/10 text-gap",
-  "End-of-life": "bg-destructive/10 text-destructive",
-};
-
 const OTAssetRegistry = () => {
   const [search, setSearch] = useState("");
   const [filterPatch, setFilterPatch] = useState<string>("all");
@@ -79,40 +75,34 @@ const OTAssetRegistry = () => {
   const highRisk = OT_ASSETS.filter(a => a.riskScore > 50).length;
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h2 className="text-lg font-bold flex items-center gap-2"><MonitorSpeaker className="w-5 h-5 text-primary" /> OT Asset Registry</h2>
-      <p className="text-xs text-muted-foreground -mt-3">Comprehensive inventory of all OT assets — IEC 62443 asset management</p>
+    <PageHeader
+      title="OT Asset Registry"
+      subtitle="Comprehensive inventory of all OT assets: IEC 62443 asset management"
+      actions={
+        <>
+          <SearchField value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets…" aria-label="Search assets" />
+          {["all", "Up to date", "Patch available", "End-of-life"].map(f => (
+            <Chip key={f} active={filterPatch === f} onClick={() => setFilterPatch(f)}>
+              {f === "all" ? "All" : f}
+            </Chip>
+          ))}
+        </>
+      }
+    >
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Total OT Assets", value: OT_ASSETS.length.toString() },
-          { label: "Up to Date", value: upToDate.toString(), color: "text-operational" },
-          { label: "Patch Available", value: patchAvail.toString(), color: "text-gap" },
-          { label: "End-of-Life / High Risk", value: `${eol} EOL · ${highRisk} high risk`, color: "text-destructive" },
+          { label: "Up to Date", value: upToDate.toString() },
+          { label: "Patch Available", value: patchAvail.toString() },
+          { label: "End-of-Life / High Risk", value: `${eol} EOL · ${highRisk} high risk`, color: "text-error" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-lg font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
-        ))}
-      </div>
-
-      {/* Filters */}
-      <div className="flex gap-3 items-center">
-        <div className="relative flex-1 max-w-xs">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-          <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets..." className="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary" />
-        </div>
-        {["all", "Up to date", "Patch available", "End-of-life"].map(f => (
-          <button key={f} onClick={() => setFilterPatch(f)}
-            className={`text-[10px] px-3 py-1.5 rounded-lg border transition-colors ${filterPatch === f ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:text-foreground"}`}>
-            {f === "all" ? "All" : f}
-          </button>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
+      <Panel title="OT Assets" padded={false}>
         <div className="overflow-x-auto">
           <table className="w-full type-body-sm">
             <thead>
@@ -130,7 +120,7 @@ const OTAssetRegistry = () => {
             </thead>
             <tbody>
               {filtered.map((a, i) => (
-                <tr key={i} className={`border-b border-hairline hover:bg-raised ${a.riskScore > 50 ? "bg-destructive/5" : ""}`}>
+                <tr key={i} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{a.name}</td>
                   <td className="py-2 px-3 type-body-sm">{a.type}</td>
                   <td className="py-2 px-3">{a.vendor}</td>
@@ -138,9 +128,9 @@ const OTAssetRegistry = () => {
                   <td className="py-2 px-3 type-body-sm">{a.lastSeen}</td>
                   <td className="py-2 px-3 text-center tabular whitespace-nowrap">{a.purdueLevel}</td>
                   <td className="py-2 px-3 type-body-sm">{a.protocols.join(", ")}</td>
-                  <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full font-medium ${PATCH_COLORS[a.patchStatus]}`}>{a.patchStatus}</span></td>
-                  <td className="py-2 px-3 text-right tabular font-bold whitespace-nowrap">
-                    <span className={a.riskScore > 50 ? "text-destructive" : a.riskScore > 30 ? "text-gap" : "text-operational"}>{a.riskScore}</span>
+                  <td className="py-2 px-3"><ToneStatus tone={patchStatus[a.patchStatus].tone} solid={patchStatus[a.patchStatus].solid}>{a.patchStatus}</ToneStatus></td>
+                  <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">
+                    <span className={a.riskScore > 50 ? "text-error" : a.riskScore > 30 ? "text-warning" : ""}>{a.riskScore}</span>
                   </td>
                 </tr>
               ))}
@@ -152,8 +142,8 @@ const OTAssetRegistry = () => {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 
