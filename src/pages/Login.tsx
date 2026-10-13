@@ -4,6 +4,7 @@ import { icons } from "@/lib/icons";
 import { useAuth } from "@/hooks/useAuth";
 import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
 import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
+import loginBg from "@/assets/brand/login-bg.jpg";
 import wayamWordmarkLight from "@/assets/brand/wayam-wordmark-light.svg";
 import wayamWordmarkDark from "@/assets/brand/wayam-wordmark-dark.svg";
 
@@ -33,17 +34,16 @@ const Login = () => {
 
   return (
     <div className="flex min-h-screen bg-page">
-      {/* Brand panel (solid, no hero image): near-black in light mode, near-white in dark mode */}
-      <div className="hidden flex-[1.4] flex-col justify-between bg-action-primary p-10 text-on-color lg:flex">
-        <div className="flex items-center gap-2.5">
-          <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0 dark:hidden" />
-          <img src={wayamMarkDark} alt="" className="hidden h-auto w-8 shrink-0 dark:block" />
-          <span className="flex flex-col gap-0.5">
-            <img src={wayamWordmarkDark} alt="Wayam AI" className="h-5 w-auto self-start dark:hidden" />
-            <img src={wayamWordmarkLight} alt="Wayam AI" className="hidden h-5 w-auto self-start dark:block" />
-          </span>
+      {/* Brand panel: generated plant image (right side is the subject), bottom gradient, logo top-left, name bottom-left.
+          Always dark, so the logo and text use the on-dark versions in both themes. */}
+      <div className="relative hidden flex-[1.4] flex-col justify-between overflow-hidden bg-black p-10 text-white lg:flex">
+        <img src={loginBg} alt="" className="absolute inset-0 size-full object-cover object-right" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" aria-hidden />
+        <div className="relative flex items-center gap-2.5">
+          <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0" />
+          <img src={wayamWordmarkDark} alt="Wayam AI" className="h-5 w-auto self-start" />
         </div>
-        <p className="type-display-2xl">PlantMind</p>
+        <p className="type-display-2xl relative">PlantMind</p>
       </div>
 
       {/* Form column */}

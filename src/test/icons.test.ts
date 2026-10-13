@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { navGroups } from "@/components/layout/nav";
-import { alarmIcon, alarmTypeIcon, eventIcon, eventTypeIcon, icons, iconForPath, navIcon, unknownTypeIcon } from "@/lib/icons";
+import { alarmIcon, alarmTypeIcon, eventIcon, eventTypeIcon, icons, iconForPath, markForPath, navIcon, unknownTypeIcon } from "@/lib/icons";
 
 describe("icon mapping", () => {
   it("gives every nav item its mapped icon and no two pages share one", () => {
@@ -29,5 +29,10 @@ describe("icon mapping", () => {
   });
   it("keeps the type icons distinct within a map", () => {
     expect(new Set(Object.values(alarmTypeIcon)).size).toBe(Object.keys(alarmTypeIcon).length);
+  });
+  it("has a page mark for every route and shares the pump between the two equipment routes", () => {
+    navGroups.flatMap((g) => g.items).forEach((i) => expect(markForPath(i.to), i.to).toBeTruthy());
+    expect(markForPath("/equipment")).toBe(markForPath("/equipment/detail"));
+    expect(markForPath("/no-such-page")).toBeUndefined();
   });
 });

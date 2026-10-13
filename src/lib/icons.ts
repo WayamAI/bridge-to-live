@@ -112,3 +112,42 @@ export const iconSize = {
   pill: "size-[13px]", // inline in pills and buttons
   chevron: "size-3", // chevrons
 } as const;
+
+// Page marks: generated 3D illustrations (src/assets/marks), shown only in the page header, decorative.
+const markFiles = import.meta.glob<string>("../assets/marks/mark-*.png", { eager: true, import: "default" });
+
+/** Mark file slug per route. /equipment and /equipment/detail share the pump; /data-sources is "Connected Systems". */
+export const markSlug: Record<string, string> = {
+  "/": "dashboard",
+  "/equipment": "equipment",
+  "/equipment/detail": "equipment",
+  "/failure-analysis": "failure-analysis",
+  "/rul": "rul",
+  "/predictive-maintenance": "predictive-maintenance",
+  "/work-orders": "work-orders",
+  "/maintenance-cost": "maintenance-cost",
+  "/energy": "energy",
+  "/load-optimisation": "load-optimisation",
+  "/sustainability": "sustainability",
+  "/alarms": "alarms",
+  "/alarm-analytics": "alarm-analytics",
+  "/alarm-rationalisation": "alarm-rationalisation",
+  "/ot-assets": "ot-assets",
+  "/threat-monitor": "threat-monitor",
+  "/network": "network",
+  "/compliance": "compliance",
+  "/handover": "handover",
+  "/twin-sync": "twin-sync",
+  "/data-completeness": "data-completeness",
+  "/iso-validator": "iso-validator",
+  "/simulator": "simulator",
+  "/data-sources": "data-sources",
+  "/data-quality": "data-quality",
+  "/settings": "settings",
+};
+
+/** URL of the mark for a route, or undefined (the lucide icon is shown instead). */
+export const markForPath = (pathname: string): string | undefined => {
+  const slug = markSlug[pathname];
+  return slug ? markFiles[`../assets/marks/mark-${slug}.png`] : undefined;
+};
