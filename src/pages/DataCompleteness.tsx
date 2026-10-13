@@ -2,6 +2,9 @@ import { FileCheck, AlertTriangle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { completenessState } from "@/lib/status";
 
 const COMPLETENESS_DATA = [
   { category: "Equipment tags", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
@@ -21,29 +24,20 @@ const DataCompleteness = () => {
   const atRisk = COMPLETENESS_DATA.filter(d => d.pct < 80).length;
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h2 className="text-lg font-bold flex items-center gap-2"><FileCheck className="w-5 h-5 text-primary" /> Data Completeness Monitor</h2>
-      <p className="text-xs text-muted-foreground -mt-3">Tracking data completeness across all engineering and operational data categories</p>
+    <PageHeader title="Data Completeness Monitor" subtitle="Tracking data completeness across all engineering and operational data categories">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Overall Completeness", value: `${overall}%`, color: overall >= 90 ? "text-operational" : "text-gap" },
+          { label: "Overall Completeness", value: `${overall}%`, color: overall >= 90 ? "" : "text-warning" },
           { label: "Categories Tracked", value: COMPLETENESS_DATA.length.toString() },
-          { label: "At 100%", value: COMPLETENESS_DATA.filter(d => d.pct === 100).length.toString(), color: "text-operational" },
-          { label: "Below 80%", value: atRisk.toString(), color: atRisk > 0 ? "text-destructive" : "text-operational" },
+          { label: "At 100%", value: COMPLETENESS_DATA.filter(d => d.pct === 100).length.toString() },
+          { label: "Below 80%", value: atRisk.toString(), color: atRisk > 0 ? "text-error" : "" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Completeness by Category</h3>
-        </div>
-        <div className="p-4">
+      <Panel title="Completeness by Category">
           <ResponsiveContainer width="100%" height={320}>
             <BarChart data={COMPLETENESS_DATA} layout="vertical" margin={{ left: 150 }}>
               <XAxis type="number" domain={[0, 100]} tick={axisTick} tickLine={false} axisLine={false} />
@@ -54,13 +48,9 @@ const DataCompleteness = () => {
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </div>
+      </Panel>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Detailed Breakdown</h3>
-        </div>
+      <Panel title="Detailed Breakdown" padded={false}>
         <div className="overflow-x-auto">
           <table className="w-full type-body-sm">
             <thead>
@@ -80,21 +70,19 @@ const DataCompleteness = () => {
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.total.toLocaleString()}</td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">{d.complete.toLocaleString()}</td>
                   <td className="py-2 px-3 text-right tabular whitespace-nowrap">{(d.total - d.complete).toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right tabular font-bold whitespace-nowrap">
-                    <span className={d.pct >= 95 ? "text-operational" : d.pct >= 80 ? "text-gap" : "text-destructive"}>{d.pct}%</span>
+                  <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">
+                    <span className={d.pct >= 95 ? "" : d.pct >= 80 ? "text-warning" : "text-error"}>{d.pct}%</span>
                   </td>
                   <td className="py-2 px-3">
-                    <span className={`type-body-sm px-2 py-0.5 rounded-full font-medium ${d.pct === 100 ? "bg-operational/10 text-operational" : d.pct >= 80 ? "bg-gap/10 text-gap" : "bg-destructive/10 text-destructive"}`}>
-                      {d.pct === 100 ? "Complete" : d.pct >= 80 ? "On Track" : "At Risk"}
-                    </span>
+                    <ToneStatus tone={completenessState(d.pct).tone} solid={completenessState(d.pct).solid}>{completenessState(d.pct).label}</ToneStatus>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 

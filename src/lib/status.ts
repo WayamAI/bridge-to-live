@@ -156,3 +156,7 @@ export const connectedSystemTone = (status: string): WorkflowTone =>
 
 /** A sync run: quiet success, or quiet warning when it finished with errors. */
 export const syncRunTone = (errors: number): Tone => (errors > 0 ? "warning" : "success");
+
+/** Data completeness state from a percentage: 100 Complete (success), 80 and above On Track (warning), below 80 At Risk (error, solid). */
+export const completenessState = (pct: number): { label: string } & WorkflowTone =>
+  pct === 100 ? { label: "Complete", tone: "success" } : pct >= 80 ? { label: "On Track", tone: "warning" } : { label: "At Risk", tone: "error", solid: true };
