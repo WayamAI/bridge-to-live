@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { Mail, Lock, Eye, EyeOff } from "lucide-react";
-import Logo from "@/components/Logo";
 import { useAuth } from "@/hooks/useAuth";
+import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
+import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
+import wayamWordmarkLight from "@/assets/brand/wayam-wordmark-light.svg";
+import wayamWordmarkDark from "@/assets/brand/wayam-wordmark-dark.svg";
+
+const field =
+  "h-11 w-full rounded-full border border-hairline bg-action px-4 pl-10 type-body-md text-foreground outline-none transition-colors duration-[180ms] placeholder:text-quaternary hover:border-strong focus-visible:border-strong focus-visible:ring-2 focus-visible:ring-active";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -26,27 +32,51 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-4 bg-grid">
-      <div className="w-full max-w-sm">
-        <div className="flex flex-col items-center gap-2 mb-8">
-          <Logo size={44} showText={false} />
-          <span className="font-bold text-lg text-foreground">PlantMind</span>
-          <span className="text-xs text-muted-foreground">by Wayam AI</span>
+    <div className="flex min-h-screen bg-page">
+      {/* Brand panel (solid, no hero image): near-black in light mode, near-white in dark mode */}
+      <div className="hidden flex-[1.4] flex-col justify-between bg-action-primary p-10 text-on-color lg:flex">
+        <div className="flex items-center gap-2.5">
+          <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0 dark:hidden" />
+          <img src={wayamMarkDark} alt="" className="hidden h-auto w-8 shrink-0 dark:block" />
+          <span className="flex flex-col gap-0.5">
+            <img src={wayamWordmarkDark} alt="Wayam AI" className="h-5 w-auto self-start dark:hidden" />
+            <img src={wayamWordmarkLight} alt="Wayam AI" className="hidden h-5 w-auto self-start dark:block" />
+          </span>
+        </div>
+        <div>
+          <p className="type-eyebrow opacity-60">PlantMind</p>
+          <p className="type-display-2xl mt-3 max-w-[18ch]">Plant operations intelligence</p>
+          <p className="type-body-md mt-4 max-w-[48ch] opacity-70">
+            Real-time plant operations, equipment health and predictive maintenance intelligence.
+          </p>
+        </div>
+      </div>
+
+      {/* Form column */}
+      <div className="flex w-full flex-col border-l border-hairline bg-container lg:w-[min(28rem,42%)]">
+        <div className="flex items-center gap-2.5 px-8 pt-8 lg:hidden">
+          <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0 dark:hidden" />
+          <img src={wayamMarkDark} alt="" className="hidden h-auto w-8 shrink-0 dark:block" />
+          <span className="flex flex-col gap-0.5">
+            <img src={wayamWordmarkLight} alt="Wayam AI" className="h-5 w-auto self-start dark:hidden" />
+            <img src={wayamWordmarkDark} alt="Wayam AI" className="hidden h-5 w-auto self-start dark:block" />
+            <span className="type-eyebrow text-quaternary">PlantMind</span>
+          </span>
         </div>
 
-        <div className="bg-card border border-border rounded-xl p-6 shadow-xl">
-          <h1 className="text-base font-semibold text-foreground mb-1">Sign in</h1>
-          <p className="text-xs text-muted-foreground mb-6">
-            Demo build — enter any email and password to continue.
+        <div className="flex flex-1 flex-col justify-center px-8 py-10">
+          <h1 className="type-display-xl text-foreground">Sign in</h1>
+          <p className="type-body-md mt-2 text-tertiary">
+            Demo build. Enter any email and password to continue.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label htmlFor="email" className="block text-xs font-medium text-muted-foreground mb-1.5">
+          <form onSubmit={handleSubmit} className="mt-8 flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="email" className="type-eyebrow text-quaternary">
                 Email
               </label>
               <div className="relative">
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Mail className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-quaternary" aria-hidden />
                 <input
                   id="email"
                   type="email"
@@ -54,17 +84,17 @@ const Login = () => {
                   placeholder="you@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full h-10 pl-9 pr-3 rounded-md bg-background border border-input text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className={field}
                 />
               </div>
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-xs font-medium text-muted-foreground mb-1.5">
+            <div className="flex flex-col gap-1.5">
+              <label htmlFor="password" className="type-eyebrow text-quaternary">
                 Password
               </label>
               <div className="relative">
-                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Lock className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-quaternary" aria-hidden />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -72,32 +102,32 @@ const Login = () => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full h-10 pl-9 pr-9 rounded-md bg-background border border-input text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                  className={`${field} pr-11`}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  className="absolute right-3 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {showPassword ? <EyeOff className="size-4" aria-hidden /> : <Eye className="size-4" aria-hidden />}
                 </button>
               </div>
             </div>
 
-            {error && <p className="text-xs text-destructive">{error}</p>}
+            {error && <p className="type-body-sm text-error">{error}</p>}
 
             <button
               type="submit"
-              className="w-full h-10 rounded-md bg-primary text-primary-foreground text-sm font-medium hover:opacity-90 transition-opacity"
+              className="type-label-md mt-1 h-11 w-full rounded-full bg-action-primary text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active"
             >
               Sign in
             </button>
           </form>
         </div>
 
-        <p className="text-center text-[11px] text-muted-foreground mt-6">
-          Wayam AI — PlantMind demo environment
+        <p className="type-caption px-8 pb-8 text-quaternary">
+          Wayam AI · PlantMind demo environment
         </p>
       </div>
     </div>
