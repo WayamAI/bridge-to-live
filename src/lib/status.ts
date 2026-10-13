@@ -122,3 +122,19 @@ export const patchStatus: Record<string, WorkflowTone> = {
   "Patch available": { tone: "warning" },
   "End-of-life": { tone: "error", solid: true },
 };
+
+/** Threat event severity: critical error, high warning, medium info, low neutral. Critical and High need attention (solid). */
+export const threatSeverity: Record<string, WorkflowTone> = {
+  Critical: { tone: "error", solid: true },
+  High: { tone: "warning", solid: true },
+  Medium: { tone: "info" },
+  Low: { tone: "neutral" },
+};
+
+/** Threat event handling state: Investigating needs attention (solid). */
+export const threatStatus: Record<string, WorkflowTone> = {
+  Investigating: { tone: "error", solid: true },
+  Contained: { tone: "warning" },
+  Resolved: { tone: "success" },
+  Monitoring: { tone: "info" },
+};

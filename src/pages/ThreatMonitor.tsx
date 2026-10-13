@@ -1,4 +1,7 @@
 import { Shield, AlertTriangle, Clock } from "lucide-react";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { threatSeverity, threatStatus } from "@/lib/status";
 
 interface ThreatEvent {
   id: string;
@@ -24,47 +27,25 @@ const THREAT_EVENTS: ThreatEvent[] = [
   { id: "t10", timestamp: "2026-03-26 14:08:55", asset: "OT Firewall FW-DMZ-02", eventType: "Rule bypass attempt", severity: "Critical", status: "Resolved", mitreTactic: "Lateral Movement", details: "Attempted Level 4→Level 2 traversal bypassing DMZ — blocked" },
 ];
 
-const SEVERITY_COLORS: Record<string, string> = {
-  Critical: "bg-destructive/10 text-destructive",
-  High: "bg-gap/10 text-gap",
-  Medium: "bg-secondary/10 text-secondary",
-  Low: "bg-muted text-muted-foreground",
-};
-
-const STATUS_COLORS: Record<string, string> = {
-  Investigating: "bg-destructive/10 text-destructive",
-  Contained: "bg-gap/10 text-gap",
-  Resolved: "bg-operational/10 text-operational",
-  Monitoring: "bg-secondary/10 text-secondary",
-};
-
 const ThreatMonitor = () => {
   const critical = THREAT_EVENTS.filter(e => e.severity === "Critical").length;
   const active = THREAT_EVENTS.filter(e => e.status === "Investigating" || e.status === "Contained").length;
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h2 className="text-lg font-bold flex items-center gap-2"><Shield className="w-5 h-5 text-destructive" /> Threat Monitor</h2>
-      <p className="text-xs text-muted-foreground -mt-3">OT security event log — MITRE ATT&CK for ICS framework mapping</p>
+    <PageHeader title="Threat Monitor" subtitle="OT security event log with MITRE ATT&CK for ICS framework mapping">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Events (7 Days)", value: THREAT_EVENTS.length.toString() },
-          { label: "Critical Events", value: critical.toString(), color: "text-destructive" },
-          { label: "Active Investigations", value: active.toString(), color: "text-gap" },
-          { label: "Mean Response Time", value: "18 min", color: "text-primary" },
+          { label: "Critical Events", value: critical.toString(), color: critical > 0 ? "text-error" : "" },
+          { label: "Active Investigations", value: active.toString() },
+          { label: "Mean Response Time", value: "18 min" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Security Event Log — Most Recent</h3>
-        </div>
+      <Panel title="Security Event Log · Most Recent" padded={false}>
         <div className="overflow-x-auto">
           <table className="w-full type-body-sm">
             <thead>
@@ -84,8 +65,8 @@ const ThreatMonitor = () => {
                   <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{e.timestamp}</td>
                   <td className="py-2 px-3 font-medium">{e.asset}</td>
                   <td className="py-2 px-3">{e.eventType}</td>
-                  <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full font-medium ${SEVERITY_COLORS[e.severity]}`}>{e.severity}</span></td>
-                  <td className="py-2 px-3"><span className={`type-body-sm px-3 py-0.5 rounded-full font-medium ${STATUS_COLORS[e.status]}`}>{e.status}</span></td>
+                  <td className="py-2 px-3"><ToneStatus tone={threatSeverity[e.severity].tone} solid={threatSeverity[e.severity].solid}>{e.severity}</ToneStatus></td>
+                  <td className="py-2 px-3"><ToneStatus tone={threatStatus[e.status].tone} solid={threatStatus[e.status].solid}>{e.status}</ToneStatus></td>
                   <td className="py-2 px-3 type-body-sm tabular whitespace-nowrap">{e.mitreTactic}</td>
                   <td className="py-2 px-3 type-body-sm">{e.details}</td>
                 </tr>
@@ -93,8 +74,8 @@ const ThreatMonitor = () => {
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 
