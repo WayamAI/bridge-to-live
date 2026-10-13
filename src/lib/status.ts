@@ -66,3 +66,20 @@ export const recommendationStatus: Record<string, WorkflowTone> = {
   Completed: { tone: "success" },
   Deferred: { tone: "neutral" },
 };
+
+/** Work-order type: planned success, predictive info, corrective warning, emergency error (solid, needs attention). */
+export const workOrderType: Record<string, WorkflowTone> = {
+  "Planned PM": { tone: "success" },
+  Predictive: { tone: "info" },
+  Corrective: { tone: "warning" },
+  Emergency: { tone: "error", solid: true },
+};
+
+/** Work-order status: Awaiting Parts means blocked, so it is the one solid badge. */
+export const workOrderStatus: Record<string, WorkflowTone> = {
+  Open: { tone: "warning" },
+  "In-Progress": { tone: "info" },
+  "Awaiting Parts": { tone: "error", solid: true },
+  Completed: { tone: "success" },
+  Cancelled: { tone: "neutral" },
+};
