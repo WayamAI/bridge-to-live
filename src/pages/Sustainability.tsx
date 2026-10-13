@@ -1,6 +1,8 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
 import { Leaf, TrendingDown, AlertTriangle, Droplets } from "lucide-react";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import PageHeader from "@/components/layout/PageHeader";
+import { Panel , KpiTile } from "@/components/ui/primitives";
 
 const MONTHLY_EMISSIONS = [
   { month: "Oct '25", scope1: 4200, scope2: 2800, flaring: 840 },
@@ -35,31 +37,22 @@ const Sustainability = () => {
   const onTrack = ytdEmissions < target;
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h2 className="text-lg font-bold flex items-center gap-2"><Leaf className="w-5 h-5 text-operational" /> Sustainability & Emissions</h2>
-      <p className="text-xs text-muted-foreground -mt-3">Environmental performance tracking — carbon emissions, water usage, waste management</p>
+    <PageHeader title="Sustainability & Emissions" subtitle="Environmental performance tracking: carbon emissions, water usage and waste management">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "YTD CO₂e Emissions", value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "text-operational" : "text-gap" },
-          { label: "Annual Target", value: `${(target / 1000).toFixed(0)}k T`, color: "text-muted-foreground" },
-          { label: "Flaring Reduction", value: "−24%", color: "text-operational" },
-          { label: "Water Recycling Rate", value: "32%", color: "text-primary" },
+          { label: "YTD CO₂e Emissions", value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "" : "text-warning" },
+          { label: "Annual Target", value: `${(target / 1000).toFixed(0)}k T` },
+          { label: "Flaring Reduction", value: "−24%" },
+          { label: "Water Recycling Rate", value: "32%" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Monthly Emissions */}
-        <div className="lg:col-span-2 rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Monthly GHG Emissions (T CO₂e)</h3>
-          </div>
-          <div className="p-4">
+        <Panel title="Monthly GHG Emissions (T CO₂e)" className="lg:col-span-2">
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={MONTHLY_EMISSIONS}>
                 <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
@@ -70,15 +63,10 @@ const Sustainability = () => {
                 <Bar isAnimationActive={false} dataKey="flaring" stackId="a" fill={seriesColor(5)} name="Flaring" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </div>
-        </div>
+        </Panel>
 
         {/* By Source */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Emissions by Source (%)</h3>
-          </div>
-          <div className="p-4">
+        <Panel title="Emissions by Source (%)">
             <ResponsiveContainer width="100%" height={180}>
               <PieChart>
                 <Pie isAnimationActive={false} data={BY_SOURCE} cx="50%" cy="50%" outerRadius={70} innerRadius={40} dataKey="value" paddingAngle={2}>
@@ -89,23 +77,17 @@ const Sustainability = () => {
             </ResponsiveContainer>
             <div className="space-y-1 mt-2">
               {BY_SOURCE.map(d => (
-                <div key={d.name} className="flex items-center justify-between text-[10px]">
+                <div key={d.name} className="flex items-center justify-between type-caption">
                   <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: d.color }} /><span>{d.name}</span></div>
-                  <span className="font-mono">{d.value}%</span>
+                  <span className="tabular">{d.value}%</span>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+        </Panel>
       </div>
 
       {/* Water Usage */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border flex items-center gap-2">
-          <Droplets className="w-4 h-4 text-secondary" />
-          <h3 className="text-sm font-semibold">Water Consumption & Recycling (m³/month)</h3>
-        </div>
-        <div className="p-4">
+      <Panel title="Water Consumption & Recycling (m³/month)">
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={WATER_DATA}>
               <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
@@ -116,9 +98,8 @@ const Sustainability = () => {
               <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(4)} strokeDasharray="5 5" name="Target" />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 
