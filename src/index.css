@@ -1,126 +1,137 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import "./styles/tokens.css";
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* =============================================================================
+   Wayam AI PlantMind on the Chronus design system.
+   Chronus tokens live in styles/tokens.css. The shadcn variables below are HSL
+   triplets derived from those tokens so existing classes pick up the Chronus
+   look. The legacy PlantMind names (engineering, operational, gap) are aliases
+   of the Chronus feedback colours until every page uses the new names:
+   engineering -> info, operational -> success, gap -> warning.
+   Dark is keyed on both .dark (the app's theme hook) and [data-theme="dark"].
+   ============================================================================= */
+
 @layer base {
   :root {
-    /* Light theme (default) */
-    --background: 30 20% 98%;
-    --foreground: 217 27% 12%;
+    --background: 0 0% 94.9%;              /* page */
+    --foreground: 0 0% 6.3%;               /* text-primary */
 
-    --card: 0 0% 100%;
-    --card-foreground: 217 27% 12%;
-
+    --card: 0 0% 100%;                     /* container */
+    --card-foreground: 0 0% 6.3%;
     --popover: 0 0% 100%;
-    --popover-foreground: 217 27% 12%;
+    --popover-foreground: 0 0% 6.3%;
 
-    --primary: 22 88% 52%;
+    --primary: 0 0% 6.3%;                  /* action-primary (was brand orange) */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 235 55% 55%;
-    --secondary-foreground: 210 40% 98%;
+    /* The old PlantMind "secondary" was an indigo accent used as pill text (text-secondary on bg-secondary/10),
+       not a surface. It is aliased to info blue like engineering. secondary-foreground stays the grey
+       text colour that the shell uses. */
+    --secondary: 209 68% 37.3%;
+    --secondary-foreground: 0 0% 27.5%;    /* text-secondary */
 
-    --muted: 220 15% 95%;
-    --muted-foreground: 220 10% 40%;
+    --muted: 0 0% 94.9%;
+    --muted-foreground: 0 0% 45.1%;        /* text-tertiary */
 
-    --accent: 30 95% 55%;
-    --accent-foreground: 217 27% 12%;
+    --accent: 0 0% 94.9%;
+    --accent-foreground: 0 0% 6.3%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 357 66% 46.7%;
+    --destructive-foreground: 0 0% 100%;
+    --success: 143 45% 30.4%;
+    --success-foreground: 0 0% 100%;
+    --info: 209 68% 37.3%;
+    --info-foreground: 0 0% 100%;
+    --warning: 19 86% 40.8%;
+    --warning-foreground: 0 0% 100%;
 
-    --border: 220 15% 88%;
-    --input: 220 15% 88%;
-    --ring: 22 88% 52%;
+    --border: 0 0% 91%;
+    --input: 0 0% 91%;
+    --ring: 0 0% 74%;
 
-    --radius: 0.5rem;
+    --radius: 0.5rem;                      /* cards 8px, inner 6px, small 4px */
 
-    /* Custom tokens */
-    --engineering: 235 55% 55%;
-    --engineering-foreground: 210 40% 98%;
-    --engineering-muted: 235 40% 92%;
-
-    --operational: 165 75% 38%;
+    /* Legacy PlantMind colour names, aliased to Chronus feedback colours */
+    --engineering: 209 68% 37.3%;
+    --engineering-foreground: 0 0% 100%;
+    --engineering-muted: 209 60% 94%;
+    --operational: 143 45% 30.4%;
     --operational-foreground: 0 0% 100%;
-    --operational-muted: 170 50% 92%;
-
-    --gap: 30 95% 45%;
+    --operational-muted: 143 40% 93%;
+    --gap: 19 86% 40.8%;
     --gap-foreground: 0 0% 100%;
 
     --surface-elevated: 0 0% 100%;
-    --glow-primary: 22 88% 52%;
-    --glow-secondary: 235 55% 55%;
 
-    --font-display: 'Inter', system-ui, sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    /* Flat: Chronus has no glows. The legacy utilities stay defined (as no-ops)
+       so unconverted pages keep compiling. */
+    --glow-primary: 0 0% 6.3%;
+    --glow-secondary: 0 0% 6.3%;
 
     --sidebar-background: 0 0% 100%;
-    --sidebar-foreground: 217 27% 12%;
-    --sidebar-primary: 22 88% 52%;
+    --sidebar-foreground: 0 0% 27.5%;
+    --sidebar-primary: 0 0% 6.3%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 95%;
-    --sidebar-accent-foreground: 217 27% 12%;
-    --sidebar-border: 220 15% 88%;
-    --sidebar-ring: 22 88% 52%;
+    --sidebar-accent: 0 0% 94.9%;
+    --sidebar-accent-foreground: 0 0% 6.3%;
+    --sidebar-border: 0 0% 91%;
+    --sidebar-ring: 0 0% 74%;
   }
 
-  .dark {
-    --background: 220 20% 7%;
-    --foreground: 210 20% 92%;
+  .dark,
+  [data-theme="dark"] {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 98%;
+    --card: 0 0% 6.3%;
+    --card-foreground: 0 0% 98%;
+    --popover: 0 0% 6.3%;
+    --popover-foreground: 0 0% 98%;
 
-    --card: 220 18% 10%;
-    --card-foreground: 210 20% 92%;
+    --primary: 0 0% 98%;
+    --primary-foreground: 0 0% 0%;
 
-    --popover: 220 18% 10%;
-    --popover-foreground: 210 20% 92%;
+    --secondary: 201 83% 74.5%;
+    --secondary-foreground: 0 0% 83.1%;
+    --muted: 0 0% 9.8%;
+    --muted-foreground: 0 0% 54.1%;
+    --accent: 0 0% 13.7%;
+    --accent-foreground: 0 0% 98%;
 
-    --primary: 22 88% 52%;
-    --primary-foreground: 0 0% 100%;
+    --destructive: 357 100% 79.4%;
+    --destructive-foreground: 0 0% 0%;
+    --success: 142 49% 70.2%;
+    --success-foreground: 0 0% 0%;
+    --info: 201 83% 74.5%;
+    --info-foreground: 0 0% 0%;
+    --warning: 30 100% 69.8%;
+    --warning-foreground: 0 0% 0%;
 
-    --secondary: 235 55% 55%;
-    --secondary-foreground: 210 40% 98%;
+    --border: 0 0% 14%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 30%;
 
-    --muted: 220 15% 15%;
-    --muted-foreground: 215 15% 55%;
+    --engineering: 201 83% 74.5%;
+    --engineering-foreground: 0 0% 0%;
+    --engineering-muted: 209 30% 12%;
+    --operational: 142 49% 70.2%;
+    --operational-foreground: 0 0% 0%;
+    --operational-muted: 143 25% 12%;
+    --gap: 30 100% 69.8%;
+    --gap-foreground: 0 0% 0%;
 
-    --accent: 30 95% 55%;
-    --accent-foreground: 220 20% 7%;
+    --surface-elevated: 0 0% 6.3%;
 
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: 220 15% 18%;
-    --input: 220 15% 18%;
-    --ring: 22 88% 52%;
-
-    --radius: 0.5rem;
-
-    /* Custom tokens */
-    --engineering: 235 55% 55%;
-    --engineering-foreground: 210 40% 98%;
-    --engineering-muted: 235 40% 20%;
-
-    --operational: 170 80% 45%;
-    --operational-foreground: 220 20% 7%;
-    --operational-muted: 170 50% 15%;
-
-    --gap: 35 90% 55%;
-    --gap-foreground: 220 20% 7%;
-
-    --surface-elevated: 220 18% 12%;
-    --glow-primary: 22 88% 52%;
-    --glow-secondary: 235 55% 55%;
-
-    --sidebar-background: 220 18% 10%;
-    --sidebar-foreground: 210 20% 92%;
-    --sidebar-primary: 22 88% 52%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 220 15% 15%;
-    --sidebar-accent-foreground: 210 20% 92%;
-    --sidebar-border: 220 15% 18%;
-    --sidebar-ring: 22 88% 52%;
+    --sidebar-background: 0 0% 6.3%;
+    --sidebar-foreground: 0 0% 83.1%;
+    --sidebar-primary: 0 0% 98%;
+    --sidebar-primary-foreground: 0 0% 0%;
+    --sidebar-accent: 0 0% 13.7%;
+    --sidebar-accent-foreground: 0 0% 98%;
+    --sidebar-border: 0 0% 14%;
+    --sidebar-ring: 0 0% 30%;
   }
 }
 
@@ -128,39 +139,75 @@
   * {
     @apply border-border;
   }
-
+  html, body, #root { height: 100%; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-display);
+    background: var(--surface-page-background);
+    color: var(--text-secondary);
+    font-family: var(--font-geist, "Geist"), ui-sans-serif, system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.01em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-display);
+  /* Chronus has no heading defaults; pages set their own role classes. */
+
+  /* Mono-styled values keep aligned figures in Geist (Chronus has two families only). */
+  code, kbd, pre, .font-mono {
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
   }
 
-  code, pre, .font-mono {
-    font-family: var(--font-mono);
-  }
+  /* Chronus icon stroke */
+  svg.lucide { stroke-width: 1.75; }
+
+  ::placeholder { color: var(--text-quaternary); }
+  :focus-visible { outline: 2px solid var(--stroke-active); outline-offset: 2px; }
+  ::selection { background: var(--stroke-active); }
 }
 
 @layer utilities {
-  .glow-primary {
-    box-shadow: 0 0 20px hsl(var(--glow-primary) / 0.15), 0 0 40px hsl(var(--glow-primary) / 0.05);
-  }
-  .glow-secondary {
-    box-shadow: 0 0 20px hsl(var(--glow-secondary) / 0.15), 0 0 40px hsl(var(--glow-secondary) / 0.05);
-  }
+  .tabular { font-variant-numeric: tabular-nums; }
+
+  /* Chronus type roles. Named type-* (not text-*) on purpose: tailwind-merge in
+     cn() reads unknown text-* names as colours and would drop them. Compose with
+     a colour class, e.g. "type-body-sm text-tertiary". */
+  .type-caption    { font-size: 12px; line-height: 16px; font-weight: 500; }
+  .type-eyebrow    { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .type-label-sm   { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0; }
+  .type-label-md   { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
+  .type-body-sm    { font-size: 12px; line-height: 16px; letter-spacing: -0.01em; }
+  .type-body-md    { font-size: 14px; line-height: 20px; letter-spacing: -0.01em; }
+  .type-body-lg    { font-size: 16px; line-height: 24px; letter-spacing: -0.01em; }
+  .type-display-base,
+  .type-display-lg,
+  .type-display-xl,
+  .type-display-2xl { font-family: Michroma, Geist, sans-serif; font-weight: 400; }
+  .type-display-base { font-size: 14px; line-height: 1.4;  letter-spacing: -0.01em; }
+  .type-display-lg   { font-size: 18px; line-height: 1.25; letter-spacing: -0.01em; }
+  .type-display-xl   { font-size: 22px; line-height: 1.2;  letter-spacing: -0.01em; }
+  .type-display-2xl  { font-size: 28px; line-height: 1.15; letter-spacing: -0.02em; }
+
+  /* Legacy PlantMind helpers, now flat (removed from pages in the page steps) */
+  .glow-primary,
+  .glow-secondary { box-shadow: none; }
+  .border-glow { border-color: var(--stroke-default); }
   .text-gradient-primary {
-    @apply bg-clip-text text-transparent;
-    background-image: linear-gradient(135deg, hsl(var(--primary)), hsl(var(--secondary)));
+    background: none;
+    color: hsl(var(--foreground));
   }
-  .border-glow {
-    border-color: hsl(var(--primary) / 0.3);
+  .bg-grid { background-image: none; }
+
+  /* Scrollbars */
+  .scrollbar-thin::-webkit-scrollbar { width: 8px; height: 8px; }
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    background: var(--surface-scroll-bar);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
   }
-  .bg-grid {
-    background-image: 
-      linear-gradient(hsl(var(--border) / 0.3) 1px, transparent 1px),
-      linear-gradient(90deg, hsl(var(--border) / 0.3) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
+  .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
 }

@@ -1,5 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
-import { Gauge, AlertTriangle, CheckCircle } from "lucide-react";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { sourceHealth, workflowTone } from "@/lib/status";
 
 const DATA_SOURCES = [
   { source: "Honeywell Experion DCS", freshness: 100, completeness: 99.8, accuracy: 99.9, status: "Healthy" },
@@ -25,98 +27,81 @@ const INGESTION_LOG = [
   { timestamp: "2026-03-30 14:25:00", source: "Schneider", records: "1.2M", latency: "5 min", errors: 0 },
 ];
 
-const STATUS_COLORS: Record<string, string> = {
-  Healthy: "bg-operational/10 text-operational",
-  Warning: "bg-gap/10 text-gap",
-  Degraded: "bg-destructive/10 text-destructive",
-};
-
 const DataQuality = () => {
   const avgFreshness = Math.round(DATA_SOURCES.reduce((s, d) => s + d.freshness, 0) / DATA_SOURCES.length);
   const avgCompleteness = Math.round(DATA_SOURCES.reduce((s, d) => s + d.completeness, 0) / DATA_SOURCES.length * 10) / 10;
   const healthy = DATA_SOURCES.filter(d => d.status === "Healthy").length;
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Gauge className="w-5 h-5 text-primary" /> Data Quality Monitor</h1>
-      <p className="text-xs text-muted-foreground -mt-3">Real-time monitoring of data source health, freshness, and ingestion quality</p>
+    <PageHeader title="Data Quality Monitor" subtitle="Real-time monitoring of data source health, freshness and ingestion quality">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Avg Data Freshness", value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "text-operational" : "text-gap" },
-          { label: "Avg Completeness", value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "text-operational" : "text-gap" },
-          { label: "Healthy Sources", value: `${healthy}/${DATA_SOURCES.length}`, color: "text-operational" },
-          { label: "Total Ingestion Errors (24h)", value: "102", color: "text-gap" },
+          { label: "Avg Data Freshness", value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
+          { label: "Avg Completeness", value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "" : "text-warning" },
+          { label: "Healthy Sources", value: `${healthy}/${DATA_SOURCES.length}` },
+          { label: "Total Ingestion Errors (24h)", value: "102", color: "text-warning" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
       {/* Source Quality Table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Data Source Quality Scores</h3>
-        </div>
+      <Panel title="Data Source Quality Scores" padded={false}>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Source</th>
-                <th className="text-right py-2 px-3 font-medium">Freshness %</th>
-                <th className="text-right py-2 px-3 font-medium">Completeness %</th>
-                <th className="text-right py-2 px-3 font-medium">Accuracy %</th>
-                <th className="text-left py-2 px-3 font-medium">Status</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Freshness %</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Completeness %</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Accuracy %</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
               </tr>
             </thead>
             <tbody>
               {DATA_SOURCES.map(d => (
-                <tr key={d.source} className={`border-b border-border/50 hover:bg-muted/20 ${d.status === "Degraded" ? "bg-destructive/5" : ""}`}>
+                <tr key={d.source} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{d.source}</td>
-                  <td className="py-2 px-3 text-right font-mono"><span className={d.freshness >= 90 ? "text-operational" : d.freshness >= 70 ? "text-gap" : "text-destructive"}>{d.freshness}</span></td>
-                  <td className="py-2 px-3 text-right font-mono"><span className={d.completeness >= 95 ? "text-operational" : "text-gap"}>{d.completeness}</span></td>
-                  <td className="py-2 px-3 text-right font-mono"><span className={d.accuracy >= 98 ? "text-operational" : "text-gap"}>{d.accuracy}</span></td>
-                  <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[d.status]}`}>{d.status}</span></td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap"><span className={d.freshness >= 90 ? "" : d.freshness >= 70 ? "text-warning" : "text-error"}>{d.freshness}</span></td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap"><span className={d.completeness >= 95 ? "" : "text-warning"}>{d.completeness}</span></td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap"><span className={d.accuracy >= 98 ? "" : "text-warning"}>{d.accuracy}</span></td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(sourceHealth, d.status).tone} solid={workflowTone(sourceHealth, d.status).solid}>{d.status}</ToneStatus></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Panel>
 
       {/* Ingestion Log */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Ingestion Log — Recent Activity</h3>
-        </div>
+      <Panel title="Ingestion Log · Recent Activity" padded={false}>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Timestamp</th>
-                <th className="text-left py-2 px-3 font-medium">Source</th>
-                <th className="text-right py-2 px-3 font-medium">Records</th>
-                <th className="text-left py-2 px-3 font-medium">Latency</th>
-                <th className="text-right py-2 px-3 font-medium">Errors</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Timestamp</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Records</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Latency</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Errors</th>
               </tr>
             </thead>
             <tbody>
               {INGESTION_LOG.map((l, i) => (
-                <tr key={i} className={`border-b border-border/50 hover:bg-muted/20 ${l.errors > 10 ? "bg-gap/5" : ""}`}>
-                  <td className="py-2 px-3 font-mono text-[10px]">{l.timestamp}</td>
+                <tr key={i} className="border-b border-hairline hover:bg-raised">
+                  <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{l.timestamp}</td>
                   <td className="py-2 px-3">{l.source}</td>
-                  <td className="py-2 px-3 text-right font-mono">{l.records}</td>
-                  <td className="py-2 px-3 font-mono text-[10px]">{l.latency}</td>
-                  <td className="py-2 px-3 text-right font-mono">{l.errors > 0 ? <span className="text-destructive">{l.errors}</span> : "0"}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{l.records}</td>
+                  <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{l.latency}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{l.errors > 0 ? <span className="text-error">{l.errors}</span> : "0"}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 

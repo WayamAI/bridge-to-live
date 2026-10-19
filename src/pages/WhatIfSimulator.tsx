@@ -1,6 +1,8 @@
 import { useState, useMemo } from "react";
-import { Beaker, ArrowRight, RotateCcw } from "lucide-react";
+import { icons } from "@/lib/icons";
 import type { Equipment } from "@/hooks/usePlantData";
+import PageHeader from "@/components/layout/PageHeader";
+import { Panel, PillSelect, Unit } from "@/components/ui/primitives";
 
 interface ScenarioConfig {
   pmFrequency: number;
@@ -68,91 +70,87 @@ const WhatIfSimulator = ({ equipment }: Props) => {
   ];
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Beaker className="w-5 h-5 text-primary" /> What-If Simulator</h1>
-      <p className="text-xs text-muted-foreground -mt-3">Model operational scenarios and compare impact against current baseline</p>
+    <PageHeader title="What-If Simulator" subtitle="Model operational scenarios and compare impact against current baseline">
 
       <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-4">
         {/* Controls */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border flex items-center justify-between">
-            <h3 className="text-sm font-semibold">Scenario Builder</h3>
-            <button onClick={() => setConfig({ ...DEFAULT_CONFIG })} className="text-[10px] text-muted-foreground hover:text-foreground flex items-center gap-1">
-              <RotateCcw className="w-3 h-3" /> Reset
+        <Panel title="Scenario Builder" padded={false}
+          action={
+            <button onClick={() => setConfig({ ...DEFAULT_CONFIG })} className="type-caption inline-flex items-center gap-1 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
+              <icons.reset className="size-[13px]" aria-hidden /> Reset
             </button>
-          </div>
+          }>
           <div className="p-4 space-y-4">
             {/* PM Frequency */}
             <div>
-              <label className="text-[10px] text-muted-foreground">PM Frequency Change: {config.pmFrequency > 0 ? "+" : ""}{config.pmFrequency}%</label>
-              <input type="range" min={-50} max={100} value={config.pmFrequency} onChange={e => setConfig(c => ({ ...c, pmFrequency: +e.target.value }))}
-                className="w-full h-1 mt-1 rounded-full appearance-none bg-border accent-primary" />
-              <div className="flex justify-between text-[9px] text-muted-foreground"><span>−50%</span><span>Current</span><span>+100%</span></div>
+              <label htmlFor="whatif-pm-frequency" className="type-label-sm text-secondary-foreground">PM Frequency Change: {config.pmFrequency > 0 ? "+" : ""}{config.pmFrequency}%</label>
+              <input id="whatif-pm-frequency" type="range" min={-50} max={100} value={config.pmFrequency} onChange={e => setConfig(c => ({ ...c, pmFrequency: +e.target.value }))}
+                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
+              <div className="flex justify-between type-caption text-tertiary"><span>−50%</span><span>Current</span><span>+100%</span></div>
             </div>
 
             {/* Predictive Only */}
             <div className="flex items-center justify-between">
-              <label className="text-[10px] text-muted-foreground">Predictive-Only Maintenance</label>
-              <button onClick={() => setConfig(c => ({ ...c, predictiveOnly: !c.predictiveOnly }))}
-                className={`w-10 h-5 rounded-full transition-colors ${config.predictiveOnly ? "bg-primary" : "bg-border"}`}>
-                <div className={`w-4 h-4 rounded-full bg-foreground transition-transform ${config.predictiveOnly ? "translate-x-5" : "translate-x-0.5"}`} />
+              <label htmlFor="whatif-predictive-only" className="type-label-sm text-secondary-foreground">Predictive-Only Maintenance</label>
+              <button id="whatif-predictive-only" onClick={() => setConfig(c => ({ ...c, predictiveOnly: !c.predictiveOnly }))}
+                role="switch"
+                aria-checked={config.predictiveOnly}
+                className={`relative h-5 w-9 shrink-0 rounded-full border border-hairline outline-none transition-colors duration-[180ms] focus-visible:ring-2 focus-visible:ring-active ${config.predictiveOnly ? "bg-action-primary" : "bg-raised-2"}`}>
+                <span className={`absolute left-0.5 top-0.5 size-3.5 rounded-full bg-container transition-transform duration-[180ms] ${config.predictiveOnly ? "translate-x-4" : "translate-x-0"}`} />
               </button>
             </div>
 
             {/* Air Pressure */}
             <div>
-              <label className="text-[10px] text-muted-foreground">Compressed Air Setpoint: {config.airPressure} bar</label>
-              <input type="range" min={6} max={10} step={0.1} value={config.airPressure} onChange={e => setConfig(c => ({ ...c, airPressure: +e.target.value }))}
-                className="w-full h-1 mt-1 rounded-full appearance-none bg-border accent-primary" />
+              <label htmlFor="whatif-air-pressure" className="type-label-sm text-secondary-foreground">Compressed Air Setpoint: {config.airPressure} bar</label>
+              <input id="whatif-air-pressure" type="range" min={6} max={10} step={0.1} value={config.airPressure} onChange={e => setConfig(c => ({ ...c, airPressure: +e.target.value }))}
+                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
             </div>
 
             {/* Startup Shift */}
             <div>
-              <label className="text-[10px] text-muted-foreground">Comp B Startup Shift: {config.startupShift} hr</label>
-              <input type="range" min={-4} max={4} value={config.startupShift} onChange={e => setConfig(c => ({ ...c, startupShift: +e.target.value }))}
-                className="w-full h-1 mt-1 rounded-full appearance-none bg-border accent-primary" />
+              <label htmlFor="whatif-startup-shift" className="type-label-sm text-secondary-foreground">Comp B Startup Shift: {config.startupShift} hr</label>
+              <input id="whatif-startup-shift" type="range" min={-4} max={4} value={config.startupShift} onChange={e => setConfig(c => ({ ...c, startupShift: +e.target.value }))}
+                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
             </div>
 
             {/* Throughput */}
             <div>
-              <label className="text-[10px] text-muted-foreground">Operating Throughput: {config.throughput}%</label>
-              <input type="range" min={60} max={110} value={config.throughput} onChange={e => setConfig(c => ({ ...c, throughput: +e.target.value }))}
-                className="w-full h-1 mt-1 rounded-full appearance-none bg-border accent-primary" />
+              <label htmlFor="whatif-throughput" className="type-label-sm text-secondary-foreground">Operating Throughput: {config.throughput}%</label>
+              <input id="whatif-throughput" type="range" min={60} max={110} value={config.throughput} onChange={e => setConfig(c => ({ ...c, throughput: +e.target.value }))}
+                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
             </div>
 
             {/* Failure Sim */}
             <div>
-              <label className="text-[10px] text-muted-foreground">Simulate Equipment Failure</label>
-              <select value={config.failureTag} onChange={e => setConfig(c => ({ ...c, failureTag: e.target.value }))}
-                className="w-full mt-1 text-xs px-2 py-1.5 rounded-lg border border-border bg-card text-foreground">
+              <label htmlFor="whatif-failure-tag" className="type-label-sm text-secondary-foreground">Simulate Equipment Failure</label>
+              <PillSelect id="whatif-failure-tag" value={config.failureTag} onChange={e => setConfig(c => ({ ...c, failureTag: e.target.value }))}
+                wrapperClassName="mt-1 w-full" className="w-full">
                 <option value="">None</option>
                 {equipment.filter(e => e.criticalityTier !== "Non-critical").slice(0, 10).map(e => (
-                  <option key={e.id} value={e.tag}>{e.tag} — {e.name}</option>
+                  <option key={e.id} value={e.tag}>{e.tag} · {e.name}</option>
                 ))}
-              </select>
+              </PillSelect>
             </div>
 
             <button onClick={saveScenario}
-              className="w-full py-2 rounded-lg bg-primary/10 text-primary font-medium text-xs hover:bg-primary/20 transition-colors">
-              Save Scenario
+              className="type-label-sm h-8 w-full rounded-full border border-hairline bg-action text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
+              Save scenario
             </button>
           </div>
-        </div>
+        </Panel>
 
         {/* Results */}
         <div className="space-y-4">
-          <div className="rounded-xl border border-border bg-card overflow-hidden">
-            <div className="px-4 py-3 border-b border-border">
-              <h3 className="text-sm font-semibold">Current State vs. Scenario</h3>
-            </div>
+          <Panel title="Current State vs. Scenario" padded={false}>
             <div className="overflow-x-auto">
-              <table className="w-full text-[11px]">
+              <table className="w-full type-body-sm">
                 <thead>
-                  <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                    <th className="text-left py-2 px-4 font-medium">Metric</th>
-                    <th className="text-right py-2 px-4 font-medium">Current</th>
-                    <th className="text-right py-2 px-4 font-medium">Scenario</th>
-                    <th className="text-right py-2 px-4 font-medium">Delta</th>
+                  <tr className="border-b border-hairline">
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Metric</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Current</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Scenario</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Delta</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -160,11 +158,11 @@ const WhatIfSimulator = ({ equipment }: Props) => {
                     const delta = m.scenVal - m.baseVal;
                     const isGood = m.label === "OEE" ? delta > 0 : delta < 0;
                     return (
-                      <tr key={m.label} className="border-b border-border/50 hover:bg-muted/20">
-                        <td className="py-2.5 px-4 font-medium">{m.label}</td>
-                        <td className="py-2.5 px-4 text-right font-mono">{m.prefix ? "₹" : ""}{m.baseVal}{m.suffix || m.unit}</td>
-                        <td className="py-2.5 px-4 text-right font-mono font-bold">{m.prefix ? "₹" : ""}{m.scenVal}{m.suffix || m.unit}</td>
-                        <td className={`py-2.5 px-4 text-right font-mono font-bold ${isGood ? "text-operational" : delta === 0 ? "text-muted-foreground" : "text-destructive"}`}>
+                      <tr key={m.label} className="border-b border-hairline hover:bg-raised">
+                        <td className="py-2.5 px-3 font-medium">{m.label}</td>
+                        <td className="py-2.5 px-3 text-right tabular whitespace-nowrap">{m.prefix ? "₹" : ""}{m.baseVal}{m.suffix || m.unit}</td>
+                        <td className="py-2.5 px-3 text-right tabular font-semibold whitespace-nowrap">{m.prefix ? "₹" : ""}{m.scenVal}{m.suffix || m.unit}</td>
+                        <td className={`py-2.5 px-3 text-right tabular font-semibold ${isGood ? "text-success" : delta === 0 ? "text-tertiary" : "text-error"}`}>
                           {delta > 0 ? "+" : ""}{m.prefix ? "₹" : ""}{Math.round(delta * 10) / 10}{m.suffix || m.unit}
                         </td>
                       </tr>
@@ -173,33 +171,30 @@ const WhatIfSimulator = ({ equipment }: Props) => {
                 </tbody>
               </table>
             </div>
-            <div className={`px-4 py-3 border-t border-border text-center ${results.net > 0 ? "bg-operational/5" : results.net < 0 ? "bg-destructive/5" : ""}`}>
-              <p className="text-[9px] text-muted-foreground">Net Financial Impact (Annual)</p>
-              <p className={`text-xl font-bold font-mono ${results.net > 0 ? "text-operational" : results.net < 0 ? "text-destructive" : ""}`}>
-                {results.net > 0 ? "+" : ""}₹{results.net}L/yr
+            <div className="border-t border-hairline bg-raised px-4 py-3 text-center">
+              <p className="type-eyebrow text-quaternary">Net Financial Impact (Annual)</p>
+              <p className={`type-display-xl tabular mt-1 ${results.net > 0 ? "text-success" : results.net < 0 ? "text-error" : "text-foreground"}`}>
+                {results.net > 0 ? "+" : ""}<Unit className="ml-0 mr-0.5">₹</Unit>{results.net}<Unit>L/yr</Unit>
               </p>
             </div>
-          </div>
+          </Panel>
 
           {/* Saved Scenarios */}
           {savedScenarios.length > 0 && (
-            <div className="rounded-xl border border-border bg-card overflow-hidden">
-              <div className="px-4 py-3 border-b border-border">
-                <h3 className="text-sm font-semibold">Saved Scenarios ({savedScenarios.length})</h3>
-              </div>
+            <Panel title={<>Saved Scenarios ({savedScenarios.length})</>} padded={false}>
               <div className="divide-y divide-border">
                 {savedScenarios.map((s, i) => (
-                  <div key={i} className="px-4 py-2 flex items-center justify-between hover:bg-muted/20 cursor-pointer" onClick={() => setConfig({ ...s.config })}>
-                    <span className="text-xs font-medium">{s.name}</span>
-                    <span className="text-[10px] text-primary">Load →</span>
+                  <div key={i} className="px-4 py-2 flex items-center justify-between hover:bg-raised cursor-pointer" onClick={() => setConfig({ ...s.config })}>
+                    <span className="type-body-sm font-medium">{s.name}</span>
+                    <span className="type-caption inline-flex items-center gap-0.5 text-foreground">Load <icons.chevronRight className="size-3" aria-hidden /></span>
                   </div>
                 ))}
               </div>
-            </div>
+            </Panel>
           )}
         </div>
       </div>
-    </div>
+    </PageHeader>
   );
 };
 

@@ -1,4 +1,5 @@
-import { Outlet } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
 import type { Alert, UserRole } from "@/hooks/usePlantData";
@@ -11,12 +12,37 @@ interface AppLayoutProps {
 }
 
 const AppLayout = ({ alerts, userRole, onRoleChange, breadcrumb }: AppLayoutProps) => {
+  // Layout-only state: rail width (expanded by default on desktop) and the off-canvas drawer below lg.
+  const [expanded, setExpanded] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const { pathname } = useLocation();
+
+  // The off-canvas sidebar closes after navigating.
+  useEffect(() => setMobileOpen(false), [pathname]);
+
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
-      <Sidebar alerts={alerts} userRole={userRole} />
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar userRole={userRole} onRoleChange={onRoleChange} breadcrumb={breadcrumb} />
-        <main className="flex-1 overflow-y-auto">
+    // Fixed-viewport shell: the document never scrolls, <main> does.
+    <div className="flex h-screen w-full overflow-hidden bg-page">
+      {mobileOpen && (
+        <button
+          type="button"
+          aria-label="Close navigation"
+          className="fixed inset-0 z-40 bg-black/50 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-active lg:hidden"
+          onClick={() => setMobileOpen(false)}
+        />
+      )}
+
+      <Sidebar
+        alerts={alerts}
+        userRole={userRole}
+        expanded={expanded}
+        onToggleExpanded={() => setExpanded((v) => !v)}
+        mobileOpen={mobileOpen}
+      />
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <TopBar userRole={userRole} onRoleChange={onRoleChange} breadcrumb={breadcrumb} onOpenNav={() => setMobileOpen(true)} />
+        <main className="min-h-0 flex-1 overflow-y-auto">
           <Outlet />
         </main>
       </div>

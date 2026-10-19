@@ -1,5 +1,11 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
 import type { Alert } from "@/hooks/usePlantData";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { toneChart, workflowTone } from "@/lib/status";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { chatteringStatus } from "@/lib/status";
+import { formatDate } from "@/lib/format";
 
 const HOURLY_ALARMS = Array.from({ length: 24 }, (_, i) => ({
   hour: `${i.toString().padStart(2, "0")}:00`,
@@ -12,7 +18,7 @@ const DAILY_TREND = Array.from({ length: 30 }, (_, i) => {
   const d = new Date();
   d.setDate(d.getDate() - 29 + i);
   return {
-    date: d.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
+    date: formatDate(d),
     total: Math.floor(Math.random() * 40 + 60),
     ackTime: Math.round((Math.random() * 20 + 5) * 10) / 10,
   };
@@ -31,14 +37,6 @@ const CHATTERING = [
   { tag: "PUMP-CW-003", parameter: "Efficiency", count: 4, avgDuration: "4 hr", status: "Repeating" },
 ];
 
-const STATUS_COLORS: Record<string, string> = {
-  Chattering: "bg-destructive/10 text-destructive",
-  Fleeting: "bg-gap/10 text-gap",
-  Stale: "bg-gap/10 text-gap",
-  Standing: "bg-secondary/10 text-secondary",
-  Repeating: "bg-muted text-muted-foreground",
-};
-
 interface Props {
   alerts: Alert[];
 }
@@ -50,100 +48,80 @@ const AlarmAnalytics = ({ alerts }: Props) => {
   const highAlarmPct = "12.4%";
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold">Alarm History & Analytics</h1>
-      <p className="text-xs text-muted-foreground -mt-3">Historical alarm performance analysis and chattering alarm identification</p>
+    <PageHeader title="Alarm History & Analytics" subtitle="Historical alarm performance analysis and chattering alarm identification">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Total Alarms Today", value: totalToday.toString() },
           { label: "Avg Alarm Rate", value: `${avgRate}/hr` },
           { label: "Avg Ack Time", value: avgAckTime },
-          { label: "Time in High-Alarm State", value: highAlarmPct, color: "text-gap" },
+          { label: "Time in High-Alarm State", value: highAlarmPct },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} />
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Alarms by Hour */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Alarms by Hour — Today</h3>
-          </div>
-          <div className="p-4">
+        <Panel title="Alarms by Hour · Today">
             <ResponsiveContainer width="100%" height={240}>
               <BarChart data={HOURLY_ALARMS}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis dataKey="hour" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 9 }} interval={2} />
-                <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Bar dataKey="critical" stackId="a" fill="hsl(0, 72%, 51%)" name="Critical" />
-                <Bar dataKey="warning" stackId="a" fill="hsl(35, 90%, 55%)" name="Warning" />
-                <Bar dataKey="info" stackId="a" fill="hsl(235, 55%, 55%)" name="Info" radius={[4, 4, 0, 0]} />
+                <XAxis dataKey="hour" tick={axisTick} tickLine={false} axisLine={false} interval={2} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Bar isAnimationActive={false} dataKey="critical" stackId="a" fill={toneChart.error} name="Critical" />
+                <Bar isAnimationActive={false} dataKey="warning" stackId="a" fill={toneChart.warning} name="Warning" />
+                <Bar isAnimationActive={false} dataKey="info" stackId="a" fill={toneChart.info} name="Info" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </div>
-        </div>
+        </Panel>
 
         {/* 30-Day Trend */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">30-Day Alarm Trend + Avg Acknowledgment Time</h3>
-          </div>
-          <div className="p-4">
+        <Panel title="30-Day Alarm Trend + Avg Acknowledgment Time">
             <ResponsiveContainer width="100%" height={240}>
               <LineChart data={DAILY_TREND}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis dataKey="date" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 9 }} interval={4} />
-                <YAxis yAxisId="left" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <YAxis yAxisId="right" orientation="right" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Line yAxisId="left" type="monotone" dataKey="total" stroke="hsl(170, 80%, 45%)" strokeWidth={2} dot={false} name="Total Alarms" />
-                <Line yAxisId="right" type="monotone" dataKey="ackTime" stroke="hsl(35, 90%, 55%)" strokeWidth={2} dot={false} name="Avg Ack Time (min)" />
+                <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
+                <YAxis yAxisId="left" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis yAxisId="right" orientation="right" tick={axisTick} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Line isAnimationActive={false} yAxisId="left" type="monotone" dataKey="total" stroke={seriesColor(0)} strokeWidth={2} dot={false} name="Total Alarms" />
+                <Line isAnimationActive={false} yAxisId="right" type="monotone" dataKey="ackTime" stroke={seriesColor(1)} strokeWidth={2} dot={false} name="Avg Ack Time (min)" />
               </LineChart>
             </ResponsiveContainer>
-          </div>
-        </div>
+        </Panel>
       </div>
 
       {/* Top Chattering Alarms */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Top 10 Most Frequent Alarms — This Week</h3>
-          <p className="text-[9px] text-muted-foreground mt-0.5">Alarms with &gt;10 activations/24hr flagged as chattering</p>
-        </div>
+      <Panel title="Top 10 Most Frequent Alarms · This Week" padded={false}>
+        <p className="type-caption px-4 py-3 text-quaternary">Alarms with &gt;10 activations/24hr flagged as chattering</p>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-center py-2 px-2 font-medium w-8">#</th>
-                <th className="text-left py-2 px-3 font-medium">Tag</th>
-                <th className="text-left py-2 px-3 font-medium">Parameter</th>
-                <th className="text-right py-2 px-3 font-medium">Activations (7d)</th>
-                <th className="text-left py-2 px-3 font-medium">Avg Duration</th>
-                <th className="text-left py-2 px-3 font-medium">Classification</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary w-8">#</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Activations (7d)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Avg Duration</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Classification</th>
               </tr>
             </thead>
             <tbody>
               {CHATTERING.map((a, i) => (
-                <tr key={a.tag} className={`border-b border-border/50 hover:bg-muted/20 ${a.count > 20 ? "bg-destructive/5" : ""}`}>
-                  <td className="text-center py-2 px-2 font-mono">{i + 1}</td>
-                  <td className="py-2 px-3 font-mono text-primary font-medium">{a.tag}</td>
+                <tr key={a.tag} className="border-b border-hairline hover:bg-raised">
+                  <td className="text-center py-2 px-3 tabular whitespace-nowrap">{i + 1}</td>
+                  <td className="py-2 px-3 tabular text-foreground font-medium whitespace-nowrap">{a.tag}</td>
                   <td className="py-2 px-3">{a.parameter}</td>
-                  <td className="py-2 px-3 text-right font-mono font-bold">{a.count}</td>
-                  <td className="py-2 px-3 font-mono">{a.avgDuration}</td>
-                  <td className="py-2 px-3"><span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[a.status]}`}>{a.status}</span></td>
+                  <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">{a.count}</td>
+                  <td className="py-2 px-3 tabular whitespace-nowrap">{a.avgDuration}</td>
+                  <td className="py-2 px-3"><ToneStatus tone={workflowTone(chatteringStatus, a.status).tone} solid={workflowTone(chatteringStatus, a.status).solid}>{a.status}</ToneStatus></td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 

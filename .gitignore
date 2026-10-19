@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 .vercel
 .env*
+
+# Raw brand images (AI-generated originals kept untracked; processed copies live in src/assets)
+/login-bg.jpg
+/icons/

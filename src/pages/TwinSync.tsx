@@ -1,6 +1,10 @@
 import { useState } from "react";
-import { Cable, RefreshCw, CheckCircle, AlertTriangle } from "lucide-react";
+import { icons } from "@/lib/icons";
 import { toast } from "sonner";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { syncRunTone } from "@/lib/status";
+import { formatNumber } from "@/lib/format";
 
 const SYNC_LOG = [
   { timestamp: "2026-03-24 08:14:22", records: "240,412", newTags: 24, modified: 148, deleted: 0, errors: 2, status: "Completed" },
@@ -30,102 +34,96 @@ const TwinSync = () => {
   };
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Cable className="w-5 h-5 text-primary" /> Engineering Twin Sync</h1>
-      <p className="text-xs text-muted-foreground -mt-3">Synchronization status between Hexagon SmartPlant engineering twin and PlantMind operational twin</p>
+    <PageHeader
+      title="Engineering Twin Sync"
+      subtitle="Synchronization status between Hexagon SmartPlant engineering twin and PlantMind operational twin"
+      actions={
+        <button
+          onClick={handleSync}
+          disabled={syncing}
+          className="type-label-sm inline-flex h-8 items-center gap-1.5 rounded-full bg-action-primary px-3 text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active disabled:bg-action-primary-disabled"
+        >
+          <icons.sync className="size-[13px]" aria-hidden />
+          {syncing ? "Syncing…" : "Force sync now"}
+        </button>
+      }
+    >
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
           { label: "Last Sync", value: "6 days ago" },
           { label: "Records Synced", value: "240,412" },
-          { label: "Sync Errors", value: "2", color: "text-gap" },
-          { label: "Coverage", value: "99.99%", color: "text-operational" },
+          { label: "Sync Errors", value: "2", color: "text-warning" },
+          { label: "Coverage", value: "99.99%" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
-      <div className="flex">
-        <button onClick={handleSync} disabled={syncing}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground font-medium text-xs hover:opacity-90 disabled:opacity-50 transition-opacity">
-          <RefreshCw className={`w-3.5 h-3.5 ${syncing ? "animate-spin" : ""}`} />
-          {syncing ? "Syncing..." : "Force Sync Now"}
-        </button>
-      </div>
-
       {/* Data Source Mapping */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Data Source Mapping — Current Sync State</h3>
-        </div>
+      <Panel title="Data Source Mapping · Current Sync State" padded={false}>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Category</th>
-                <th className="text-left py-2 px-3 font-medium">Source System</th>
-                <th className="text-right py-2 px-3 font-medium">Total Records</th>
-                <th className="text-right py-2 px-3 font-medium">Synced</th>
-                <th className="text-left py-2 px-3 font-medium">Delta (Last Sync)</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source System</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total Records</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Synced</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Delta (Last Sync)</th>
               </tr>
             </thead>
             <tbody>
               {DELTA_DETAILS.map(d => (
-                <tr key={d.category} className="border-b border-border/50 hover:bg-muted/20">
+                <tr key={d.category} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{d.category}</td>
-                  <td className="py-2 px-3 text-[10px] text-muted-foreground">{d.source}</td>
-                  <td className="py-2 px-3 text-right font-mono">{d.total.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right font-mono">{d.synced.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-[10px]">
-                    <span className={d.delta.includes("error") ? "text-destructive" : d.delta === "No change" ? "text-muted-foreground" : "text-primary"}>{d.delta}</span>
+                  <td className="py-2 px-3 type-body-sm text-tertiary">{d.source}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.total)}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.synced)}</td>
+                  <td className="py-2 px-3 type-body-sm">
+                    <span className={d.delta.includes("error") ? "text-error" : d.delta === "No change" ? "text-tertiary" : "text-foreground"}>{d.delta}</span>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
+      </Panel>
 
       {/* Sync History */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Sync History</h3>
-        </div>
+      <Panel title="Sync History" padded={false}>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Timestamp</th>
-                <th className="text-right py-2 px-3 font-medium">Records</th>
-                <th className="text-right py-2 px-3 font-medium">New</th>
-                <th className="text-right py-2 px-3 font-medium">Modified</th>
-                <th className="text-right py-2 px-3 font-medium">Deleted</th>
-                <th className="text-right py-2 px-3 font-medium">Errors</th>
-                <th className="text-left py-2 px-3 font-medium">Status</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Timestamp</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Records</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">New</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Modified</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Deleted</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Errors</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
               </tr>
             </thead>
             <tbody>
               {SYNC_LOG.map(s => (
-                <tr key={s.timestamp} className="border-b border-border/50 hover:bg-muted/20">
-                  <td className="py-2 px-3 font-mono text-[10px]">{s.timestamp}</td>
-                  <td className="py-2 px-3 text-right font-mono">{s.records}</td>
-                  <td className="py-2 px-3 text-right font-mono text-primary">{s.newTags}</td>
-                  <td className="py-2 px-3 text-right font-mono">{s.modified}</td>
-                  <td className="py-2 px-3 text-right font-mono">{s.deleted}</td>
-                  <td className="py-2 px-3 text-right font-mono">{s.errors > 0 ? <span className="text-destructive">{s.errors}</span> : "0"}</td>
+                <tr key={s.timestamp} className="border-b border-hairline hover:bg-raised">
+                  <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{s.timestamp}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.records}</td>
+                  <td className="py-2 px-3 text-right tabular text-foreground whitespace-nowrap">{s.newTags}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.modified}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.deleted}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{s.errors > 0 ? <span className="text-error">{s.errors}</span> : "0"}</td>
                   <td className="py-2 px-3">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${s.errors > 0 ? "bg-gap/10 text-gap" : "bg-operational/10 text-operational"}`}>{s.status}</span>
+                    <ToneStatus tone={syncRunTone(s.errors)}>{s.status}</ToneStatus>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 

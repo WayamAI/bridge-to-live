@@ -1,17 +1,22 @@
-import { FileCheck, AlertTriangle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { toneChart } from "@/lib/status";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { completenessState } from "@/lib/status";
+import { formatNumber } from "@/lib/format";
 
 const COMPLETENESS_DATA = [
-  { category: "Equipment tags", total: 2847, complete: 2847, pct: 100, color: "hsl(170, 80%, 45%)" },
-  { category: "Sensor mappings", total: 42400, complete: 38200, pct: 90.1, color: "hsl(170, 80%, 45%)" },
-  { category: "P&ID cross-refs", total: 12440, complete: 11892, pct: 95.6, color: "hsl(170, 80%, 45%)" },
-  { category: "Alarm setpoints", total: 2847, complete: 2420, pct: 85.0, color: "hsl(35, 90%, 55%)" },
-  { category: "Equipment datasheets", total: 2847, complete: 2680, pct: 94.1, color: "hsl(170, 80%, 45%)" },
-  { category: "Maintenance history", total: 2847, complete: 2104, pct: 73.9, color: "hsl(35, 90%, 55%)" },
-  { category: "Spare parts catalog", total: 2847, complete: 2847, pct: 100, color: "hsl(170, 80%, 45%)" },
-  { category: "Operating procedures", total: 480, complete: 312, pct: 65.0, color: "hsl(0, 72%, 51%)" },
-  { category: "Safety documentation", total: 1200, complete: 1140, pct: 95.0, color: "hsl(170, 80%, 45%)" },
-  { category: "3D model coordinates", total: 2847, complete: 2847, pct: 100, color: "hsl(170, 80%, 45%)" },
+  { category: "Equipment tags", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
+  { category: "Sensor mappings", total: 42400, complete: 38200, pct: 90.1, color: toneChart.success },
+  { category: "P&ID cross-refs", total: 12440, complete: 11892, pct: 95.6, color: toneChart.success },
+  { category: "Alarm setpoints", total: 2847, complete: 2420, pct: 85.0, color: toneChart.warning },
+  { category: "Equipment datasheets", total: 2847, complete: 2680, pct: 94.1, color: toneChart.success },
+  { category: "Maintenance history", total: 2847, complete: 2104, pct: 73.9, color: toneChart.warning },
+  { category: "Spare parts catalog", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
+  { category: "Operating procedures", total: 480, complete: 312, pct: 65.0, color: toneChart.error },
+  { category: "Safety documentation", total: 1200, complete: 1140, pct: 95.0, color: toneChart.success },
+  { category: "3D model coordinates", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
 ];
 
 const DataCompleteness = () => {
@@ -19,81 +24,65 @@ const DataCompleteness = () => {
   const atRisk = COMPLETENESS_DATA.filter(d => d.pct < 80).length;
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><FileCheck className="w-5 h-5 text-primary" /> Data Completeness Monitor</h1>
-      <p className="text-xs text-muted-foreground -mt-3">Tracking data completeness across all engineering and operational data categories</p>
+    <PageHeader title="Data Completeness Monitor" subtitle="Tracking data completeness across all engineering and operational data categories">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Overall Completeness", value: `${overall}%`, color: overall >= 90 ? "text-operational" : "text-gap" },
+          { label: "Overall Completeness", value: `${overall}%`, color: overall >= 90 ? "" : "text-warning" },
           { label: "Categories Tracked", value: COMPLETENESS_DATA.length.toString() },
-          { label: "At 100%", value: COMPLETENESS_DATA.filter(d => d.pct === 100).length.toString(), color: "text-operational" },
-          { label: "Below 80%", value: atRisk.toString(), color: atRisk > 0 ? "text-destructive" : "text-operational" },
+          { label: "At 100%", value: COMPLETENESS_DATA.filter(d => d.pct === 100).length.toString() },
+          { label: "Below 80%", value: atRisk.toString(), color: atRisk > 0 ? "text-error" : "" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Completeness by Category</h3>
-        </div>
-        <div className="p-4">
+      <Panel title="Completeness by Category">
           <ResponsiveContainer width="100%" height={320}>
             <BarChart data={COMPLETENESS_DATA} layout="vertical" margin={{ left: 150 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-              <XAxis type="number" domain={[0, 100]} tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-              <YAxis type="category" dataKey="category" tick={{ fill: "hsl(210, 20%, 92%)", fontSize: 10 }} width={140} />
-              <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} formatter={(v: number) => `${v}%`} />
-              <Bar dataKey="pct" radius={[0, 4, 4, 0]}>
+              <XAxis type="number" domain={[0, 100]} tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="category" tick={axisTick} tickLine={false} axisLine={false} width={140} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} formatter={(v: number) => `${v}%`} />
+              <Bar isAnimationActive={false} dataKey="pct" radius={[0, 4, 4, 0]}>
                 {COMPLETENESS_DATA.map((d, i) => <Cell key={i} fill={d.color} />)}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </div>
+      </Panel>
 
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Detailed Breakdown</h3>
-        </div>
+      <Panel title="Detailed Breakdown" padded={false}>
         <div className="overflow-x-auto">
-          <table className="w-full text-[11px]">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border text-muted-foreground bg-muted/30">
-                <th className="text-left py-2 px-3 font-medium">Category</th>
-                <th className="text-right py-2 px-3 font-medium">Total Required</th>
-                <th className="text-right py-2 px-3 font-medium">Complete</th>
-                <th className="text-right py-2 px-3 font-medium">Remaining</th>
-                <th className="text-right py-2 px-3 font-medium">Completeness</th>
-                <th className="text-left py-2 px-3 font-medium">Status</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total Required</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Complete</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Remaining</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Completeness</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
               </tr>
             </thead>
             <tbody>
               {COMPLETENESS_DATA.map(d => (
-                <tr key={d.category} className={`border-b border-border/50 hover:bg-muted/20 ${d.pct < 80 ? "bg-destructive/5" : ""}`}>
+                <tr key={d.category} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{d.category}</td>
-                  <td className="py-2 px-3 text-right font-mono">{d.total.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right font-mono">{d.complete.toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right font-mono">{(d.total - d.complete).toLocaleString()}</td>
-                  <td className="py-2 px-3 text-right font-mono font-bold">
-                    <span className={d.pct >= 95 ? "text-operational" : d.pct >= 80 ? "text-gap" : "text-destructive"}>{d.pct}%</span>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.total)}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.complete)}</td>
+                  <td className="py-2 px-3 text-right tabular whitespace-nowrap">{formatNumber(d.total - d.complete)}</td>
+                  <td className="py-2 px-3 text-right tabular font-semibold whitespace-nowrap">
+                    <span className={d.pct >= 95 ? "" : d.pct >= 80 ? "text-warning" : "text-error"}>{d.pct}%</span>
                   </td>
                   <td className="py-2 px-3">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full font-medium ${d.pct === 100 ? "bg-operational/10 text-operational" : d.pct >= 80 ? "bg-gap/10 text-gap" : "bg-destructive/10 text-destructive"}`}>
-                      {d.pct === 100 ? "Complete" : d.pct >= 80 ? "On Track" : "At Risk"}
-                    </span>
+                    <ToneStatus tone={completenessState(d.pct).tone} solid={completenessState(d.pct).solid}>{completenessState(d.pct).label}</ToneStatus>
                   </td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 

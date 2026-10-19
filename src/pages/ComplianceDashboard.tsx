@@ -1,5 +1,9 @@
-import { Lock, CheckCircle, AlertTriangle } from "lucide-react";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { toneChart, toneOf } from "@/lib/status";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
+import { zoneTone } from "@/lib/status";
 
 interface ComplianceDomain {
   domain: string;
@@ -37,7 +41,7 @@ const CHART_DATA = DOMAINS.map(d => ({
   domain: d.domain,
   compliance: d.compliance,
   target: d.target,
-  fill: d.status === "green" ? "hsl(170, 80%, 45%)" : d.status === "amber" ? "hsl(35, 90%, 55%)" : "hsl(0, 72%, 51%)",
+  fill: d.status === "green" ? toneChart.success : d.status === "amber" ? toneChart.warning : toneChart.error,
 }));
 
 const ComplianceDashboard = () => {
@@ -45,79 +49,71 @@ const ComplianceDashboard = () => {
   const totalGaps = DOMAINS.reduce((s, d) => s + d.gaps.length, 0);
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Lock className="w-5 h-5 text-primary" /> Compliance Dashboard</h1>
-      <p className="text-xs text-muted-foreground -mt-3">IEC 62443 Industrial Cybersecurity Standard — compliance assessment</p>
+    <PageHeader title="Compliance Dashboard" subtitle="IEC 62443 Industrial Cybersecurity Standard: compliance assessment">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Overall Compliance", value: `${avgCompliance}%`, color: avgCompliance >= 85 ? "text-operational" : "text-gap" },
+          { label: "Overall Compliance", value: `${avgCompliance}%`, color: avgCompliance >= 85 ? "" : "text-warning" },
           { label: "Domains Assessed", value: DOMAINS.length.toString() },
-          { label: "Open Findings", value: totalGaps.toString(), color: "text-gap" },
-          { label: "Critical Gaps", value: DOMAINS.filter(d => d.status === "red").length.toString(), color: "text-destructive" },
+          { label: "Open Findings", value: totalGaps.toString()},
+          { label: "Critical Gaps", value: DOMAINS.filter(d => d.status === "red").length.toString(), color: "text-error" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color || "text-foreground"}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
       {/* Compliance Chart */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Compliance by Domain (%)</h3>
-        </div>
-        <div className="p-4">
+      <Panel title="Compliance by Domain (%)">
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={CHART_DATA} layout="vertical" margin={{ left: 140 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-              <XAxis type="number" domain={[0, 100]} tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-              <YAxis type="category" dataKey="domain" tick={{ fill: "hsl(210, 20%, 92%)", fontSize: 10 }} width={130} />
-              <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-              <Bar dataKey="compliance" radius={[0, 4, 4, 0]}>
+              <XAxis type="number" domain={[0, 100]} tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="domain" tick={axisTick} tickLine={false} axisLine={false} width={130} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+              <Bar isAnimationActive={false} dataKey="compliance" radius={[0, 4, 4, 0]}>
                 {CHART_DATA.map((d, i) => <Cell key={i} fill={d.fill} />)}
               </Bar>
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </div>
+      </Panel>
 
       {/* Gaps Table */}
       <div className="space-y-3">
         {DOMAINS.map(d => (
-          <div key={d.domain} className="rounded-xl border border-border bg-card overflow-hidden">
-            <div className="px-4 py-2.5 border-b border-border flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <span className={`w-2.5 h-2.5 rounded-full ${d.status === "green" ? "bg-operational" : d.status === "amber" ? "bg-gap" : "bg-destructive"}`} />
-                <h4 className="text-xs font-semibold">{d.domain}</h4>
-              </div>
-              <span className={`text-xs font-mono font-bold ${d.compliance >= d.target ? "text-operational" : "text-gap"}`}>{d.compliance}% / {d.target}%</span>
-            </div>
+          <Panel
+            key={d.domain}
+            padded={false}
+            title={
+              <span className="flex items-center gap-2">
+                <StatusDot tone={toneOf(zoneTone, d.status)} />
+                {d.domain}
+              </span>
+            }
+            action={<span className={`type-body-sm tabular font-medium ${d.compliance >= d.target ? "text-foreground" : "text-warning"}`}>{d.compliance}% / {d.target}%</span>}
+          >
             {d.gaps.length > 0 && (
-              <table className="w-full text-[11px]">
+              <table className="w-full type-body-sm">
                 <thead>
-                  <tr className="border-b border-border/50 text-muted-foreground">
-                    <th className="text-left py-1.5 px-4 font-medium">Finding</th>
-                    <th className="text-left py-1.5 px-4 font-medium">Remediation</th>
-                    <th className="text-left py-1.5 px-4 font-medium">Effort</th>
+                  <tr className="border-b border-hairline">
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Finding</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Remediation</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Effort</th>
                   </tr>
                 </thead>
                 <tbody>
                   {d.gaps.map((g, i) => (
-                    <tr key={i} className="border-b border-border/30 hover:bg-muted/20">
-                      <td className="py-1.5 px-4">{g.finding}</td>
-                      <td className="py-1.5 px-4">{g.remediation}</td>
-                      <td className="py-1.5 px-4 font-mono">{g.effort}</td>
+                    <tr key={i} className="border-b border-hairline hover:bg-raised">
+                      <td className="py-2 px-3">{g.finding}</td>
+                      <td className="py-2 px-3">{g.remediation}</td>
+                      <td className="py-2 px-3 tabular whitespace-nowrap">{g.effort}</td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             )}
-          </div>
+          </Panel>
         ))}
       </div>
-    </div>
+    </PageHeader>
   );
 };
 

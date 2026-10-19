@@ -1,4 +1,5 @@
 import type { Equipment } from "@/hooks/useFactoryData";
+import { formatNumber } from "@/lib/format";
 
 interface EquipmentTableProps {
   equipment: Equipment[];
@@ -61,7 +62,7 @@ const EquipmentTable = ({ equipment, selectedId, onSelect }: EquipmentTableProps
                     <span className="font-mono">{eq.health}%</span>
                   </div>
                 </td>
-                <td className="px-3 py-2 font-mono text-muted-foreground">{eq.runtimeHours.toLocaleString()}h</td>
+                <td className="px-3 py-2 font-mono text-muted-foreground">{formatNumber(eq.runtimeHours)}h</td>
               </tr>
             ))}
           </tbody>

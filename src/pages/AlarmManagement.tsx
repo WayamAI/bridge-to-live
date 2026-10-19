@@ -1,22 +1,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Alert } from "@/hooks/usePlantData";
-import { Bell, AlertTriangle, Shield, Wrench, BrainCircuit, CheckCircle2, Search, Filter } from "lucide-react";
-
-const severityStyles = {
-  info: "border-engineering/30 bg-engineering/5",
-  warning: "border-gap/30 bg-gap/5",
-  critical: "border-destructive/30 bg-destructive/5",
-};
-
-const typeIcons = {
-  anomaly: AlertTriangle,
-  threshold: AlertTriangle,
-  predictive: BrainCircuit,
-  maintenance: Wrench,
-  safety: Shield,
-  rate_of_change: AlertTriangle,
-};
+import PageHeader from "@/components/layout/PageHeader";
+import { EmptyState, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
+import { priorityTone, severityTone, toneBadgeClass, toneOf } from "@/lib/status";
+import { icons, alarmIcon } from "@/lib/icons";
 
 interface AlarmManagementPageProps {
   alerts: Alert[];
@@ -48,116 +36,114 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
   const avgRate = (alerts.length / 24).toFixed(1);
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      {/* KPI bar */}
-      <div className="flex items-center gap-4">
-        <div className="rounded-lg border border-border bg-card px-4 py-2">
-          <p className="text-[9px] text-muted-foreground">Unacknowledged</p>
-          <p className="text-lg font-bold font-mono text-destructive">{unacknowledged}</p>
-        </div>
-        <div className="rounded-lg border border-border bg-card px-4 py-2">
-          <p className="text-[9px] text-muted-foreground">Critical Active</p>
-          <p className="text-lg font-bold font-mono text-destructive">{critical}</p>
-        </div>
-        <div className="rounded-lg border border-border bg-card px-4 py-2">
-          <p className="text-[9px] text-muted-foreground">Alarm Rate</p>
-          <p className="text-lg font-bold font-mono text-foreground">{avgRate}/hr</p>
-        </div>
-        <div className="rounded-lg border border-border bg-card px-4 py-2">
-          <p className="text-[9px] text-muted-foreground">Total (24h)</p>
-          <p className="text-lg font-bold font-mono text-foreground">{alerts.length}</p>
-        </div>
-        <div className="flex-1" />
-        <select
-          value={filterSeverity}
-          onChange={(e) => setFilterSeverity(e.target.value)}
-          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-card"
-        >
-          <option value="All">All Severity</option>
-          <option value="critical">Critical</option>
-          <option value="warning">Warning</option>
-          <option value="info">Info</option>
-        </select>
-        <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
-          <input type="checkbox" checked={showAcknowledged} onChange={(e) => setShowAcknowledged(e.target.checked)} className="rounded" />
-          Show acknowledged
-        </label>
+    <PageHeader
+      title="Active Alarms"
+      subtitle="Review, filter and acknowledge plant alarms"
+      actions={
+        <>
+          <PillSelect value={filterSeverity} onChange={(e) => setFilterSeverity(e.target.value)} aria-label="Filter by severity">
+            <option value="All">All severities</option>
+            <option value="critical">Critical</option>
+            <option value="warning">Warning</option>
+            <option value="info">Info</option>
+          </PillSelect>
+          <label className="type-label-sm flex h-8 items-center gap-1.5 text-tertiary">
+            <input
+              type="checkbox"
+              checked={showAcknowledged}
+              onChange={(e) => setShowAcknowledged(e.target.checked)}
+              className="size-4 rounded-[4px] accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active"
+            />
+            Show acknowledged
+          </label>
+        </>
+      }
+    >
+      {/* KPI row */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        <KpiTile label="Unacknowledged" value={unacknowledged} valueClassName={unacknowledged > 0 ? "text-error" : ""} />
+        <KpiTile label="Critical Active" value={critical} valueClassName={critical > 0 ? "text-error" : ""} />
+        <KpiTile label="Alarm Rate" value={avgRate} unit="/hr" />
+        <KpiTile label="Total (24h)" value={alerts.length} />
       </div>
 
       {/* Alarm console table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
-          <table className="w-full text-xs">
-            <thead className="sticky top-0 bg-card z-10">
-              <tr className="border-b border-border bg-muted/30">
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground w-8">P</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Time</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Tag</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Type</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Message</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Duration</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">ACK</th>
+      <Panel title="Alarm Console" padded={false}>
+        <div className="max-h-[600px] overflow-x-auto overflow-y-auto">
+          <table className="w-full type-body-sm">
+            <thead className="sticky top-0 z-10 bg-container">
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-8">P</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Time</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Type</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Message</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Duration</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">ACK</th>
               </tr>
             </thead>
             <tbody>
               {filtered.map((alert) => {
-                const Icon = typeIcons[alert.type];
+                const Icon = alarmIcon(alert.type);
                 return (
                   <tr
                     key={alert.id}
-                    className={`border-b border-border last:border-0 transition-colors hover:bg-muted/20 ${severityStyles[alert.severity]} ${
-                      !alert.acknowledged ? "animate-pulse-subtle" : "opacity-60"
-                    }`}
+                    className={`border-b border-hairline last:border-0 transition-colors hover:bg-raised ${alert.acknowledged ? "opacity-60" : ""}`}
                   >
                     <td className="px-3 py-2">
-                      <span className={`inline-flex w-5 h-5 items-center justify-center rounded-full text-[9px] font-bold ${
-                        alert.priority === 1 ? "bg-destructive text-destructive-foreground" :
-                        alert.priority === 2 ? "bg-gap text-gap-foreground" :
-                        alert.priority === 3 ? "bg-engineering text-engineering-foreground" :
-                        "bg-muted text-muted-foreground"
-                      }`}>
+                      <span
+                        title={`Priority ${alert.priority}`}
+                        className={`inline-flex size-5 items-center justify-center rounded-full type-caption ${toneBadgeClass[priorityTone(alert.priority)]}`}
+                      >
                         {alert.priority}
                       </span>
                     </td>
-                    <td className="px-3 py-2 font-mono text-[10px] text-muted-foreground whitespace-nowrap">
+                    <td className="px-3 py-2 tabular type-body-sm text-tertiary whitespace-nowrap">
                       {formatTimeAgo(alert.timestamp)}
                     </td>
                     <td className="px-3 py-2">
                       <button
                         onClick={() => onSelectEquipment(alert.equipmentId)}
-                        className="font-mono text-primary hover:underline font-medium"
+                        className="tabular whitespace-nowrap rounded-sm font-medium text-foreground outline-none hover:underline focus-visible:ring-2 focus-visible:ring-active"
                       >
                         {alert.equipmentTag}
                       </button>
                     </td>
                     <td className="px-3 py-2">
-                      <span className="flex items-center gap-1 text-muted-foreground">
-                        <Icon className="w-3 h-3" />
+                      <span className="flex items-center gap-1.5 text-tertiary">
+                        <StatusDot tone={toneOf(severityTone, alert.severity)} className="mr-0.5" />
+                        <span className="sr-only">{alert.severity}</span>
+                        <Icon className="size-3 text-quaternary" aria-hidden />
                         <span className="capitalize">{alert.type.replace("_", " ")}</span>
                       </span>
                     </td>
-                    <td className="px-3 py-2 max-w-[400px] truncate">{alert.message}</td>
-                    <td className="px-3 py-2 font-mono text-muted-foreground">{alert.duration}</td>
+                    <td className="max-w-[400px] truncate px-3 py-2" title={alert.message}>{alert.message}</td>
+                    <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{alert.duration}</td>
                     <td className="px-3 py-2">
                       {alert.acknowledged ? (
-                        <span className="text-[9px] text-operational font-mono">ACK</span>
+                        <span className="type-body-sm tabular text-quaternary">ACK</span>
                       ) : (
                         <button
                           onClick={() => onAcknowledge(alert.id)}
-                          className="text-[10px] font-medium text-primary hover:underline flex items-center gap-0.5"
+                          className="type-label-sm inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                         >
-                          <CheckCircle2 className="w-3 h-3" /> Acknowledge
+                          <icons.acknowledge className="size-[13px]" aria-hidden /> Acknowledge
                         </button>
                       )}
                     </td>
                   </tr>
                 );
               })}
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={7}><EmptyState title="No alarms match this filter" className="min-h-[96px]" /></td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 

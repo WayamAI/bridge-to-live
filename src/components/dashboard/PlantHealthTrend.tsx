@@ -1,5 +1,8 @@
 import { useMemo } from "react";
+import { Panel } from "@/components/ui/primitives";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart } from "recharts";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { formatDate } from "@/lib/format";
 
 const PlantHealthTrend = () => {
   const data = useMemo(() => {
@@ -11,7 +14,7 @@ const PlantHealthTrend = () => {
       health = Math.max(78, Math.min(96, health));
       const date = new Date(now - i * 86400000);
       points.push({
-        date: date.toLocaleDateString("en-IN", { day: "2-digit", month: "short" }),
+        date: formatDate(date),
         health: Math.round(health * 10) / 10,
         isForecast: i < 30,
       });
@@ -24,29 +27,27 @@ const PlantHealthTrend = () => {
   }, []);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <div className="flex items-center justify-between mb-3">
-        <h3 className="text-sm font-semibold">Plant Health Trend — 90 Days</h3>
-        <div className="flex items-center gap-3 text-[9px] text-muted-foreground">
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-primary inline-block" /> Health Score</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-primary/30 inline-block" /> Forecast</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 border-t border-dashed border-muted-foreground inline-block" /> PM Events</span>
-        </div>
+    <Panel
+      title="Plant Health Trend · 90 Days"
+    >
+      <div className="type-caption mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-quaternary">
+          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 inline-block" /> Health Score</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 opacity-30 inline-block" /> Forecast</span>
+          <span className="flex items-center gap-1"><span className="w-3 h-0.5 border-t border-dashed border-quaternary inline-block" /> PM Events</span>
       </div>
       <ResponsiveContainer width="100%" height={180}>
-        <ComposedChart data={data} margin={{ top: 5, right: 10, left: -15, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-          <XAxis dataKey="date" tick={{ fontSize: 9, fill: "hsl(215, 15%, 55%)" }} tickLine={false} interval={14} />
-          <YAxis domain={[75, 100]} tick={{ fontSize: 9, fill: "hsl(215, 15%, 55%)" }} tickLine={false} axisLine={false} />
+        <ComposedChart data={data} margin={{ top: 5, right: 30, left: -15, bottom: 0 }}>
+          <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
+          <YAxis domain={[75, 100]} tick={axisTick} tickLine={false} axisLine={false} />
           <Tooltip
-            contentStyle={{ backgroundColor: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: "8px", fontSize: "11px" }}
-            labelStyle={{ color: "hsl(210, 20%, 92%)" }}
+            contentStyle={chartTooltipStyle}
+            labelStyle={chartTooltipLabelStyle}
           />
-          <ReferenceLine y={90} stroke="hsl(35, 90%, 55%)" strokeDasharray="5 5" strokeWidth={1} label={{ value: "Target 90%", position: "right", fontSize: 9, fill: "hsl(35, 90%, 55%)" }} />
-          <Line type="monotone" dataKey="health" stroke="hsl(170, 80%, 45%)" strokeWidth={1.5} dot={false} />
+          <ReferenceLine y={90} stroke={seriesColor(4)} strokeDasharray="5 5" strokeWidth={1} label={{ value: "Target 90%", position: "right", fontSize: 9, fill: "var(--text-quaternary)" }} />
+          <Line isAnimationActive={false} type="monotone" dataKey="health" stroke={seriesColor(0)} strokeWidth={1.5} dot={false} />
         </ComposedChart>
       </ResponsiveContainer>
-    </div>
+    </Panel>
   );
 };
 

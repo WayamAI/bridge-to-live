@@ -1,23 +1,19 @@
 import { useState, useMemo } from "react";
+import { EmptyState, EquipmentStatusLabel, Panel, PillSelect, SearchField } from "@/components/ui/primitives";
+import PageHeader from "@/components/layout/PageHeader";
+import { locate } from "@/components/layout/nav";
+import { useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import type { Equipment } from "@/hooks/usePlantData";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
 import FactoryFloor from "@/components/twin/FactoryFloor";
-import { ArrowUpDown, Search } from "lucide-react";
+import { icons } from "@/lib/icons";
 
 interface EquipmentHealthPageProps {
   equipment: Equipment[];
   selectedEquipmentId: string | null;
   onSelectEquipment: (id: string | null) => void;
 }
-
-const statusDot: Record<string, string> = {
-  running: "bg-operational",
-  warning: "bg-gap",
-  critical: "bg-destructive",
-  offline: "bg-muted-foreground",
-  maintenance: "bg-engineering",
-};
 
 type SortKey = "tag" | "classLabel" | "processUnit" | "health" | "status" | "rulDays" | "lastAlarm";
 
@@ -27,6 +23,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
   const [filterUnit, setFilterUnit] = useState<string>("All");
   const [filterStatus, setFilterStatus] = useState<string>("All");
   const [search, setSearch] = useState("");
+  const { pathname } = useLocation();
 
   const selectedEquipment = equipment.find(e => e.id === selectedEquipmentId);
 
@@ -58,59 +55,55 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
 
   const SortHeader = ({ label, k }: { label: string; k: SortKey }) => (
     <th
-      className="text-left px-3 py-2 font-medium text-muted-foreground cursor-pointer hover:text-foreground select-none"
+      aria-sort={sortKey === k ? (sortAsc ? "ascending" : "descending") : "none"}
+      className="type-eyebrow cursor-pointer select-none whitespace-nowrap px-3 py-2 text-left text-quaternary hover:text-secondary-foreground"
       onClick={() => handleSort(k)}
     >
       <span className="flex items-center gap-1">
         {label}
-        <ArrowUpDown className={`w-3 h-3 ${sortKey === k ? "text-primary" : "text-muted-foreground/30"}`} />
+        <icons.sort className={`size-3 ${sortKey === k ? "text-foreground" : "text-icon-quaternary opacity-50"}`} aria-hidden />
       </span>
     </th>
   );
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      {/* Filters */}
-      <div className="flex items-center gap-3 flex-wrap">
-        <div className="relative">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-muted-foreground" />
-          <input
+    <PageHeader
+      title={locate(pathname).title}
+      subtitle="Equipment status, health and remaining useful life across the plant"
+      actions={
+        <>
+          <SearchField
             type="text"
-            placeholder="Search equipment..."
+            placeholder="Search equipment…"
+            aria-label="Search equipment"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="pl-8 pr-3 py-1.5 text-xs rounded-lg border border-border bg-card focus:outline-none focus:ring-1 focus:ring-primary w-52"
           />
-        </div>
-        <select
-          value={filterUnit}
-          onChange={(e) => setFilterUnit(e.target.value)}
-          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-card focus:outline-none"
+          <PillSelect value={filterUnit} onChange={(e) => setFilterUnit(e.target.value)} aria-label="Filter by process unit">
+            {processUnits.map(u => <option key={u} value={u}>{u === "All" ? "All units" : u}</option>)}
+          </PillSelect>
+          <PillSelect value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} aria-label="Filter by status">
+            <option value="All">All statuses</option>
+            <option value="running">Running</option>
+            <option value="warning">Warning</option>
+            <option value="critical">Critical</option>
+            <option value="offline">Offline</option>
+            <option value="maintenance">Maintenance</option>
+          </PillSelect>
+        </>
+      }
+    >
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_340px]">
+        {/* Equipment table */}
+        <Panel
+          title="Equipment Registry"
+          padded={false}
+          action={<span className="type-caption tabular text-quaternary">{filtered.length} equipment shown</span>}
         >
-          {processUnits.map(u => <option key={u} value={u}>{u}</option>)}
-        </select>
-        <select
-          value={filterStatus}
-          onChange={(e) => setFilterStatus(e.target.value)}
-          className="px-3 py-1.5 text-xs rounded-lg border border-border bg-card focus:outline-none"
-        >
-          <option value="All">All Status</option>
-          <option value="running">Running</option>
-          <option value="warning">Warning</option>
-          <option value="critical">Critical</option>
-          <option value="offline">Offline</option>
-          <option value="maintenance">Maintenance</option>
-        </select>
-        <span className="text-[10px] text-muted-foreground font-mono ml-auto">{filtered.length} equipment shown</span>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4">
-        {/* Equipment Table */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="overflow-x-auto max-h-[600px] overflow-y-auto">
-            <table className="w-full text-xs">
-              <thead className="sticky top-0 bg-card z-10">
-                <tr className="border-b border-border bg-muted/30">
+          <div className="max-h-[600px] overflow-x-auto overflow-y-auto">
+            <table className="w-full type-body-sm">
+              <thead className="sticky top-0 z-10 bg-container">
+                <tr className="border-b border-hairline">
                   <SortHeader label="Tag" k="tag" />
                   <SortHeader label="Class" k="classLabel" />
                   <SortHeader label="Process Unit" k="processUnit" />
@@ -125,50 +118,50 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                   <tr
                     key={eq.id}
                     onClick={() => onSelectEquipment(eq.id)}
-                    className={`border-b border-border last:border-0 cursor-pointer transition-colors hover:bg-muted/20 ${
-                      selectedEquipmentId === eq.id ? "bg-primary/5" : ""
-                    }`}
+                    className={`border-b border-hairline last:border-0 cursor-pointer transition-colors hover:bg-raised ${selectedEquipmentId === eq.id ? "bg-raised" : ""}`}
                   >
-                    <td className="px-3 py-2 font-mono text-primary font-medium">{eq.tag}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{eq.classLabel}</td>
-                    <td className="px-3 py-2 text-muted-foreground">{eq.processUnit}</td>
+                    <td className="px-3 py-2 tabular text-foreground font-medium whitespace-nowrap">{eq.tag}</td>
+                    <td className="px-3 py-2 text-tertiary">{eq.classLabel}</td>
+                    <td className="px-3 py-2 text-tertiary">{eq.processUnit}</td>
                     <td className="px-3 py-2">
                       <div className="flex items-center gap-2">
-                        <div className="w-12 h-1 rounded-full bg-muted overflow-hidden">
+                        <div className="h-1 w-12 shrink-0 overflow-hidden rounded-full bg-raised-2">
                           <div
                             className={`h-full rounded-full ${
-                              eq.health > 80 ? "bg-operational" : eq.health > 50 ? "bg-gap" : "bg-destructive"
+                              eq.health > 80 ? "bg-quaternary" : eq.health > 50 ? "bg-warning" : "bg-error"
                             }`}
                             style={{ width: `${eq.health}%` }}
                           />
                         </div>
-                        <span className="font-mono">{eq.health}%</span>
+                        <span className="tabular">{eq.health}%</span>
                       </div>
                     </td>
-                    <td className="px-3 py-2 text-muted-foreground text-[11px]">{eq.lastAlarm}</td>
-                    <td className="px-3 py-2 font-mono">
+                    <td className="px-3 py-2 text-tertiary type-body-sm">{eq.lastAlarm}</td>
+                    <td className="px-3 py-2 tabular whitespace-nowrap">
                       {eq.rulDays !== null ? (
-                        <span className={eq.rulDays < 30 ? "text-destructive" : eq.rulDays < 90 ? "text-gap" : "text-foreground"}>
+                        <span className={eq.rulDays < 30 ? "text-error" : eq.rulDays < 90 ? "text-warning" : "text-foreground"}>
                           {eq.rulDays}d
                         </span>
                       ) : (
-                        <span className="text-muted-foreground">—</span>
+                        <span className="text-tertiary">—</span>
                       )}
                     </td>
                     <td className="px-3 py-2">
-                      <span className="flex items-center gap-1.5">
-                        <span className={`w-2 h-2 rounded-full ${statusDot[eq.status]}`} />
-                        <span className="capitalize">{eq.status}</span>
-                      </span>
+                      <EquipmentStatusLabel status={eq.status} />
                     </td>
                   </tr>
                 ))}
+                {filtered.length === 0 && (
+                  <tr>
+                    <td colSpan={7}><EmptyState title="No equipment match this filter" className="min-h-[96px]" /></td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
-        </div>
+        </Panel>
 
-        {/* Detail Panel */}
+        {/* Detail panel */}
         <AnimatePresence mode="wait">
           {selectedEquipment && (
             <EquipmentDetail
@@ -179,7 +172,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
           )}
         </AnimatePresence>
       </div>
-    </div>
+    </PageHeader>
   );
 };
 

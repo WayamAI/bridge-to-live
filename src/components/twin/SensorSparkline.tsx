@@ -32,18 +32,18 @@ const SensorSparkline = ({ data, min, max, normalMin, normalMax }: SensorSparkli
         y={normalMaxY}
         width={width}
         height={normalMinY - normalMaxY}
-        className="fill-operational/5"
+        className="fill-raised-2"
       />
       {/* Normal range lines */}
       <line x1={0} y1={normalMinY} x2={width} y2={normalMinY}
-        className="stroke-operational/20" strokeWidth="0.5" strokeDasharray="3,3" />
+        className="stroke-quaternary" strokeWidth="0.5" strokeDasharray="3,3" />
       <line x1={0} y1={normalMaxY} x2={width} y2={normalMaxY}
-        className="stroke-operational/20" strokeWidth="0.5" strokeDasharray="3,3" />
+        className="stroke-quaternary" strokeWidth="0.5" strokeDasharray="3,3" />
       {/* Data line */}
       <polyline
         points={points.join(" ")}
         fill="none"
-        className={isOutOfRange ? "stroke-destructive" : "stroke-primary"}
+        className={isOutOfRange ? "stroke-error" : "stroke-foreground"}
         strokeWidth="1.5"
         strokeLinejoin="round"
         strokeLinecap="round"
@@ -53,7 +53,7 @@ const SensorSparkline = ({ data, min, max, normalMin, normalMax }: SensorSparkli
         cx={width}
         cy={toY(lastVal)}
         r="2.5"
-        className={isOutOfRange ? "fill-destructive" : "fill-primary"}
+        className={isOutOfRange ? "fill-error" : "fill-foreground"}
       />
     </svg>
   );

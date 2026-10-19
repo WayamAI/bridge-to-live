@@ -1,5 +1,7 @@
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
-import { Leaf, TrendingDown, AlertTriangle, Droplets } from "lucide-react";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import PageHeader from "@/components/layout/PageHeader";
+import { Panel , KpiTile } from "@/components/ui/primitives";
 
 const MONTHLY_EMISSIONS = [
   { month: "Oct '25", scope1: 4200, scope2: 2800, flaring: 840 },
@@ -11,12 +13,12 @@ const MONTHLY_EMISSIONS = [
 ];
 
 const BY_SOURCE = [
-  { name: "Gas Turbine", value: 42, color: "hsl(170, 80%, 45%)" },
-  { name: "Flaring", value: 18, color: "hsl(0, 72%, 51%)" },
-  { name: "Grid Electricity", value: 24, color: "hsl(235, 55%, 55%)" },
-  { name: "Process Venting", value: 8, color: "hsl(35, 90%, 55%)" },
-  { name: "Fugitive", value: 5, color: "hsl(280, 50%, 55%)" },
-  { name: "Other", value: 3, color: "hsl(215, 15%, 55%)" },
+  { name: "Gas Turbine", value: 42, color: seriesColor(0) },
+  { name: "Flaring", value: 18, color: seriesColor(1) },
+  { name: "Grid Electricity", value: 24, color: seriesColor(5) },
+  { name: "Process Venting", value: 8, color: seriesColor(4) },
+  { name: "Fugitive", value: 5, color: seriesColor(2) },
+  { name: "Other", value: 3, color: seriesColor(3) },
 ];
 
 const WATER_DATA = [
@@ -34,92 +36,69 @@ const Sustainability = () => {
   const onTrack = ytdEmissions < target;
 
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      <h1 className="text-lg font-bold flex items-center gap-2"><Leaf className="w-5 h-5 text-operational" /> Sustainability & Emissions</h1>
-      <p className="text-xs text-muted-foreground -mt-3">Environmental performance tracking — carbon emissions, water usage, waste management</p>
+    <PageHeader title="Sustainability & Emissions" subtitle="Environmental performance tracking: carbon emissions, water usage and waste management">
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "YTD CO₂e Emissions", value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "text-operational" : "text-gap" },
-          { label: "Annual Target", value: `${(target / 1000).toFixed(0)}k T`, color: "text-muted-foreground" },
-          { label: "Flaring Reduction", value: "−24%", color: "text-operational" },
-          { label: "Water Recycling Rate", value: "32%", color: "text-primary" },
+          { label: "YTD CO₂e Emissions", value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "" : "text-warning" },
+          { label: "Annual Target", value: `${(target / 1000).toFixed(0)}k T` },
+          { label: "Flaring Reduction", value: "−24%" },
+          { label: "Water Recycling Rate", value: "32%" },
         ].map(s => (
-          <div key={s.label} className="rounded-xl border border-border bg-card p-3">
-            <p className="text-[9px] text-muted-foreground font-medium">{s.label}</p>
-            <p className={`text-xl font-bold font-mono ${s.color}`}>{s.value}</p>
-          </div>
+          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Monthly Emissions */}
-        <div className="lg:col-span-2 rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Monthly GHG Emissions (T CO₂e)</h3>
-          </div>
-          <div className="p-4">
+        <Panel title="Monthly GHG Emissions (T CO₂e)" className="lg:col-span-2">
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={MONTHLY_EMISSIONS}>
-                <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-                <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-                <Bar dataKey="scope1" stackId="a" fill="hsl(170, 80%, 45%)" name="Scope 1 — Direct" />
-                <Bar dataKey="scope2" stackId="a" fill="hsl(235, 55%, 55%)" name="Scope 2 — Grid" />
-                <Bar dataKey="flaring" stackId="a" fill="hsl(0, 72%, 51%)" name="Flaring" radius={[4, 4, 0, 0]} />
+                <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+                <Bar isAnimationActive={false} dataKey="scope1" stackId="a" fill={seriesColor(0)} name="Scope 1 · Direct" />
+                <Bar isAnimationActive={false} dataKey="scope2" stackId="a" fill={seriesColor(1)} name="Scope 2 · Grid" />
+                <Bar isAnimationActive={false} dataKey="flaring" stackId="a" fill={seriesColor(5)} name="Flaring" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
-          </div>
-        </div>
+        </Panel>
 
         {/* By Source */}
-        <div className="rounded-xl border border-border bg-card overflow-hidden">
-          <div className="px-4 py-3 border-b border-border">
-            <h3 className="text-sm font-semibold">Emissions by Source (%)</h3>
-          </div>
-          <div className="p-4">
+        <Panel title="Emissions by Source (%)">
             <ResponsiveContainer width="100%" height={180}>
               <PieChart>
-                <Pie data={BY_SOURCE} cx="50%" cy="50%" outerRadius={70} innerRadius={40} dataKey="value" paddingAngle={2}>
+                <Pie isAnimationActive={false} data={BY_SOURCE} cx="50%" cy="50%" outerRadius={70} innerRadius={40} dataKey="value" paddingAngle={2}>
                   {BY_SOURCE.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Pie>
-                <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
+                <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
               </PieChart>
             </ResponsiveContainer>
             <div className="space-y-1 mt-2">
               {BY_SOURCE.map(d => (
-                <div key={d.name} className="flex items-center justify-between text-[10px]">
+                <div key={d.name} className="flex items-center justify-between type-caption">
                   <div className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full" style={{ backgroundColor: d.color }} /><span>{d.name}</span></div>
-                  <span className="font-mono">{d.value}%</span>
+                  <span className="tabular">{d.value}%</span>
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+        </Panel>
       </div>
 
       {/* Water Usage */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border flex items-center gap-2">
-          <Droplets className="w-4 h-4 text-secondary" />
-          <h3 className="text-sm font-semibold">Water Consumption & Recycling (m³/month)</h3>
-        </div>
-        <div className="p-4">
+      <Panel title="Water Consumption & Recycling (m³/month)">
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={WATER_DATA}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220, 15%, 18%)" />
-              <XAxis dataKey="month" tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-              <YAxis tick={{ fill: "hsl(215, 15%, 55%)", fontSize: 10 }} />
-              <Tooltip contentStyle={{ background: "hsl(220, 18%, 10%)", border: "1px solid hsl(220, 15%, 18%)", borderRadius: 8, fontSize: 11 }} />
-              <Bar dataKey="consumption" fill="hsl(235, 55%, 55%)" name="Total Consumption" />
-              <Bar dataKey="recycled" fill="hsl(170, 80%, 45%)" name="Recycled" radius={[4, 4, 0, 0]} />
-              <Line type="monotone" dataKey="target" stroke="hsl(0, 72%, 51%)" strokeDasharray="5 5" name="Target" />
+              <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+              <Bar isAnimationActive={false} dataKey="consumption" fill={seriesColor(0)} name="Total Consumption" />
+              <Bar isAnimationActive={false} dataKey="recycled" fill={seriesColor(1)} name="Recycled" radius={[4, 4, 0, 0]} />
+              <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(4)} strokeDasharray="5 5" name="Target" />
             </BarChart>
           </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 

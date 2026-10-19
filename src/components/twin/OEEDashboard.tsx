@@ -1,5 +1,7 @@
 import type { OEEMetrics } from "@/hooks/usePlantData";
 import { motion } from "framer-motion";
+import { seriesColor } from "@/components/dashboard/chartTheme";
+import { Panel, Unit } from "@/components/ui/primitives";
 
 interface OEEGaugeProps { label: string; value: number; color: string; }
 
@@ -17,29 +19,29 @@ const OEEGauge = ({ label, value, color }: OEEGaugeProps) => {
             animate={{ strokeDashoffset: circumference - progress }} transition={{ duration: 1, ease: "easeOut" }} />
         </svg>
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="text-base font-bold font-mono">{value}%</span>
+          <span className="type-display-base tabular text-foreground">{value}<Unit>%</Unit></span>
         </div>
       </div>
-      <span className="text-[10px] font-medium text-muted-foreground mt-1">{label}</span>
+      <span className="type-caption mt-1 text-quaternary">{label}</span>
     </div>
   );
 };
 
 const OEEDashboard = ({ oee }: { oee: OEEMetrics }) => (
-  <div className="rounded-xl border border-border bg-card p-4">
-    <h3 className="text-sm font-semibold mb-4">Overall Equipment Effectiveness</h3>
-    <div className="flex items-center justify-around">
-      <OEEGauge label="Availability" value={oee.availability} color="hsl(170, 80%, 45%)" />
-      <OEEGauge label="Performance" value={oee.performance} color="hsl(235, 55%, 55%)" />
-      <OEEGauge label="Quality" value={oee.quality} color="hsl(35, 90%, 55%)" />
+  <Panel title="Overall Equipment Effectiveness">
+    <div className="flex flex-wrap items-center justify-around gap-4">
+      {/* The gauge colour is fixed per gauge (it does not change with the value), so it is a series colour, not a status. */}
+      <OEEGauge label="Availability" value={oee.availability} color={seriesColor(0)} />
+      <OEEGauge label="Performance" value={oee.performance} color={seriesColor(0)} />
+      <OEEGauge label="Quality" value={oee.quality} color={seriesColor(0)} />
       <div className="flex flex-col items-center">
-        <div className="w-20 h-20 rounded-full border-4 border-primary flex items-center justify-center glow-primary">
-          <span className="text-xl font-bold font-mono text-primary">{oee.overall}%</span>
+        <div className="flex h-20 w-20 items-center justify-center rounded-full border-4 border-foreground">
+          <span className="type-display-base tabular text-foreground">{oee.overall}<Unit>%</Unit></span>
         </div>
-        <span className="text-[10px] font-bold text-primary mt-1">OEE</span>
+        <span className="type-label-sm mt-1 text-foreground">OEE</span>
       </div>
     </div>
-  </div>
+  </Panel>
 );
 
 export default OEEDashboard;

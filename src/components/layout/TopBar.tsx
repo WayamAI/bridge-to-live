@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { Radio, User, ChevronDown, Sun, Moon, LogOut } from "lucide-react";
-import Logo from "@/components/Logo";
+import { useLocation, useNavigate } from "react-router-dom";
+import { icons } from "@/lib/icons";
 import { useTheme } from "@/hooks/useTheme";
 import { useAuth } from "@/hooks/useAuth";
 import type { UserRole } from "@/hooks/usePlantData";
+import { locate } from "./nav";
+import { formatTime } from "@/lib/format";
 
 const ROLE_LABELS: Record<UserRole, string> = {
   plant_director: "Plant Director",
@@ -16,18 +17,24 @@ const ROLE_LABELS: Record<UserRole, string> = {
   handover_manager: "Handover Manager",
 };
 
+const iconBtn =
+  "flex size-8 shrink-0 items-center justify-center rounded-full bg-action text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised-2 hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active";
+
 interface TopBarProps {
   userRole: UserRole;
   onRoleChange: (role: UserRole) => void;
   breadcrumb?: string;
+  onOpenNav: () => void;
 }
 
-const TopBar = ({ userRole, onRoleChange, breadcrumb }: TopBarProps) => {
+const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
   const [time, setTime] = useState(new Date());
   const [showRoleMenu, setShowRoleMenu] = useState(false);
   const { theme, toggleTheme } = useTheme();
   const { logout } = useAuth();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+  const { group, title } = locate(pathname);
 
   const handleLogout = () => {
     setShowRoleMenu(false);
@@ -41,28 +48,27 @@ const TopBar = ({ userRole, onRoleChange, breadcrumb }: TopBarProps) => {
   }, []);
 
   return (
-    <header className="h-11 border-b border-border bg-card/80 backdrop-blur-xl sticky top-0 z-50 flex items-center justify-between px-4">
-      <div className="flex items-center gap-3">
-        {breadcrumb ? (
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Logo size={62} showText={false} />
-            <span>/</span>
-            <span>{breadcrumb}</span>
-          </div>
-        ) : (
-          <Logo size={62} showText={false} />
-        )}
+    <div className="shrink-0">
+    <header className="relative z-30 flex h-14 items-center justify-between gap-3 border-b border-hairline bg-page px-4 sm:px-5">
+      {/* Location: group eyebrow (no breadcrumbs in Chronus). The h1 is the page's only h1; the visible title is the PageHeader h2. */}
+      <div className="flex min-w-0 items-center gap-3">
+        <button type="button" aria-label="Open navigation" onClick={onOpenNav} className={`${iconBtn} lg:hidden`}>
+          <icons.menu className="size-4" aria-hidden />
+        </button>
+        <h1 className="sr-only">{title}</h1>
+        {group && <div className="type-eyebrow hidden truncate text-quaternary sm:block" aria-hidden>{group}</div>}
       </div>
-      <div className="flex items-center gap-4">
-        {/* Live indicator */}
-        <div className="flex items-center gap-1.5 text-[10px] font-mono text-operational">
-          <Radio className="w-3 h-3 animate-pulse-glow" />
-          LIVE
+
+      <div className="flex shrink-0 items-center gap-3 sm:gap-4">
+        {/* Live state: a quiet dot and text (replaces the pulsing icon) */}
+        <div className="type-label-sm flex items-center gap-1.5 text-success">
+          <span className="size-1.5 rounded-full bg-success" aria-hidden />
+          Live
         </div>
-        <span className="text-[10px] font-mono text-muted-foreground">
-          {time.toLocaleTimeString()} IST
+        <span className="type-body-sm tabular hidden text-tertiary md:inline">
+          {formatTime(time)} IST
         </span>
-        <span className="text-[10px] font-mono text-muted-foreground">
+        <span className="type-body-sm tabular hidden text-tertiary lg:inline">
           42,400 tags active
         </span>
 
@@ -70,44 +76,49 @@ const TopBar = ({ userRole, onRoleChange, breadcrumb }: TopBarProps) => {
         <button
           onClick={toggleTheme}
           aria-label={theme === "dark" ? "Switch to light mode" : "Switch to dark mode"}
-          className="flex items-center justify-center w-7 h-7 rounded-md hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
+          className={iconBtn}
         >
-          {theme === "dark" ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
+          {theme === "dark" ? <icons.themeLight className="size-4" aria-hidden /> : <icons.themeDark className="size-4" aria-hidden />}
         </button>
 
         {/* Role selector */}
         <div className="relative">
           <button
             onClick={() => setShowRoleMenu(!showRoleMenu)}
-            className="flex items-center gap-2 px-2 py-1 rounded-md hover:bg-muted text-xs"
+            aria-haspopup="menu"
+            aria-expanded={showRoleMenu}
+            aria-label={`Role: ${ROLE_LABELS[userRole]}`}
+            className="flex items-center gap-2 rounded-full bg-action py-0.5 pl-0.5 pr-0.5 outline-none transition-colors duration-[180ms] hover:bg-raised-2 focus-visible:ring-2 focus-visible:ring-active md:pr-3"
           >
-            <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center">
-              <User className="w-3 h-3 text-primary" />
-            </div>
-            <span className="text-foreground font-medium hidden md:inline">{ROLE_LABELS[userRole]}</span>
-            <ChevronDown className="w-3 h-3 text-muted-foreground" />
+            <span className="grid size-7 place-items-center rounded-full bg-raised-2 text-tertiary">
+              <icons.account className="size-4" aria-hidden />
+            </span>
+            <span className="type-label-sm hidden text-foreground md:inline">{ROLE_LABELS[userRole]}</span>
+            <icons.chevronDown className="hidden size-3 text-icon-quaternary md:block" aria-hidden />
           </button>
           {showRoleMenu && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setShowRoleMenu(false)} />
-              <div className="absolute right-0 top-full mt-1 w-52 bg-popover border border-border rounded-lg shadow-xl z-50 py-1">
+              <div role="menu" className="absolute right-0 top-[calc(100%+6px)] z-50 w-56 rounded-lg border border-hairline bg-container p-2 shadow-lg">
                 {Object.entries(ROLE_LABELS).map(([key, label]) => (
                   <button
                     key={key}
+                    role="menuitem"
                     onClick={() => { onRoleChange(key as UserRole); setShowRoleMenu(false); }}
-                    className={`w-full text-left px-3 py-1.5 text-xs hover:bg-muted transition-colors ${
-                      key === userRole ? "text-primary font-medium" : "text-foreground"
+                    className={`type-label-sm w-full rounded-md px-2 py-1.5 text-left outline-none transition-colors duration-150 hover:bg-raised hover:text-foreground focus-visible:ring-2 focus-visible:ring-active ${
+                      key === userRole ? "bg-raised text-foreground" : "text-secondary-foreground"
                     }`}
                   >
                     {label}
                   </button>
                 ))}
-                <div className="my-1 border-t border-border" />
+                <div className="my-1 border-t border-hairline" />
                 <button
+                  role="menuitem"
                   onClick={handleLogout}
-                  className="w-full flex items-center gap-1.5 text-left px-3 py-1.5 text-xs text-destructive hover:bg-muted transition-colors"
+                  className="type-label-sm flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-error outline-none transition-colors duration-150 hover:bg-raised focus-visible:ring-2 focus-visible:ring-active"
                 >
-                  <LogOut className="w-3 h-3" />
+                  <icons.signOut className="size-3.5" aria-hidden />
                   Log out
                 </button>
               </div>
@@ -116,6 +127,12 @@ const TopBar = ({ userRole, onRoleChange, breadcrumb }: TopBarProps) => {
         </div>
       </div>
     </header>
+    {/* Below lg the clock (below md) and tag count sit on a quiet second line instead of being hidden. */}
+    <div className="type-body-sm tabular flex h-7 items-center gap-3 border-b border-hairline bg-page px-4 text-quaternary sm:px-5 lg:hidden">
+      <span className="md:hidden">{formatTime(time)} IST</span>
+      <span>42,400 tags active</span>
+    </div>
+    </div>
   );
 };
 

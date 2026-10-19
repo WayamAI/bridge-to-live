@@ -1,6 +1,9 @@
+import { seriesColor } from "@/components/dashboard/chartTheme";
 import type { EnergyMetric } from "@/hooks/usePlantData";
-import SensorSparkline from "@/components/twin/SensorSparkline";
-import { Zap, TrendingDown } from "lucide-react";
+import PageHeader from "@/components/layout/PageHeader";
+import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
+import { complexityTone, toneOf } from "@/lib/status";
+import { formatNumber } from "@/lib/format";
 
 interface EnergyPageProps {
   energyMetrics: EnergyMetric[];
@@ -14,108 +17,97 @@ const optimisationOpps = [
   { opportunity: "Cooling water pump speed optimisation based on ambient temperature", category: "Scheduling", system: "Cooling Water", saving: "₹18L/yr", complexity: "Low", payback: "2 months" },
 ];
 
+
 const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
   return (
-    <div className="p-4 space-y-4 max-w-[1600px] mx-auto">
-      {/* Metrics Cards */}
-      <div className="grid grid-cols-2 lg:grid-cols-6 gap-3">
+    <PageHeader
+      title="Energy Consumption"
+      subtitle="Utility consumption against setpoints, AI-detected anomalies and optimisation opportunities"
+    >
+      {/* Metric tiles */}
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
         {energyMetrics.map((m) => {
           const deviation = ((m.value - m.setpoint) / m.setpoint * 100).toFixed(1);
           const isOver = m.value > m.setpoint;
           return (
-            <div key={m.label} className="rounded-xl border border-border bg-card p-3">
-              <div className="flex items-center gap-1.5 mb-1">
-                <Zap className="w-3 h-3 text-primary" />
-                <span className="text-[9px] text-muted-foreground font-medium">{m.label}</span>
-              </div>
-              <p className="text-lg font-bold font-mono text-foreground">
-                {m.value.toLocaleString()} <span className="text-xs text-muted-foreground">{m.unit}</span>
-              </p>
-              <div className="flex items-center gap-1 mt-0.5">
-                <span className="text-[9px] text-muted-foreground">Setpoint: {m.setpoint.toLocaleString()}</span>
-                <span className={`text-[9px] font-mono ${isOver ? "text-destructive" : "text-operational"}`}>
-                  {isOver ? "+" : ""}{deviation}%
-                </span>
-              </div>
-              <div className="mt-2 h-6">
-                <svg viewBox="0 0 200 24" className="w-full h-full" preserveAspectRatio="none">
+            <KpiTile
+              key={m.label}
+              label={m.label}
+              value={formatNumber(m.value)}
+              unit={m.unit}
+              delta={`${isOver ? "+" : ""}${deviation}%`}
+              tone={isOver ? "error" : "neutral"}
+              hint={`Setpoint: ${formatNumber(m.setpoint)}`}
+            >
+              <div className="mt-1 h-6">
+                <svg viewBox="0 0 200 24" className="h-full w-full" preserveAspectRatio="none" aria-hidden>
                   <polyline
                     points={m.trend.map((v, i) => `${(i / (m.trend.length - 1)) * 200},${24 - ((v - m.setpoint * 0.9) / (m.setpoint * 0.2)) * 24}`).join(" ")}
                     fill="none"
-                    stroke="hsl(170, 80%, 45%)"
+                    stroke={seriesColor(0)}
                     strokeWidth="1.5"
                   />
                 </svg>
               </div>
-            </div>
+            </KpiTile>
           );
         })}
       </div>
 
-      {/* Anomaly Panel */}
-      <div className="rounded-xl border border-border bg-card p-4">
-        <h3 className="text-sm font-semibold mb-3">Energy Anomalies — AI Detected</h3>
+      {/* Anomalies */}
+      <Panel title="Energy Anomalies · AI Detected">
         <div className="space-y-2">
           {[
             { msg: "COMP-B motor drawing 12% excess current vs. similar load profile — possible bearing degradation", cost: "₹1.8L/day", tag: "COMP-B-001" },
             { msg: "Cooling water pump PUMP-CW-003 efficiency down 8% — fouling suspected", cost: "₹0.9L/day", tag: "PUMP-CW-003" },
             { msg: "Compressed air leak detected — 340 Nm³/hr above baseline", cost: "₹2.1L/day", tag: "COMP-IA-001" },
           ].map((a, i) => (
-            <div key={i} className="flex items-start gap-3 rounded-lg border border-gap/20 bg-gap/5 p-3">
-              <TrendingDown className="w-4 h-4 text-gap mt-0.5 shrink-0" />
+            <div key={i} className="flex items-start gap-3 rounded-lg border border-hairline bg-raised p-3">
+              <StatusDot tone="warning" className="mt-1.5" />
               <div className="flex-1">
-                <p className="text-[11px] text-foreground">{a.msg}</p>
-                <p className="text-[10px] font-mono text-gap mt-0.5">{a.cost} estimated impact</p>
+                <p className="type-body-sm text-foreground">{a.msg}</p>
+                <p className="type-caption tabular mt-0.5 text-warning">{a.cost} estimated impact</p>
               </div>
-              <span className="text-[10px] font-mono text-primary">{a.tag}</span>
+              <span className="type-label-sm tabular text-foreground">{a.tag}</span>
             </div>
           ))}
         </div>
-      </div>
+      </Panel>
 
-      {/* Optimisation Table */}
-      <div className="rounded-xl border border-border bg-card overflow-hidden">
-        <div className="px-4 py-3 border-b border-border">
-          <h3 className="text-sm font-semibold">Optimisation Opportunities — Ranked by Annual Value</h3>
-        </div>
+      {/* Optimisation table */}
+      <Panel title="Optimisation Opportunities · Ranked by Annual Value" padded={false}>
         <div className="overflow-x-auto">
-          <table className="w-full text-xs">
+          <table className="w-full type-body-sm">
             <thead>
-              <tr className="border-b border-border bg-muted/30">
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">#</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Opportunity</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Category</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">System</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Annual Saving</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Complexity</th>
-                <th className="text-left px-3 py-2 font-medium text-muted-foreground">Payback</th>
+              <tr className="border-b border-hairline">
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">#</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Opportunity</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">System</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Annual Saving</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Complexity</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Payback</th>
               </tr>
             </thead>
             <tbody>
               {optimisationOpps.map((opp, i) => (
-                <tr key={i} className="border-b border-border last:border-0 hover:bg-muted/20">
-                  <td className="px-3 py-2 font-mono text-muted-foreground">{i + 1}</td>
+                <tr key={i} className="border-b border-hairline last:border-0 hover:bg-raised">
+                  <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{i + 1}</td>
                   <td className="px-3 py-2 max-w-[350px]">{opp.opportunity}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{opp.category}</td>
-                  <td className="px-3 py-2 text-muted-foreground">{opp.system}</td>
-                  <td className="px-3 py-2 font-mono font-medium text-operational">{opp.saving}</td>
+                  <td className="px-3 py-2 text-tertiary">{opp.category}</td>
+                  <td className="px-3 py-2 text-tertiary">{opp.system}</td>
+                  <td className="px-3 py-2 text-right tabular font-medium text-foreground whitespace-nowrap">{opp.saving}</td>
                   <td className="px-3 py-2">
-                    <span className={`text-[10px] px-2 py-0.5 rounded-full border ${
-                      opp.complexity === "Low" ? "border-operational/30 text-operational bg-operational/10" :
-                      opp.complexity === "Medium" ? "border-gap/30 text-gap bg-gap/10" :
-                      "border-destructive/30 text-destructive bg-destructive/10"
-                    }`}>
-                      {opp.complexity}
-                    </span>
+                    <ToneStatus tone={toneOf(complexityTone, opp.complexity)}>{opp.complexity}</ToneStatus>
                   </td>
-                  <td className="px-3 py-2 text-muted-foreground">{opp.payback}</td>
+                  <td className="px-3 py-2 text-tertiary">{opp.payback}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
+      </Panel>
+    </PageHeader>
   );
 };
 
