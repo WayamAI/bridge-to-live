@@ -24,3 +24,6 @@ export const formatMonthName = (date: Date): string => date.toLocaleDateString(L
  */
 export const formatTime = (date: Date): string =>
   new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Kolkata" }).format(date);
+
+/** "rate_of_change" -> "rate of change": every underscore becomes a space (CSS capitalises where it is shown). */
+export const formatKey = (key: string): string => key.replace(/_/g, " ");

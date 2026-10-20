@@ -5,6 +5,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
 import { priorityTone, severityTone, toneBadgeClass, toneOf } from "@/lib/status";
 import { icons, alarmIcon } from "@/lib/icons";
+import { formatKey } from "@/lib/format";
 
 interface AlarmManagementPageProps {
   alerts: Alert[];
@@ -114,7 +115,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                         <StatusDot tone={toneOf(severityTone, alert.severity)} className="mr-0.5" />
                         <span className="sr-only">{alert.severity}</span>
                         <Icon className="size-3 text-quaternary" aria-hidden />
-                        <span className="capitalize">{alert.type.replace("_", " ")}</span>
+                        <span className="capitalize">{formatKey(alert.type)}</span>
                       </span>
                     </td>
                     <td className="max-w-[400px] truncate px-3 py-2" title={alert.message}>{alert.message}</td>
