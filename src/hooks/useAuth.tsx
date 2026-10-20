@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
+import { AUTH_EMAIL_KEY, AUTH_EXPIRES_KEY, AUTH_KEY, SESSION_MS, clearStored, readSession, writeSession } from "@/lib/session";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -6,55 +7,48 @@ interface AuthContextValue {
   logout: () => void;
 }
 
-export const AUTH_KEY = "wayam-auth";
-export const AUTH_EMAIL_KEY = "wayam-auth-email";
-
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-// The session lives in localStorage so every tab shares it and a logout in one tab signs out all of them.
-// Storage can throw (private window, blocked site data); then the session lasts only for this page load.
-function readAuth(): boolean {
-  try {
-    return window.localStorage.getItem(AUTH_KEY) === "true";
-  } catch {
-    return false;
-  }
-}
-
-function writeAuth(email: string | null) {
-  try {
-    if (email === null) {
-      window.localStorage.removeItem(AUTH_KEY);
-      window.localStorage.removeItem(AUTH_EMAIL_KEY);
-    } else {
-      window.localStorage.setItem(AUTH_KEY, "true");
-      window.localStorage.setItem(AUTH_EMAIL_KEY, email);
-    }
-  } catch {
-    /* keep the in-memory state only */
-  }
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(readAuth);
+  const [session, setSession] = useState(() => readSession());
+  const [memorySession, setMemorySession] = useState<{ email: string; expiresAt: number } | null>(null);
+  const current = session ?? memorySession;
+  const isAuthenticated = current !== null;
+  const expiresAt = current?.expiresAt;
 
   // Another tab logged in or out: follow it. `key === null` is a clear() of the whole store.
   useEffect(() => {
     const onStorage = (e: StorageEvent) => {
-      if (e.key === null || e.key === AUTH_KEY) setIsAuthenticated(readAuth());
+      if (e.key === null || e.key === AUTH_KEY || e.key === AUTH_EMAIL_KEY || e.key === AUTH_EXPIRES_KEY) setSession(readSession());
     };
     window.addEventListener("storage", onStorage);
     return () => window.removeEventListener("storage", onStorage);
   }, []);
 
+  // Sign out when the session runs out while the tab is open.
+  useEffect(() => {
+    if (expiresAt === undefined) return;
+    const id = window.setTimeout(() => {
+      clearStored();
+      setSession(null);
+      setMemorySession(null);
+    }, Math.max(0, expiresAt - Date.now()));
+    return () => window.clearTimeout(id);
+  }, [expiresAt]);
+
   const login = (email: string) => {
-    writeAuth(email);
-    setIsAuthenticated(true);
+    const next = { email, expiresAt: Date.now() + SESSION_MS };
+    writeSession(next.email, next.expiresAt);
+    const stored = readSession();
+    setSession(stored);
+    // Storage unavailable: readSession finds nothing, so keep the login in memory for this page load only.
+    setMemorySession(stored ? null : next);
   };
 
   const logout = () => {
-    writeAuth(null);
-    setIsAuthenticated(false);
+    clearStored();
+    setSession(null);
+    setMemorySession(null);
   };
 
   return (
