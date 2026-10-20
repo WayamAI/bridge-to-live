@@ -47,7 +47,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
     const scenario = {
       failures: Math.max(0, Math.round(baseline.failures * predFactor / pmFactor + (config.failureTag ? 1 : 0))),
       downtime: Math.max(0, Math.round(baseline.downtime * predFactor / pmFactor + failurePenalty)),
-      maintenanceCost: Math.round(baseline.maintenanceCost * pmFactor * predFactor * 0.9),
+      maintenanceCost: Math.round(baseline.maintenanceCost * pmFactor * predFactor),
       energyCost: Math.round(baseline.energyCost * throughputFactor + airFactor),
       oee: Math.min(100, Math.round((baseline.oee * pmFactor * (config.predictiveOnly ? 1.08 : 1) - (config.failureTag ? 8 : 0)) * 10) / 10),
       emissions: Math.round((baseline.emissions * throughputFactor + airFactor * 0.01) * 10) / 10,
