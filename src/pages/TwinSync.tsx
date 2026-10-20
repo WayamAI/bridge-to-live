@@ -5,13 +5,14 @@ import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { syncRunTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
+import { shiftTimestamp } from "@/lib/mockDates";
 
 const SYNC_LOG = [
-  { timestamp: "2026-03-24 08:14:22", records: "240,412", newTags: 24, modified: 148, deleted: 0, errors: 2, status: "Completed" },
-  { timestamp: "2026-03-17 08:12:04", records: "240,388", newTags: 42, modified: 94, deleted: 8, errors: 0, status: "Completed" },
-  { timestamp: "2026-03-10 08:15:38", records: "240,354", newTags: 18, modified: 210, deleted: 0, errors: 0, status: "Completed" },
-  { timestamp: "2026-03-03 08:10:55", records: "240,126", newTags: 86, modified: 320, deleted: 12, errors: 4, status: "Completed with errors" },
-  { timestamp: "2026-02-24 08:14:11", records: "240,064", newTags: 14, modified: 62, deleted: 0, errors: 0, status: "Completed" },
+  { timestamp: shiftTimestamp("2026-03-24 08:14:22"), records: "240,412", newTags: 24, modified: 148, deleted: 0, errors: 2, status: "Completed" },
+  { timestamp: shiftTimestamp("2026-03-17 08:12:04"), records: "240,388", newTags: 42, modified: 94, deleted: 8, errors: 0, status: "Completed" },
+  { timestamp: shiftTimestamp("2026-03-10 08:15:38"), records: "240,354", newTags: 18, modified: 210, deleted: 0, errors: 0, status: "Completed" },
+  { timestamp: shiftTimestamp("2026-03-03 08:10:55"), records: "240,126", newTags: 86, modified: 320, deleted: 12, errors: 4, status: "Completed with errors" },
+  { timestamp: shiftTimestamp("2026-02-24 08:14:11"), records: "240,064", newTags: 14, modified: 62, deleted: 0, errors: 0, status: "Completed" },
 ];
 
 const DELTA_DETAILS = [

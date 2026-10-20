@@ -2,6 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { sourceHealth, workflowTone } from "@/lib/status";
+import { shiftTimestamp } from "@/lib/mockDates";
 
 const DATA_SOURCES = [
   { source: "Honeywell Experion DCS", freshness: 100, completeness: 99.8, accuracy: 99.9, status: "Healthy" },
@@ -17,14 +18,14 @@ const DATA_SOURCES = [
 ];
 
 const INGESTION_LOG = [
-  { timestamp: "2026-03-30 14:28:00", source: "DCS", records: "82.4M", latency: "<1 sec", errors: 0 },
-  { timestamp: "2026-03-30 14:27:30", source: "PLC", records: "14.2M", latency: "<1 sec", errors: 0 },
-  { timestamp: "2026-03-30 14:27:00", source: "PI Historian", records: "6.8M", latency: "30 sec", errors: 12 },
-  { timestamp: "2026-03-30 14:15:00", source: "Maximo CMMS", records: "1,240", latency: "15 min", errors: 0 },
-  { timestamp: "2026-03-30 10:00:00", source: "SAP PM", records: "8,420", latency: "4 hr batch", errors: 4 },
-  { timestamp: "2026-03-30 08:14:22", source: "SmartPlant", records: "240K", latency: "6 days", errors: 2 },
-  { timestamp: "2026-03-30 12:28:00", source: "Fluke", records: "42K", latency: "2 hr lag", errors: 84 },
-  { timestamp: "2026-03-30 14:25:00", source: "Schneider", records: "1.2M", latency: "5 min", errors: 0 },
+  { timestamp: shiftTimestamp("2026-03-30 14:28:00"), source: "DCS", records: "82.4M", latency: "<1 sec", errors: 0 },
+  { timestamp: shiftTimestamp("2026-03-30 14:27:30"), source: "PLC", records: "14.2M", latency: "<1 sec", errors: 0 },
+  { timestamp: shiftTimestamp("2026-03-30 14:27:00"), source: "PI Historian", records: "6.8M", latency: "30 sec", errors: 12 },
+  { timestamp: shiftTimestamp("2026-03-30 14:15:00"), source: "Maximo CMMS", records: "1,240", latency: "15 min", errors: 0 },
+  { timestamp: shiftTimestamp("2026-03-30 10:00:00"), source: "SAP PM", records: "8,420", latency: "4 hr batch", errors: 4 },
+  { timestamp: shiftTimestamp("2026-03-30 08:14:22"), source: "SmartPlant", records: "240K", latency: "6 days", errors: 2 },
+  { timestamp: shiftTimestamp("2026-03-30 12:28:00"), source: "Fluke", records: "42K", latency: "2 hr lag", errors: 84 },
+  { timestamp: shiftTimestamp("2026-03-30 14:25:00"), source: "Schneider", records: "1.2M", latency: "5 min", errors: 0 },
 ];
 
 const DataQuality = () => {
