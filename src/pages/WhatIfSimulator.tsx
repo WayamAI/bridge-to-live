@@ -4,6 +4,7 @@ import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel, PillSelect, Unit } from "@/components/ui/primitives";
 import { activatable, activatableFocus } from "@/lib/a11y";
+import { predictedFailureCounts } from "@/lib/plantStats";
 
 interface ScenarioConfig {
   pmFrequency: number;
@@ -33,7 +34,8 @@ const WhatIfSimulator = ({ equipment }: Props) => {
 
   const results = useMemo(() => {
     const baseline = {
-      failures: 12, downtime: 420, maintenanceCost: 976, energyCost: 4200, oee: 79.2, emissions: 48.2,
+      // Machines predicted to fail in the next 90 days: the same rule as the Dashboard's predicted-failures tile.
+      failures: predictedFailureCounts(equipment).within90, downtime: 420, maintenanceCost: 976, energyCost: 4200, oee: 79.2, emissions: 48.2,
     };
 
     const pmFactor = 1 + config.pmFrequency / 100;
@@ -54,7 +56,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
     const net = (baseline.maintenanceCost + baseline.energyCost) - (scenario.maintenanceCost + scenario.energyCost);
 
     return { baseline, scenario, net };
-  }, [config]);
+  }, [config, equipment]);
 
   const saveScenario = () => {
     const name = `Scenario ${savedScenarios.length + 1}`;
