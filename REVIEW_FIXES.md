@@ -339,6 +339,10 @@ Each commit has its gates (`tsc -p tsconfig.app.json`, `npm test`, `npm run buil
 - Log-style timestamps on Data Quality, Threat Monitor and Twin Sync are fixed to 24 to 30 March 2026 and read as seven months old. They are history, not due dates, so they were left alone.
 - The Vercel preview is protected by Vercel Authentication (HTTP 302 to a login), so it cannot be fetched without a Vercel session. The repo has no `vercel.json`; deep links such as `/alarms` on a Vite single-page app normally need a rewrite to `index.html` on Vercel. Unverified until someone opens the preview.
 
+### Production domain (owner action, not a code issue)
+
+`bridge-to-live-mu.vercel.app` returns `DEPLOYMENT_NOT_FOUND` for every path, including `/`: the production domain is not attached to a deployment. The Vercel project owner needs to attach the domain to the production deployment. Nothing in the repository causes or can fix this. Whether direct loads of client-side routes work on production could not be checked; `vercel.json` now rewrites them to `index.html`.
+
 ## Environment note
 
 Servers started for this audit: preview on port **4180**, dev on port **5180**. A stale server from an earlier session was found on **4173** and stopped. All of them are stopped now.
