@@ -1,4 +1,4 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
@@ -6,6 +6,8 @@ import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { completenessState } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 import { kpi } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
+import { useCategoryAxis } from "@/hooks/useCategoryAxis";
 
 const COMPLETENESS_DATA = [
   { category: "Equipment tags", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
@@ -21,6 +23,7 @@ const COMPLETENESS_DATA = [
 ];
 
 const DataCompleteness = () => {
+  const categoryAxis = useCategoryAxis();
   const overall = Math.round(COMPLETENESS_DATA.reduce((s, d) => s + d.pct, 0) / COMPLETENESS_DATA.length * 10) / 10;
   const atRisk = COMPLETENESS_DATA.filter(d => d.pct < 80).length;
 
@@ -39,16 +42,16 @@ const DataCompleteness = () => {
       </div>
 
       <Panel title="Completeness by Category">
-          <ResponsiveContainer width="100%" height={320}>
-            <BarChart data={COMPLETENESS_DATA} layout="vertical" margin={{ left: 150 }}>
-              <XAxis type="number" domain={[0, 100]} tick={axisTick} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="category" tick={axisTick} tickLine={false} axisLine={false} width={140} />
+          <ChartBox height="tall" label="Completeness by category, percent">
+            <BarChart data={COMPLETENESS_DATA} layout="vertical" margin={{ left: 0, right: 16 }}>
+              <XAxis type="number" domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(v: number) => `${v}%`} tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="category" tickLine={false} axisLine={false} interval={0} {...categoryAxis} />
               <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} formatter={(v: number) => `${v}%`} />
               <Bar isAnimationActive={false} dataKey="pct" radius={[0, 4, 4, 0]}>
                 {COMPLETENESS_DATA.map((d, i) => <Cell key={i} fill={d.color} />)}
               </Bar>
             </BarChart>
-          </ResponsiveContainer>
+          </ChartBox>
       </Panel>
 
       <Panel title="Detailed Breakdown" padded={false}>

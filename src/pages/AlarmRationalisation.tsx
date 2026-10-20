@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cell } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
@@ -7,6 +7,7 @@ import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { rationalisationStatus } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 import { kpi } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
 
 interface AlarmPoint {
   id: string;
@@ -96,14 +97,14 @@ const AlarmRationalisation = () => {
 
         {/* Summary Pie */}
         <Panel title="Rationalisation Summary">
-            <ResponsiveContainer width="100%" height={200}>
+            <ChartBox height="standard" label="Rationalisation summary by status">
               <PieChart>
                 <Pie isAnimationActive={false} data={SUMMARY_PIE} cx="50%" cy="50%" outerRadius={80} innerRadius={45} dataKey="value" paddingAngle={2}>
                   {SUMMARY_PIE.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Pie>
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
               </PieChart>
-            </ResponsiveContainer>
+            </ChartBox>
             <div className="space-y-1.5 mt-3">
               {SUMMARY_PIE.map(d => (
                 <div key={d.name} className="flex items-center justify-between type-caption">

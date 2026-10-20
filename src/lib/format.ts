@@ -37,3 +37,10 @@ export const yearMonthToTime = (ym: string): number => {
 /** Month and two-digit year (Apr 24), pinned to en-IN and UTC to match yearMonthToTime. */
 export const formatMonthYear = (time: number): string =>
   new Date(time).toLocaleDateString(LOCALE, { month: "short", year: "2-digit", timeZone: "UTC" });
+
+/** "2026-07-22" -> "22 Jul", for chart axis ticks (the tooltip keeps the full date). Anything else is returned unchanged. */
+export const formatIsoDayMonth = (iso: string): string => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!m) return iso;
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).toLocaleDateString(LOCALE, { day: "numeric", month: "short" });
+};

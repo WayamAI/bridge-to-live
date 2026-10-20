@@ -1,13 +1,15 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line } from "recharts";
 import type { Alert } from "@/hooks/usePlantData";
-import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor, timeAxisProps } from "@/components/dashboard/chartTheme";
 import { toneChart, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { chatteringStatus } from "@/lib/status";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatIsoDayMonth } from "@/lib/format";
 import { createRng } from "@/lib/seeded";
 import { kpi } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
+import ChartLegend from "@/components/dashboard/ChartLegend";
 
 const rnd = createRng(2402);
 
@@ -68,30 +70,39 @@ const AlarmAnalytics = ({ alerts }: Props) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Alarms by Hour */}
         <Panel title="Alarms by Hour · Today">
-            <ResponsiveContainer width="100%" height={240}>
+            <ChartLegend items={[
+              { label: "Critical", color: toneChart.error },
+              { label: "Warning", color: toneChart.warning },
+              { label: "Info", color: toneChart.info },
+            ]} />
+            <ChartBox height="standard" label="Alarms per hour today by severity">
               <BarChart data={HOURLY_ALARMS}>
-                <XAxis dataKey="hour" tick={axisTick} tickLine={false} axisLine={false} interval={2} />
-                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <XAxis tickMargin={8} dataKey="hour" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={24} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Bar isAnimationActive={false} dataKey="critical" stackId="a" fill={toneChart.error} name="Critical" />
                 <Bar isAnimationActive={false} dataKey="warning" stackId="a" fill={toneChart.warning} name="Warning" />
                 <Bar isAnimationActive={false} dataKey="info" stackId="a" fill={toneChart.info} name="Info" radius={[4, 4, 0, 0]} />
               </BarChart>
-            </ResponsiveContainer>
+            </ChartBox>
         </Panel>
 
         {/* 30-Day Trend */}
         <Panel title="30-Day Alarm Trend + Avg Acknowledgment Time">
-            <ResponsiveContainer width="100%" height={240}>
-              <LineChart data={DAILY_TREND}>
-                <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
-                <YAxis yAxisId="left" tick={axisTick} tickLine={false} axisLine={false} />
-                <YAxis yAxisId="right" orientation="right" tick={axisTick} tickLine={false} axisLine={false} />
+            <ChartLegend items={[
+              { label: "Total alarms (left)", color: seriesColor(0), kind: "line" },
+              { label: "Avg ack time, minutes (right)", color: seriesColor(1), kind: "line" },
+            ]} />
+            <ChartBox height="standard" label="Alarms per day and average acknowledgement time, last 30 days">
+              <LineChart data={DAILY_TREND} margin={{ right: 20, left: 0 }}>
+                <XAxis tickMargin={8} dataKey="date" tick={axisTick} tickLine={false} axisLine={false} tickFormatter={formatIsoDayMonth} {...timeAxisProps} />
+                <YAxis yAxisId="left" tick={axisTick} tickLine={false} axisLine={false} width={40} />
+                <YAxis yAxisId="right" orientation="right" tick={axisTick} tickLine={false} axisLine={false} tickFormatter={(v: number) => `${v}m`} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Line isAnimationActive={false} yAxisId="left" type="monotone" dataKey="total" stroke={seriesColor(0)} strokeWidth={2} dot={false} name="Total Alarms" />
                 <Line isAnimationActive={false} yAxisId="right" type="monotone" dataKey="ackTime" stroke={seriesColor(1)} strokeWidth={2} dot={false} name="Avg Ack Time (min)" />
               </LineChart>
-            </ResponsiveContainer>
+            </ChartBox>
         </Panel>
       </div>
 

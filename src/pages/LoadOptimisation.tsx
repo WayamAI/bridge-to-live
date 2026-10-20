@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { icons, kpi, emptyIcon } from "@/lib/icons";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, Area, AreaChart } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, ToneStatus, Unit } from "@/components/ui/primitives";
@@ -8,6 +8,8 @@ import { complexityTone, opportunityStatus, workflowTone, toneOf } from "@/lib/s
 import { formatNumber, formatMonthName } from "@/lib/format";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { createRng } from "@/lib/seeded";
+import { ChartBox } from "@/components/dashboard/chartKit";
+import ChartLegend from "@/components/dashboard/ChartLegend";
 
 interface Opportunity {
   id: string;
@@ -136,15 +138,19 @@ const LoadOptimisation = () => {
                   <p className="type-eyebrow text-quaternary">12-Month Net Savings</p>
                   <p className="type-display-xl tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{selectedSaving}<Unit>L</Unit></p>
                 </div>
-                <ResponsiveContainer width="100%" height={180}>
+                <ChartLegend items={[
+                  { label: "Baseline (₹/day)", color: seriesColor(4) },
+                  { label: "Projected (₹/day)", color: seriesColor(0) },
+                ]} />
+                <ChartBox height="standard" label="Baseline and projected daily energy cost, next 12 months">
                   <AreaChart data={projectionData}>
-                    <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
-                    <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                    <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+                    <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                     <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                     <Area isAnimationActive={false} type="monotone" dataKey="baseline" stroke={seriesColor(4)} fill={seriesColor(4)} fillOpacity={0.1} name="Baseline (₹/day)" />
                     <Area isAnimationActive={false} type="monotone" dataKey="projected" stroke={seriesColor(0)} fill={seriesColor(0)} fillOpacity={0.2} name="Projected (₹/day)" />
                   </AreaChart>
-                </ResponsiveContainer>
+                </ChartBox>
               </>
             )}
           </div>

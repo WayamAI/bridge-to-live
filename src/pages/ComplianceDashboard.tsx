@@ -1,10 +1,12 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart, toneOf } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
 import { zoneTone } from "@/lib/status";
 import { kpi } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
+import { useCategoryAxis } from "@/hooks/useCategoryAxis";
 
 interface ComplianceDomain {
   domain: string;
@@ -46,6 +48,7 @@ const CHART_DATA = DOMAINS.map(d => ({
 }));
 
 const ComplianceDashboard = () => {
+  const categoryAxis = useCategoryAxis();
   const avgCompliance = Math.round(DOMAINS.reduce((s, d) => s + d.compliance, 0) / DOMAINS.length);
   const totalGaps = DOMAINS.reduce((s, d) => s + d.gaps.length, 0);
 
@@ -65,16 +68,16 @@ const ComplianceDashboard = () => {
 
       {/* Compliance Chart */}
       <Panel title="Compliance by Domain (%)">
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={CHART_DATA} layout="vertical" margin={{ left: 140 }}>
-              <XAxis type="number" domain={[0, 100]} tick={axisTick} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="domain" tick={axisTick} tickLine={false} axisLine={false} width={130} />
-              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+          <ChartBox height="standard" label="Compliance by domain, percent">
+            <BarChart data={CHART_DATA} layout="vertical" margin={{ left: 0, right: 16 }}>
+              <XAxis type="number" domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(v: number) => `${v}%`} tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="domain" tickLine={false} axisLine={false} interval={0} {...categoryAxis} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} formatter={(v: number) => [`${v}%`, "Compliance"]} />
               <Bar isAnimationActive={false} dataKey="compliance" radius={[0, 4, 4, 0]}>
                 {CHART_DATA.map((d, i) => <Cell key={i} fill={d.fill} />)}
               </Bar>
             </BarChart>
-          </ResponsiveContainer>
+          </ChartBox>
       </Panel>
 
       {/* Gaps Table */}

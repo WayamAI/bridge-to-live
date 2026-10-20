@@ -1,9 +1,10 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Line, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart, Line, PieChart, Pie, Cell } from "recharts";
 import ChartLegend from "@/components/dashboard/ChartLegend";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel , KpiTile } from "@/components/ui/primitives";
 import { kpi } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
 
 const MONTHLY_EMISSIONS = [
   { month: "Oct '25", scope1: 4200, scope2: 2800, flaring: 840 },
@@ -59,28 +60,28 @@ const Sustainability = () => {
               { label: "Scope 2 · Grid", color: seriesColor(1) },
               { label: "Flaring", color: seriesColor(5) },
             ]} />
-            <ResponsiveContainer width="100%" height={280}>
+            <ChartBox height="tall" label="Monthly greenhouse gas emissions by source">
               <BarChart data={MONTHLY_EMISSIONS}>
-                <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
-                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Bar isAnimationActive={false} dataKey="scope1" stackId="a" fill={seriesColor(0)} name="Scope 1 · Direct" />
                 <Bar isAnimationActive={false} dataKey="scope2" stackId="a" fill={seriesColor(1)} name="Scope 2 · Grid" />
                 <Bar isAnimationActive={false} dataKey="flaring" stackId="a" fill={seriesColor(5)} name="Flaring" radius={[4, 4, 0, 0]} />
               </BarChart>
-            </ResponsiveContainer>
+            </ChartBox>
         </Panel>
 
         {/* By Source */}
         <Panel title="Emissions by Source (%)">
-            <ResponsiveContainer width="100%" height={180}>
+            <ChartBox height="standard" label="Emissions by source, percent">
               <PieChart>
                 <Pie isAnimationActive={false} data={BY_SOURCE} cx="50%" cy="50%" outerRadius={70} innerRadius={40} dataKey="value" paddingAngle={2}>
                   {BY_SOURCE.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Pie>
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
               </PieChart>
-            </ResponsiveContainer>
+            </ChartBox>
             <div className="space-y-1 mt-2">
               {BY_SOURCE.map(d => (
                 <div key={d.name} className="flex items-center justify-between type-caption">
@@ -99,16 +100,16 @@ const Sustainability = () => {
             { label: "Recycled", color: seriesColor(1) },
             { label: "Target", color: seriesColor(4), kind: "dashed" },
           ]} />
-          <ResponsiveContainer width="100%" height={200}>
+          <ChartBox height="standard" label="Water consumption, recycling and target by month">
             <ComposedChart data={WATER_DATA}>
-              <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
-              <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+              <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
               <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
               <Bar isAnimationActive={false} dataKey="consumption" fill={seriesColor(0)} name="Total Consumption" />
               <Bar isAnimationActive={false} dataKey="recycled" fill={seriesColor(1)} name="Recycled" radius={[4, 4, 0, 0]} />
               <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(4)} strokeDasharray="5 5" name="Target" dot={false} />
             </ComposedChart>
-          </ResponsiveContainer>
+          </ChartBox>
       </Panel>
     </PageHeader>
   );

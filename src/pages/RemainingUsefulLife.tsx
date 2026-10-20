@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Area, Line, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart, Area, Line, Cell } from "recharts";
 import ChartLegend from "@/components/dashboard/ChartLegend";
 import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
@@ -8,6 +8,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, Panel } from "@/components/ui/primitives";
 import { formatNumber, formatYearMonth } from "@/lib/format";
 import { createRng } from "@/lib/seeded";
+import { ChartBox } from "@/components/dashboard/chartKit";
 
 interface Props {
   equipment: Equipment[];
@@ -64,16 +65,16 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* RUL Distribution */}
         <Panel title="RUL Distribution · Equipment Fleet">
-            <ResponsiveContainer width="100%" height={260}>
+            <ChartBox height="tall" label="Equipment count by remaining useful life">
               <BarChart data={distribution}>
-                <XAxis dataKey="range" tick={axisTick} tickLine={false} axisLine={false} />
-                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <XAxis tickMargin={8} dataKey="range" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Bar isAnimationActive={false} dataKey="count" radius={[4, 4, 0, 0]}>
                   {distribution.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Bar>
               </BarChart>
-            </ResponsiveContainer>
+            </ChartBox>
             <div className="flex gap-4 mt-2 type-caption text-tertiary">
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-4" /> Critical (0–1k hr)</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-3" /> Watch (1k–3k hr)</span>
@@ -89,17 +90,17 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
               { label: ">15k hr", color: toneChart.error },
               { label: "Monthly failures", color: seriesColor(0), kind: "line" },
             ]} />
-            <ResponsiveContainer width="100%" height={280}>
+            <ChartBox height="tall" label="Fleet age profile and monthly failures">
               <ComposedChart data={fleetAge}>
-                <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
-                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Area isAnimationActive={false} type="monotone" dataKey="young" stackId="1" fill={toneChart.success} fillOpacity={0.6} stroke={toneChart.success} name="<5k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="mid" stackId="1" fill={toneChart.warning} fillOpacity={0.6} stroke={toneChart.warning} name="5k–15k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="old" stackId="1" fill={toneChart.error} fillOpacity={0.6} stroke={toneChart.error} name=">15k hr" />
                 <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke={seriesColor(0)} strokeWidth={2} dot={{ r: 3 }} name="Monthly Failures" />
               </ComposedChart>
-            </ResponsiveContainer>
+            </ChartBox>
         </Panel>
       </div>
 
