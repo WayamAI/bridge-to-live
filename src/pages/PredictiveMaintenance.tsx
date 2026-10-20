@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { icons } from "@/lib/icons";
 import { toast } from "sonner";
 import type { Equipment } from "@/hooks/usePlantData";
@@ -90,8 +90,8 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
             </thead>
             <tbody>
               {RECOMMENDATIONS.map(rec => (
-                <>
-                  <tr key={rec.id}
+                <Fragment key={rec.id}>
+                  <tr
                     className="border-b border-hairline hover:bg-raised cursor-pointer"
                     onClick={() => setExpandedRow(expandedRow === rec.id ? null : rec.id)}>
                     <td className="text-center py-2 px-3 tabular font-semibold whitespace-nowrap">{rec.rank}</td>
@@ -117,7 +117,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                     </td>
                   </tr>
                   {expandedRow === rec.id && (
-                    <tr key={`${rec.id}-detail`} className="bg-raised">
+                    <tr className="bg-raised">
                       <td colSpan={10} className="px-6 py-3">
                         <div className="grid grid-cols-4 gap-4 type-body-sm">
                           <div><p className="text-tertiary">Model Confidence</p><p className="tabular font-semibold">{rec.confidence}%</p></div>
@@ -131,7 +131,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>
