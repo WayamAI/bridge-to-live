@@ -6,7 +6,7 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from
 import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, Panel } from "@/components/ui/primitives";
-import { formatNumber, formatYearMonth } from "@/lib/format";
+import { formatNumber, formatShortMonth } from "@/lib/format";
 import { createRng } from "@/lib/seeded";
 import { ChartBox } from "@/components/dashboard/chartKit";
 
@@ -44,7 +44,7 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
     return Array.from({ length: 12 }, (_, i) => {
       const month = new Date(2025, 4 + i, 1);
       return {
-        month: formatYearMonth(month),
+        month: formatShortMonth(month),
         young: Math.round(18 - i * 0.3 + rnd() * 2),
         mid: Math.round(14 + i * 0.2 + rnd()),
         old: Math.round(8 + i * 0.4 + rnd()),

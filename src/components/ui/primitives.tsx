@@ -69,10 +69,10 @@ export const Panel = ({
 /** Words and brackets after a value ("days ago", "(L0–L4+DMZ)") keep a word space; short units (%, hr, kW) sit tight. */
 const unitGap = (u?: string) => (u && (/[\s(]/.test(u) || u.length > 4) ? "ml-1.5" : undefined);
 
-/** Splits "₹1.2 Cr", "82%", "14,200 hr" into prefix, number and unit so the sign and unit render in Geist. */
+/** Splits "₹1.2 Cr", "−₹98 L", "82%", "14,200 hr" into prefix, number and unit so the sign and unit render in Geist. */
 const splitValue = (v: ReactNode) => {
   if (typeof v !== "string") return null;
-  const m = v.match(/^([₹$€]?)\s*([+\-−]?[\d,]+(?:\.\d+)?)\s*(.*)$/);
+  const m = v.match(/^([+\-−]?[₹$€]|)\s*([+\-−]?[\d,]+(?:\.\d+)?)\s*(.*)$/);
   return m && (m[1] || m[3]) ? { prefix: m[1], num: m[2], unit: m[3] } : null;
 };
 

@@ -6,6 +6,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { recommendationStatus, workflowTone } from "@/lib/status";
 import { activatable, activatableFocus } from "@/lib/a11y";
+import { formatRupees } from "@/lib/format";
 
 interface Props {
   equipment: Equipment[];
@@ -61,9 +62,9 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
       <KpiGrid>
         {[
           { label: "Actions This Week", icon: kpi.actions, value: totalActions.toString() },
-          { label: "Est. Action Cost", icon: kpi.cost, value: `₹${totalActionCost.toFixed(1)}L` },
-          { label: "Consequence Cost (No Action)", icon: kpi.cost, value: `₹${(totalConsequence / 100).toFixed(2)} Cr` },
-          { label: "Projected Savings", icon: kpi.savings, value: `₹${((totalConsequence - totalActionCost * 10) / 100).toFixed(2)} Cr` },
+          { label: "Est. Action Cost", icon: kpi.cost, value: formatRupees(totalActionCost) },
+          { label: "Consequence Cost (No Action)", icon: kpi.cost, value: formatRupees(totalConsequence) },
+          { label: "Projected Savings", icon: kpi.savings, value: formatRupees(totalConsequence - totalActionCost * 10) },
           { label: "Completed This Month", icon: kpi.done, value: `${completed + 67}` },
           { label: "Compliance Rate", icon: kpi.compliance, value: "74%", color: "text-warning" },
         ].map(s => (

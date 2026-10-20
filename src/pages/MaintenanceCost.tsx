@@ -6,6 +6,7 @@ import { Panel , KpiGrid, KpiTile } from "@/components/ui/primitives";
 import { kpi } from "@/lib/icons";
 import { ChartBox } from "@/components/dashboard/chartKit";
 import ChartLegend from "@/components/dashboard/ChartLegend";
+import { formatRupees } from "@/lib/format";
 
 const MONTHLY_COST = [
   { month: "Oct '25", planned: 42, predictive: 28, corrective: 18, emergency: 8 },
@@ -26,12 +27,12 @@ const BY_UNIT = [
 ];
 
 const PLANNED_VS_REACTIVE = [
-  { month: "Oct", planned: 72, reactive: 28 },
-  { month: "Nov", planned: 68, reactive: 32 },
-  { month: "Dec", planned: 64, reactive: 36 },
-  { month: "Jan", planned: 74, reactive: 26 },
-  { month: "Feb", planned: 70, reactive: 30 },
-  { month: "Mar", planned: 82, reactive: 18 },
+  { month: "Oct '25", planned: 72, reactive: 28 },
+  { month: "Nov '25", planned: 68, reactive: 32 },
+  { month: "Dec '25", planned: 64, reactive: 36 },
+  { month: "Jan '26", planned: 74, reactive: 26 },
+  { month: "Feb '26", planned: 70, reactive: 30 },
+  { month: "Mar '26", planned: 82, reactive: 18 },
 ];
 
 const MaintenanceCost = () => {
@@ -44,8 +45,8 @@ const MaintenanceCost = () => {
 
       <KpiGrid>
         {[
-          { label: "YTD Spend", icon: kpi.spend, value: `₹${(totalYTD / 100).toFixed(2)} Cr` },
-          { label: "YTD Budget", icon: kpi.budget, value: `₹${(budgetYTD / 100).toFixed(2)} Cr` },
+          { label: "YTD Spend", icon: kpi.spend, value: formatRupees(totalYTD) },
+          { label: "YTD Budget", icon: kpi.budget, value: formatRupees(budgetYTD) },
           { label: "Variance", icon: kpi.variance, value: `${variance}% under` },
           { label: "Planned:Reactive Ratio", icon: kpi.ratio, value: "82:18" },
         ].map(s => (
@@ -92,7 +93,7 @@ const MaintenanceCost = () => {
                     <span className="w-2 h-2 rounded-full" style={{ backgroundColor: d.color }} />
                     <span>{d.name}</span>
                   </div>
-                  <span className="tabular">₹{d.value}L</span>
+                  <span className="tabular">{formatRupees(d.value)}</span>
                 </div>
               ))}
             </div>

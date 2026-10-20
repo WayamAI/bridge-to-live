@@ -4,7 +4,7 @@ import { Chip, KpiGrid, KpiTile, Panel, Unit } from "@/components/ui/primitives"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, Area, ComposedChart, ScatterChart, Scatter, ZAxis, Cell } from "recharts";
 import type { Equipment } from "@/hooks/usePlantData";
 import { AXIS_TITLE_HEIGHT, axisTick, axisTitle, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
-import { formatMonthYear, formatNumber, yearMonthToTime } from "@/lib/format";
+import { formatMonthYear, formatNumber, yearMonthToTime, formatRupees } from "@/lib/format";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { createRng } from "@/lib/seeded";
 import { kpi } from "@/lib/icons";
@@ -74,7 +74,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
       <KpiGrid>
         <KpiTile icon={kpi.failures} label="Total Failures (24 mo)" value="247" />
         <KpiTile icon={kpi.downtime} label="Unplanned Downtime" value="1,842" unit="hr" />
-        <KpiTile icon={kpi.cost} label="Total Maint. Cost" prefix="₹" value="8.74" unit="Cr" />
+        <KpiTile icon={kpi.cost} label="Total Maint. Cost" value={formatRupees(874)} />
         <KpiTile icon={kpi.mtbf} label="Avg MTBF (Fleet)" value="14,200" unit="hr" />
         <KpiTile icon={kpi.trend} label="MTBF Trend" value="−8.3" unit="%" valueClassName="text-warning" />
         <KpiTile icon={kpi.mostFailing} label="Most Failure-Prone" value="FCV-D-022" hint="14 failures · 5.7% of fleet" valueClassName="type-display-lg" />
@@ -171,7 +171,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
             <YAxis dataKey="t" name="Date" type="number" domain={["dataMin - 2592000000", "dataMax + 2592000000"]} tickCount={5} tickFormatter={(v: number) => formatMonthYear(v)} tick={axisTick} tickLine={false} axisLine={false} width={56} />
             <ZAxis dataKey="cost" range={[40, 400]} name="Repair Cost (₹L)" />
             <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} cursor={{ strokeDasharray: "3 3" }}
-              formatter={(val: number, name: string) => [name === "Repair Cost (₹L)" ? `₹${val}L` : name === "Date" ? formatMonthYear(val) : formatNumber(val), name]} />
+              formatter={(val: number, name: string) => [name === "Repair Cost (₹L)" ? formatRupees(val) : name === "Date" ? formatMonthYear(val) : formatNumber(val), name]} />
             <Scatter isAnimationActive={false} data={filteredScatter} fillOpacity={0.85}>
               {filteredScatter.map(d => <Cell key={`${d.tag}-${d.date}`} fill={MODE_COLORS[d.mode] ?? seriesColor(4)} />)}
             </Scatter>

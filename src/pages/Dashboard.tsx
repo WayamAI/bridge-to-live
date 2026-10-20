@@ -57,7 +57,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
     },
     {
       label: "Energy Efficiency Index", icon: kpi.efficiency, value: "82.1", unit: "%",
-      hint: "₹14.2L annual savings opportunity",
+      hint: "₹14.2 L annual savings opportunity",
     },
     {
       label: "Handover Readiness", icon: kpi.handover, value: handoverPct.toString(), unit: "%",

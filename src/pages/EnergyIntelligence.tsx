@@ -11,11 +11,11 @@ interface EnergyPageProps {
 }
 
 const optimisationOpps = [
-  { opportunity: "Shift Compression Train B startup to off-peak tariff window (02:00–05:00)", category: "Load shifting", system: "Compression B", saving: "₹42L/yr", complexity: "Low", payback: "Immediate" },
+  { opportunity: "Shift Compression Train B startup to off-peak tariff window (02:00–05:00)", category: "Load shifting", system: "Compression B", saving: "₹42 L/yr", complexity: "Low", payback: "Immediate" },
   { opportunity: "AGC fan speed optimisation via VFD control", category: "Equipment efficiency", system: "Air Coolers", saving: "₹1.18 Cr/yr", complexity: "Medium", payback: "8 months" },
-  { opportunity: "Compressed air pressure setpoint reduction 8.5 bar → 7.8 bar", category: "Leak/loss reduction", system: "Instrument Air", saving: "₹28L/yr", complexity: "Low", payback: "Immediate" },
+  { opportunity: "Compressed air pressure setpoint reduction 8.5 bar → 7.8 bar", category: "Leak/loss reduction", system: "Instrument Air", saving: "₹28 L/yr", complexity: "Low", payback: "Immediate" },
   { opportunity: "Waste heat recovery from COMP-A discharge to preheat feed stream", category: "Equipment efficiency", system: "Compression A / Feed", saving: "₹2.34 Cr/yr", complexity: "High", payback: "14 months" },
-  { opportunity: "Cooling water pump speed optimisation based on ambient temperature", category: "Scheduling", system: "Cooling Water", saving: "₹18L/yr", complexity: "Low", payback: "2 months" },
+  { opportunity: "Cooling water pump speed optimisation based on ambient temperature", category: "Scheduling", system: "Cooling Water", saving: "₹18 L/yr", complexity: "Low", payback: "2 months" },
 ];
 
 
@@ -58,9 +58,9 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
       <Panel title="Energy Anomalies · AI Detected">
         <div className="space-y-2">
           {[
-            { msg: "COMP-B motor drawing 12% excess current vs. similar load profile — possible bearing degradation", cost: "₹1.8L/day", tag: "COMP-B-001" },
-            { msg: "Cooling water pump PUMP-CW-003 efficiency down 8% — fouling suspected", cost: "₹0.9L/day", tag: "PUMP-CW-003" },
-            { msg: "Compressed air leak detected — 340 Nm³/hr above baseline", cost: "₹2.1L/day", tag: "COMP-IA-001" },
+            { msg: "COMP-B motor drawing 12% excess current vs. similar load profile — possible bearing degradation", cost: "₹1.8 L/day", tag: "COMP-B-001" },
+            { msg: "Cooling water pump PUMP-CW-003 efficiency down 8% — fouling suspected", cost: "₹0.9 L/day", tag: "PUMP-CW-003" },
+            { msg: "Compressed air leak detected — 340 Nm³/hr above baseline", cost: "₹2.1 L/day", tag: "COMP-IA-001" },
           ].map((a, i) => (
             <div key={i} className="flex items-start gap-3 rounded-lg border border-hairline bg-raised p-3">
               <StatusDot tone="warning" className="mt-1.5" />

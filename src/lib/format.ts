@@ -44,3 +44,19 @@ export const formatIsoDayMonth = (iso: string): string => {
   if (!m) return iso;
   return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).toLocaleDateString(LOCALE, { day: "numeric", month: "short" });
 };
+
+/**
+ * Rupee amounts held in lakh, written one way everywhere: under 100 L as "₹42 L", from 100 L as "₹1.18 Cr".
+ * Negative amounts get a real minus before the sign ("−₹98 L"); `signed` adds "+" to positive ones; `per` adds "/yr".
+ */
+export const formatRupees = (lakh: number, opts: { signed?: boolean; per?: string } = {}): string => {
+  const abs = Math.abs(lakh);
+  const body = abs >= 100 ? `₹${(abs / 100).toFixed(2)} Cr` : `₹${formatNumber(Math.round(abs * 100) / 100)} L`;
+  const zero = abs < 0.005;
+  const sign = zero ? "" : lakh < 0 ? "−" : opts.signed ? "+" : "";
+  return `${sign}${body}${opts.per ? `/${opts.per}` : ""}`;
+};
+
+/** "Oct '25": short month and two-digit year, for month axes and labels. */
+export const formatShortMonth = (date: Date): string =>
+  `${date.toLocaleDateString(LOCALE, { month: "short" })} '${String(date.getFullYear()).slice(-2)}`;

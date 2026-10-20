@@ -565,13 +565,13 @@ const INITIAL_ALERTS: Alert[] = [
   {
     id: "a8", equipmentId: "pump-cw-003", equipmentTag: "PUMP-CW-003", equipmentName: "Cooling Water Pump — Train 3",
     type: "anomaly", severity: "warning",
-    message: "Pump efficiency down 8% vs. baseline — fouling suspected — ₹0.9L/day impact",
+    message: "Pump efficiency down 8% vs. baseline — fouling suspected — ₹0.9 L/day impact",
     timestamp: new Date(Date.now() - 14400000), acknowledged: true, duration: "4 hr", priority: 3,
   },
   {
     id: "a9", equipmentId: "comp-b-001", equipmentTag: "COMP-B-001", equipmentName: "Centrifugal Compressor — Train B Stage 1",
     type: "rate_of_change", severity: "warning",
-    message: "Motor drawing 12% excess current vs. similar load profile — ₹1.8L/day impact",
+    message: "Motor drawing 12% excess current vs. similar load profile — ₹1.8 L/day impact",
     timestamp: new Date(Date.now() - 28800000), acknowledged: true, duration: "8 hr", priority: 3,
   },
   {

@@ -25,12 +25,12 @@ const BY_SOURCE = [
 ];
 
 const WATER_DATA = [
-  { month: "Oct", consumption: 4800, recycled: 1200, target: 4500 },
-  { month: "Nov", consumption: 4600, recycled: 1300, target: 4500 },
-  { month: "Dec", consumption: 5100, recycled: 1100, target: 4500 },
-  { month: "Jan", consumption: 4400, recycled: 1400, target: 4500 },
-  { month: "Feb", consumption: 4200, recycled: 1500, target: 4500 },
-  { month: "Mar", consumption: 4100, recycled: 1600, target: 4500 },
+  { month: "Oct '25", consumption: 4800, recycled: 1200, target: 4500 },
+  { month: "Nov '25", consumption: 4600, recycled: 1300, target: 4500 },
+  { month: "Dec '25", consumption: 5100, recycled: 1100, target: 4500 },
+  { month: "Jan '26", consumption: 4400, recycled: 1400, target: 4500 },
+  { month: "Feb '26", consumption: 4200, recycled: 1500, target: 4500 },
+  { month: "Mar '26", consumption: 4100, recycled: 1600, target: 4500 },
 ];
 
 const Sustainability = () => {

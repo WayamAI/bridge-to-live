@@ -5,6 +5,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { Panel, PillSelect, Unit } from "@/components/ui/primitives";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { predictedFailureCounts } from "@/lib/plantStats";
+import { formatRupees } from "@/lib/format";
 
 interface ScenarioConfig {
   pmFrequency: number;
@@ -69,7 +70,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
     { label: "Maintenance Cost", baseVal: results.baseline.maintenanceCost, scenVal: results.scenario.maintenanceCost, unit: "₹", prefix: true, suffix: "L" },
     { label: "Energy Cost", baseVal: results.baseline.energyCost, scenVal: results.scenario.energyCost, unit: "₹", prefix: true, suffix: "L" },
     { label: "OEE", baseVal: results.baseline.oee, scenVal: results.scenario.oee, unit: "%" },
-    { label: "Carbon Emissions", baseVal: results.baseline.emissions, scenVal: results.scenario.emissions, unit: "k T CO₂e" },
+    { label: "Carbon Emissions", baseVal: results.baseline.emissions, scenVal: results.scenario.emissions, unit: " kT CO₂e" },
   ];
 
   return (
@@ -166,10 +167,10 @@ const WhatIfSimulator = ({ equipment }: Props) => {
                     return (
                       <tr key={m.label} className="border-b border-hairline hover:bg-raised">
                         <td className="py-2.5 px-3 font-medium">{m.label}</td>
-                        <td className="py-2.5 px-3 text-right tabular whitespace-nowrap">{m.prefix ? "₹" : ""}{m.baseVal}{m.suffix || m.unit}</td>
-                        <td className="py-2.5 px-3 text-right tabular font-semibold whitespace-nowrap">{m.prefix ? "₹" : ""}{m.scenVal}{m.suffix || m.unit}</td>
+                        <td className="py-2.5 px-3 text-right tabular whitespace-nowrap">{m.prefix ? formatRupees(m.baseVal) : `${m.baseVal}${m.unit}`}</td>
+                        <td className="py-2.5 px-3 text-right tabular font-semibold whitespace-nowrap">{m.prefix ? formatRupees(m.scenVal) : `${m.scenVal}${m.unit}`}</td>
                         <td className={`py-2.5 px-3 text-right tabular font-semibold ${isGood ? "text-success" : delta === 0 ? "text-tertiary" : "text-error"}`}>
-                          {delta > 0 ? "+" : ""}{m.prefix ? "₹" : ""}{Math.round(delta * 10) / 10}{m.suffix || m.unit}
+                          {m.prefix ? formatRupees(delta, { signed: true }) : `${delta > 0 ? "+" : delta < 0 ? "−" : ""}${Math.abs(Math.round(delta * 10) / 10)}${m.unit}`}
                         </td>
                       </tr>
                     );
@@ -180,7 +181,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
             <div className="border-t border-hairline bg-raised px-4 py-3 text-center">
               <p className="type-eyebrow text-quaternary">Net Financial Impact (Annual)</p>
               <p className={`type-display-xl tabular mt-1 ${results.net > 0 ? "text-success" : results.net < 0 ? "text-error" : "text-foreground"}`}>
-                {results.net > 0 ? "+" : ""}<Unit className="ml-0 mr-0.5">₹</Unit>{results.net}<Unit>L/yr</Unit>
+                {formatRupees(results.net, { signed: true, per: "yr" })}
               </p>
             </div>
           </Panel>

@@ -5,7 +5,7 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiGrid, KpiTile, Panel, ToneStatus, Unit } from "@/components/ui/primitives";
 import { complexityTone, opportunityStatus, workflowTone, toneOf } from "@/lib/status";
-import { formatNumber, formatMonthName } from "@/lib/format";
+import { formatNumber, formatMonthName, formatRupees, formatShortMonth } from "@/lib/format";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { createRng } from "@/lib/seeded";
 import { ChartBox } from "@/components/dashboard/chartKit";
@@ -44,7 +44,7 @@ const LoadOptimisation = () => {
   const selectedSaving = OPPORTUNITIES.filter(o => selected.has(o.id)).reduce((s, o) => s + o.annualSaving, 0);
 
   const projectionData = Array.from({ length: 12 }, (_, i) => ({
-    month: formatMonthName(new Date(2026, 3 + i)),
+    month: formatShortMonth(new Date(2026, 3 + i)),
     baseline: Math.round(4200 + PROJECTION_NOISE[i].baseline),
     projected: Math.round(4200 - (selectedSaving / 12) * 10 + PROJECTION_NOISE[i].projected),
   }));
@@ -60,8 +60,8 @@ const LoadOptimisation = () => {
 
       <KpiGrid>
         {[
-          { label: "Total Identified Savings", icon: kpi.savings, value: `₹${(totalSaving / 100).toFixed(2)} Cr/yr` },
-          { label: "Selected Scenario Savings", icon: kpi.savings, value: `₹${selectedSaving}L/yr` },
+          { label: "Total Identified Savings", icon: kpi.savings, value: formatRupees(totalSaving, { per: "yr" }) },
+          { label: "Selected Scenario Savings", icon: kpi.savings, value: formatRupees(selectedSaving, { per: "yr" }) },
           { label: "Opportunities Identified", icon: kpi.opportunity, value: OPPORTUNITIES.length.toString() },
           { label: "Implemented", icon: kpi.done, value: OPPORTUNITIES.filter(o => o.status === "Implemented").length.toString() },
         ].map(s => (
@@ -106,7 +106,7 @@ const LoadOptimisation = () => {
                     <td className="py-2 px-2">{o.opportunity}</td>
                     <td className="py-2 px-2 type-body-sm">{o.category}</td>
                     <td className="py-2 px-2 type-body-sm">{o.system}</td>
-                    <td className="py-2 px-2 text-right tabular text-success font-semibold whitespace-nowrap">₹{o.annualSaving}L</td>
+                    <td className="py-2 px-2 text-right tabular text-success font-semibold whitespace-nowrap">{formatRupees(o.annualSaving)}</td>
                     <td className="py-2 px-2"><ToneStatus tone={toneOf(complexityTone, o.complexity)}>{o.complexity}</ToneStatus></td>
                     <td className="py-2 px-2 type-body-sm">{o.payback}</td>
                     <td className="py-2 px-2"><ToneStatus tone={workflowTone(opportunityStatus, o.status).tone}>{o.status}</ToneStatus></td>
@@ -136,7 +136,7 @@ const LoadOptimisation = () => {
                 </div>
                 <div className="rounded-lg border border-hairline bg-raised p-3 text-center">
                   <p className="type-eyebrow text-quaternary">12-Month Net Savings</p>
-                  <p className="type-display-xl tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{selectedSaving}<Unit>L</Unit></p>
+                  <p className="type-display-xl tabular mt-1 text-foreground">{formatRupees(selectedSaving)}</p>
                 </div>
                 <ChartLegend items={[
                   { label: "Baseline (₹/day)", color: seriesColor(4) },
