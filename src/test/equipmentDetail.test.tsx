@@ -18,9 +18,10 @@ describe("Equipment Detail with nothing selected", () => {
     expect(screen.queryByText("Equipment Registry")).toBeNull();
   });
 
-  it("leaves Plant Overview as the registry", () => {
+  it("keeps Plant Overview as the registry, with a Select equipment panel beside it", () => {
     page("/equipment");
     expect(screen.getByText("Equipment Registry")).toBeInTheDocument();
-    expect(screen.queryByText("Select equipment")).toBeNull();
+    expect(screen.getByText("Select equipment")).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Go to Plant Overview" })).toBeNull();
   });
 });

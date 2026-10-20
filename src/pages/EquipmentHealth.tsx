@@ -196,6 +196,12 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
             />
           )}
         </AnimatePresence>
+        {/* Nothing selected: keep the column, as the Dashboard does, instead of leaving it blank. */}
+        {!selectedEquipment && (
+          <Panel>
+            <EmptyState icon={emptyIcon.select} title="Select equipment" detail="Pick a row to see its health, live sensors and maintenance." className="h-full" />
+          </Panel>
+        )}
       </div>
     </PageHeader>
   );
