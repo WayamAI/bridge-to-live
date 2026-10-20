@@ -203,6 +203,7 @@ The internal docs (not in repo) ("Step 4 page log") have the full per-page list.
 8. Login brand panel is a solid colour (no hero image in the repo).
 9. Tailwind stays on 3.4 (Chronus is v4).
 10. Fonts stay Google-hosted (decision, see Decisions). Chronus self-hosts its fonts at build time through `next/font`; this app is Vite, so an offline or air-gapped deployment would need the font files self-hosted later (`.woff2` plus `@font-face`, and the Google links removed).
+11. **Text contrast (review round, ticket T10).** `--text-quaternary` is raised to at least 4.5:1 (WCAG AA) on every surface it sits on, light and dark: light `#8a8a8a` -> `#6e6e6e` (5.10:1 on white, 4.55:1 on the page), dark `#626262` -> `#858585` (5.16:1 on the container, 4.76:1 on raised). `--text-tertiary` moved with it to keep the order secondary > tertiary > quaternary: light `#737373` -> `#5c5c5c`, dark `#8a8a8a` -> `#a3a3a3`. These are Chronus token values; Chronus itself uses the lighter ones. A test (`src/test/contrast.test.ts`) fails if either ratio drops below 4.5:1.
 
 ## Cleanup ticket (unused files, left in place on purpose)
 
