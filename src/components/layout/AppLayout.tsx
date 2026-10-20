@@ -20,6 +20,16 @@ const AppLayout = ({ alerts, userRole, onRoleChange, breadcrumb }: AppLayoutProp
   // The off-canvas sidebar closes after navigating.
   useEffect(() => setMobileOpen(false), [pathname]);
 
+  // Escape closes the drawer.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
+
   return (
     // Fixed-viewport shell: the document never scrolls, <main> does.
     <div className="flex h-screen w-full overflow-hidden bg-page">
