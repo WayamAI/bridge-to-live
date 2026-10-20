@@ -6,7 +6,7 @@ How this was checked: production build (`vite preview`, port 4180) and `npm run 
 
 ## Final status
 
-Branch `review-fixes` (42 commits on top of origin/main, one per fix). Final gates: `tsc -p tsconfig.app.json` passes; 140 tests pass (was 49); `npm run build` passes; `npm run lint` 0 errors, 9 warnings (was 6 errors, 9 warnings; the warnings are react-refresh in shadcn files). Final sweep: production and dev, 28 routes x light/dark x 1440/390 = 112 combinations each, 0 structural failures, no console warnings except the intentional 404 test route. Chart check (10 chart pages x 2 themes x 2 widths): 0 overlapping or clipped labels, only the two chart heights. Screenshots of all 26 routes in light/dark at 1440 and 390 are kept outside the repo in `D:ridge-to-live-shotsinal\` (104 files), with one folder per earlier batch.
+Branch `review-fixes` (42 commits on top of origin/main, one per fix). Final gates: `tsc -p tsconfig.app.json` passes; 140 tests pass (was 49); `npm run build` passes; `npm run lint` 0 errors, 9 warnings (was 6 errors, 9 warnings; the warnings are react-refresh in shadcn files). Final sweep: production and dev, 28 routes x light/dark x 1440/390 = 112 combinations each, 0 structural failures, no console warnings except the intentional 404 test route. Chart check (10 chart pages x 2 themes x 2 widths): 0 overlapping or clipped labels, only the two chart heights. Screenshots of all 26 routes in light/dark at 1440 and 390 are kept outside the repo in `D:/bridge-to-live-shots/final/` (104 files), with one folder per earlier batch.
 
 | Item | Status | What was done |
 |---|---|---|
