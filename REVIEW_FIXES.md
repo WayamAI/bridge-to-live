@@ -265,6 +265,80 @@ Every fix gets, in its own commit message or note: repro before (route, steps, o
 - **D9.** Icons on all pages (Dashboard, Alarms, Equipment first). Rule: one 14px `text-icon-tertiary` icon top-right of every KPI tile; leading 13px icon on primary action buttons; 24px icon in empty states; panel-header icons only on the Dashboard. All via `icons.ts`, one icon = one meaning.
 - **Order:** login flow, OEE, functional fixes, sidebar, icons, graphs, consistency, QA. Stop after the login flow and OEE commits for review.
 
+## Round 2 progress (commits on `review-fixes`)
+
+Each commit has its gates (`tsc -p tsconfig.app.json`, `npm test`, `npm run build`, lint at or below baseline) and a before/after check on the running app (production preview on 4180; dev on 5180 for console warnings). Final sweeps after the last commit: production and dev, 112 combinations each, 0 structural failures, no console warnings except the intentional 404 on `/nope`.
+
+| Commit | Before | After |
+|---|---|---|
+| keep the session across tabs, sign out every tab | new tab asked for a login | new tab signed in; logout in one tab signs out the others |
+| redirect `/login` when signed in | form shown | goes to the page the user was headed for, else `/` |
+| visible Log out button | only in the role menu | top-bar button, menu entry kept |
+| overall OEE is a real gauge | black/white static ring | series blue, same size and typography, arc from the value |
+| guard theme storage access | blank page with storage blocked | renders, login and theme toggle work |
+| validate stored session | any stored `true` accepted | shape and 12 h expiry checked; expired/malformed/old-format cleared |
+| Escape closes the drawer | did not close | closes |
+| mock dates relative to today | Upcoming Maintenance 0 events, 8 overdue work orders, equipment detail -127 / -171 days | 8 events, 0 overdue, +76 / +36 days |
+| Dashboard predicted failures | 0, hint "12 components flagged" (fixed text) | 2 in 30 days, "3 components flagged in 90 days", from the equipment list |
+| Dashboard handover readiness | 73% vs 83% on `/handover` | both 83% (one function, `lib/plantStats.ts`) |
+| alarm type label | "Rate Of_change" | "Rate Of Change" |
+| duplicate key | dev warning on `/predictive-maintenance` | none |
+| React Router future flags | two warnings on every route | none |
+| keyboard activation | rows and sort headers not focusable | Tab reaches them; Enter/Space act; a button inside a row keeps its own Enter |
+| deterministic chart data | numbers changed on every load (4 of 5 pages) | identical across loads |
+| sensor sparklines | line 0.2-1.1 px of 32 | 9-21 px |
+| Failure Analysis charts | timeline empty, Weibull no line | 12 coloured points; line plus confidence band |
+| Sustainability target line | not drawn, no legends | drawn, legends |
+| RUL fleet-age line | not drawn, caption for a missing line | drawn, caption removed |
+| Plant Health legend | listed Forecast and PM events, neither drawn | lists what is drawn; 3 PM event lines |
+| Upcoming Maintenance cards widened the page (a regression exposed by the date fix) | page scrolled sideways (scrollX up to 374 / 600) | 0 |
+
+### Not changed yet, waiting on a decision
+
+**One name per page** (sidebar label, top-bar title and page heading all the same; the long forms move into the subtitle):
+
+| Route | Sidebar label now | Page title now | Proposed single name |
+|---|---|---|---|
+| `/` | Dashboard | Dashboard | Dashboard |
+| `/equipment` | Plant Overview | Plant Overview | Plant Overview |
+| `/equipment/detail` | Equipment Detail | Equipment Detail | Equipment Detail |
+| `/failure-analysis` | Failure Analysis | Failure Analysis | Failure Analysis |
+| `/rul` | Remaining Useful Life | Remaining Useful Life (RUL) | Remaining Useful Life |
+| `/predictive-maintenance` | Predictive Maintenance | Predictive Maintenance | Predictive Maintenance |
+| `/work-orders` | Work Orders | Work Order Integration | Work Orders |
+| `/maintenance-cost` | Cost Tracker | Maintenance Cost Tracker | Maintenance Cost |
+| `/energy` | Consumption | Energy Consumption | Energy Consumption |
+| `/load-optimisation` | Load Optimisation | Load Optimisation | Load Optimisation |
+| `/sustainability` | Sustainability | Sustainability & Emissions | Sustainability |
+| `/alarms` | Active Alarms | Active Alarms | Active Alarms |
+| `/alarm-analytics` | Alarm Analytics | Alarm History & Analytics | Alarm Analytics |
+| `/alarm-rationalisation` | Rationalisation | Alarm Rationalisation | Alarm Rationalisation |
+| `/ot-assets` | Asset Registry | OT Asset Registry | OT Asset Registry |
+| `/threat-monitor` | Threat Monitor | Threat Monitor | Threat Monitor |
+| `/network` | Network Segmentation | Network Segmentation Status | Network Segmentation |
+| `/compliance` | Compliance | Compliance Dashboard | Compliance |
+| `/handover` | Handover Tracker | Handover Tracker | Handover Tracker |
+| `/twin-sync` | Engineering Twin Sync | Engineering Twin Sync | Engineering Twin Sync |
+| `/data-completeness` | Data Completeness | Data Completeness Monitor | Data Completeness |
+| `/iso-validator` | ISO Validator | ISO 15926 / CFIHOS Validator | ISO Validator |
+| `/simulator` | What-If Simulator | What-If Simulator | What-If Simulator |
+| `/data-sources` | Connected Systems | Connected Systems | Connected Systems |
+| `/data-quality` | Data Quality | Data Quality Monitor | Data Quality |
+| `/settings` | Configuration | Settings & Configuration | Settings |
+
+14 of 26 change. The words dropped from titles ("(RUL)", "ISO 15926 / CFIHOS", "Integration", "Status", "Monitor", "& Emissions") go into each page's subtitle so nothing is lost.
+
+**`/handover` vs `/data-sources`.** Both routes render the same `HandoverPage` (`App.tsx:71` and `:89`) with the same props. This is not a redesign mistake: the baseline commit `aeabd3f` already mapped both routes to `HandoverPage`, and its sidebar had "Connected Systems" pointing at `/data-sources`. The page has three panels (project summary, readiness scorecard, connected-systems table), so "Connected Systems" opens a page that starts with handover readiness and is headed "Connected Systems" with a handover subtitle. Options:
+- **A (recommended, no new page file):** `HandoverPage` gets a `view` prop. `/handover` shows the project and the scorecard; `/data-sources` shows the connected-systems table (with Force sync) and its own subtitle. Same component, same data, no route change. Risk L; logic change yes (what each route shows).
+- **B:** a separate `ConnectedSystems.tsx` page with the same content. Needs your approval as a new page.
+- **C:** leave both as they are.
+
+### Other findings in this round
+
+- Dashboard tile and Simulator baseline now disagree again by design of the data: the Simulator baseline has 12 predicted failures (90 days) as a fixed number in `WhatIfSimulator.tsx:35`, while the equipment data has 3. It drives the scenario maths, so I have not changed it.
+- Log-style timestamps on Data Quality, Threat Monitor and Twin Sync are fixed to 24 to 30 March 2026 and read as seven months old. They are history, not due dates, so they were left alone.
+- The Vercel preview is protected by Vercel Authentication (HTTP 302 to a login), so it cannot be fetched without a Vercel session. The repo has no `vercel.json`; deep links such as `/alarms` on a Vite single-page app normally need a rewrite to `index.html` on Vercel. Unverified until someone opens the preview.
+
 ## Environment note
 
 Servers started for this audit: preview on port **4180**, dev on port **5180**. A stale server from an earlier session was found on **4173** and stopped. All of them are stopped now.
