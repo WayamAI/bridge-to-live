@@ -1,10 +1,10 @@
 import { useState, useMemo } from "react";
 import PageHeader from "@/components/layout/PageHeader";
 import { Chip, KpiTile, Panel, Unit } from "@/components/ui/primitives";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart, ScatterChart, Scatter, ZAxis } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, ComposedChart, ScatterChart, Scatter, ZAxis, Cell } from "recharts";
 import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
-import { formatNumber } from "@/lib/format";
+import { formatMonthYear, formatNumber, yearMonthToTime } from "@/lib/format";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { createRng } from "@/lib/seeded";
 
@@ -25,7 +25,7 @@ const WEIBULL_DATA = Array.from({ length: 50 }, (_, i) => {
   const survival = Math.exp(-Math.pow(hours / eta, beta)) * 100;
   const upper = Math.min(100, survival + 5 + bandRnd() * 3);
   const lower = Math.max(0, survival - 5 - bandRnd() * 3);
-  return { hours, survival: Math.round(survival * 10) / 10, upper: Math.round(upper * 10) / 10, lower: Math.round(lower * 10) / 10 };
+  return { hours, survival: Math.round(survival * 10) / 10, band: [Math.round(lower * 10) / 10, Math.round(upper * 10) / 10] as [number, number] };
 });
 
 const SCATTER_DATA = [
@@ -43,6 +43,8 @@ const SCATTER_DATA = [
   { hours: 13800, date: "2026-03", mode: "Seal degradation", cost: 3.6, tag: "FCV-D-022" },
 ];
 
+const SCATTER_POINTS = SCATTER_DATA.map(d => ({ ...d, t: yearMonthToTime(d.date) }));
+
 const MODE_COLORS: Record<string, string> = {
   "Bearing failure": seriesColor(0),
   "Seal degradation": seriesColor(1),
@@ -59,8 +61,8 @@ const FailureAnalysis = ({ equipment }: Props) => {
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
 
   const filteredScatter = selectedMode
-    ? SCATTER_DATA.filter(d => d.mode === selectedMode)
-    : SCATTER_DATA;
+    ? SCATTER_POINTS.filter(d => d.mode === selectedMode)
+    : SCATTER_POINTS;
 
   return (
     <PageHeader title="Failure Analysis" subtitle="Statistical failure analysis across equipment classes and systemic issue identification">
@@ -117,15 +119,18 @@ const FailureAnalysis = ({ equipment }: Props) => {
         </Panel>
 
         <Panel title="Weibull Survival Analysis · Compressor Fleet">
+          <div className="type-caption mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-quaternary">
+            <span className="flex items-center gap-1"><span className="inline-block h-0.5 w-3 bg-series-1" /> Survival</span>
+            <span className="flex items-center gap-1"><span className="inline-block size-2 rounded-sm bg-series-1 opacity-20" /> Confidence band</span>
+          </div>
           <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={WEIBULL_DATA}>
-              <XAxis dataKey="hours" tick={axisTick} tickLine={false} axisLine={false} minTickGap={16} label={{ value: "Operating Hours", position: "insideBottom", offset: -5, fill: "var(--text-quaternary)", fontSize: 11 }} />
-              <YAxis tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Survival %", angle: -90, position: "insideLeft", fill: "var(--text-quaternary)", fontSize: 11 }} />
-              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-              <Area isAnimationActive={false} type="monotone" dataKey="upper" stroke="none" fill={seriesColor(0)} fillOpacity={0.1} />
-              <Area isAnimationActive={false} type="monotone" dataKey="lower" stroke="none" fill="var(--surface-container)" fillOpacity={1} />
+            <ComposedChart data={WEIBULL_DATA} margin={{ left: 0, right: 28, bottom: 16 }}>
+              <XAxis dataKey="hours" type="number" domain={[0, "dataMax"]} tickCount={6} tickFormatter={(v: number) => formatNumber(v)} tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Operating Hours", position: "insideBottom", offset: -10, fill: "var(--text-quaternary)", fontSize: 11 }} />
+              <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Survival %", angle: -90, position: "insideLeft", fill: "var(--text-quaternary)", fontSize: 11 }} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} labelFormatter={(v: number) => `${formatNumber(v)} hr`} formatter={(val: number | number[], name: string) => [Array.isArray(val) ? `${val[0]}–${val[1]}%` : `${val}%`, name === "band" ? "Confidence band" : "Survival"]} />
+              <Area isAnimationActive={false} type="monotone" dataKey="band" stroke="none" fill={seriesColor(0)} fillOpacity={0.15} />
               <Line isAnimationActive={false} type="monotone" dataKey="survival" stroke={seriesColor(0)} strokeWidth={2} dot={false} />
-            </AreaChart>
+            </ComposedChart>
           </ResponsiveContainer>
           <div className="mt-3 grid grid-cols-2 gap-3">
             <div className="rounded-lg border border-hairline bg-raised p-3">
@@ -157,13 +162,15 @@ const FailureAnalysis = ({ equipment }: Props) => {
         }
       >
         <ResponsiveContainer width="100%" height={200}>
-          <ScatterChart margin={{ left: 20 }}>
-            <XAxis dataKey="hours" name="Operating Hours" tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Operating Hours at Failure", position: "insideBottom", offset: -5, fill: "var(--text-quaternary)", fontSize: 11 }} />
-            <YAxis dataKey="date" name="Date" tick={axisTick} tickLine={false} axisLine={false} />
+          <ScatterChart margin={{ top: 12, left: 8, right: 24, bottom: 16 }}>
+            <XAxis dataKey="hours" name="Operating Hours" type="number" domain={[0, "dataMax"]} tickCount={7} tickFormatter={(v: number) => formatNumber(v)} tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Operating Hours at Failure", position: "insideBottom", offset: -5, fill: "var(--text-quaternary)", fontSize: 11 }} />
+            <YAxis dataKey="t" name="Date" type="number" domain={["dataMin - 2592000000", "dataMax + 2592000000"]} tickCount={5} tickFormatter={(v: number) => formatMonthYear(v)} tick={axisTick} tickLine={false} axisLine={false} width={56} />
             <ZAxis dataKey="cost" range={[40, 400]} name="Repair Cost (₹L)" />
-            <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle}
-              formatter={(val: any, name: string) => [name === "Repair Cost (₹L)" ? `₹${val}L` : val, name]} />
-            <Scatter isAnimationActive={false} data={filteredScatter} fill={seriesColor(0)} />
+            <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} cursor={{ strokeDasharray: "3 3" }}
+              formatter={(val: number, name: string) => [name === "Repair Cost (₹L)" ? `₹${val}L` : name === "Date" ? formatMonthYear(val) : formatNumber(val), name]} />
+            <Scatter isAnimationActive={false} data={filteredScatter} fillOpacity={0.85}>
+              {filteredScatter.map(d => <Cell key={`${d.tag}-${d.date}`} fill={MODE_COLORS[d.mode] ?? seriesColor(4)} />)}
+            </Scatter>
           </ScatterChart>
         </ResponsiveContainer>
         <div className="mt-3 flex flex-wrap gap-2">

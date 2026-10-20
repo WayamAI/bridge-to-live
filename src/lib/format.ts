@@ -27,3 +27,13 @@ export const formatTime = (date: Date): string =>
 
 /** "rate_of_change" -> "rate of change": every underscore becomes a space (CSS capitalises where it is shown). */
 export const formatKey = (key: string): string => key.replace(/_/g, " ");
+
+/** "2024-04" -> the time of the first of that month (UTC), for a numeric chart axis. NaN for anything else. */
+export const yearMonthToTime = (ym: string): number => {
+  const m = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(ym);
+  return m ? Date.UTC(Number(m[1]), Number(m[2]) - 1, 1) : NaN;
+};
+
+/** Month and two-digit year (Apr 24), pinned to en-IN and UTC to match yearMonthToTime. */
+export const formatMonthYear = (time: number): string =>
+  new Date(time).toLocaleDateString(LOCALE, { month: "short", year: "2-digit", timeZone: "UTC" });

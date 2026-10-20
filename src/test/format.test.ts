@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, formatKey, formatMonthName, formatNumber, formatTime, formatYearMonth } from "@/lib/format";
+import { formatDate, formatKey, formatMonthName, formatMonthYear, formatNumber, formatTime, formatYearMonth, yearMonthToTime } from "@/lib/format";
 
 describe("format", () => {
   it("groups numbers the en-IN way and keeps the default precision", () => {
@@ -26,5 +26,12 @@ describe("format", () => {
   it("turns every underscore in a key into a space", () => {
     expect(formatKey("rate_of_change")).toBe("rate of change");
     expect(formatKey("anomaly")).toBe("anomaly");
+  });
+
+  it("turns a year-month into a chart time and back to a short label", () => {
+    expect(yearMonthToTime("2024-04")).toBe(Date.UTC(2024, 3, 1));
+    expect(yearMonthToTime("2024-13")).toBeNaN();
+    expect(yearMonthToTime("soon")).toBeNaN();
+    expect(formatMonthYear(yearMonthToTime("2024-04"))).toBe("Apr 24");
   });
 });
