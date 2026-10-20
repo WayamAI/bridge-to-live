@@ -143,7 +143,7 @@ const LoadOptimisation = () => {
                   { label: "Projected (₹/day)", color: seriesColor(0) },
                 ]} />
                 <ChartBox height="standard" label="Baseline and projected daily energy cost, next 12 months">
-                  <AreaChart data={projectionData}>
+                  <AreaChart data={projectionData} margin={{ right: 28 }}>
                     <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
                     <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                     <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
