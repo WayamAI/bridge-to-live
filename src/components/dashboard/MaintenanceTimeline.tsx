@@ -31,7 +31,7 @@ const MaintenanceTimeline = ({ events }: MaintenanceTimelineProps) => {
       {upcoming.length === 0 ? (
         <EmptyState title="No maintenance in the next 60 days" className="min-h-[96px]" />
       ) : (
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="relative flex gap-2 overflow-x-auto pb-2">
           {upcoming.map((event) => {
             const Icon = eventIcon(event.type);
             const daysUntil = Math.ceil((event.date.getTime() - now) / 86400000);
