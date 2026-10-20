@@ -1,8 +1,48 @@
 # REVIEW_FIXES.md
 
-Audit of reviewer feedback a–h on PlantMind (`bridge-to-live`). Branch `review-fixes`, from `origin/main` at `bc9856a`. **Audit only: no source files were changed.**
+Audit of reviewer feedback a–h on PlantMind (`bridge-to-live`). Branch `review-fixes`, from `origin/main` at `bc9856a`. The audit below was written before any change; **Final status** (next section) records what was done.
 
 How this was checked: production build (`vite preview`, port 4180) and `npm run dev` (port 5180), Playwright/Chromium, 28 routes × light/dark × 1440/390 = 112 combos each. The login and sidebar tests used a fresh browser context (a clean profile).
+
+## Final status
+
+Branch `review-fixes` (42 commits on top of origin/main, one per fix). Final gates: `tsc -p tsconfig.app.json` passes; 140 tests pass (was 49); `npm run build` passes; `npm run lint` 0 errors, 9 warnings (was 6 errors, 9 warnings; the warnings are react-refresh in shadcn files). Final sweep: production and dev, 28 routes x light/dark x 1440/390 = 112 combinations each, 0 structural failures, no console warnings except the intentional 404 test route. Chart check (10 chart pages x 2 themes x 2 widths): 0 overlapping or clipped labels, only the two chart heights. Screenshots of all 26 routes in light/dark at 1440 and 390 are kept outside the repo in `D:ridge-to-live-shotsinal\` (104 files), with one folder per earlier batch.
+
+| Item | Status | What was done |
+|---|---|---|
+| a. Icons | Done | Every KPI tile has a 14 px greyscale icon top-right (enforced by the types), 24 px icons in all empty states, Dashboard panel-header icons, leading icons on the primary actions that lacked one; all from `src/lib/icons.ts`, one icon per meaning, tests keep them distinct. 26 of 26 page marks load. |
+| b. OEE colour | Done | The black/white static ring is a real gauge in the series blue, same size and typography as the other three, arc from the value. |
+| c. UI consistency | Done, with the exceptions below | KPI grid columns follow the tile count (`KpiGrid`); two chart heights; one rupee and month format (`format.ts`); Chronus checkbox and slider; Plant Overview keeps its right-hand column; one name per page from `nav.ts`; log timestamps and mock dates relative to now. |
+| d. Login flow | Done | The route guard already blocked every route without a session (verified in a fresh profile). Added: `/login` redirects when signed in, session shared across tabs (`localStorage`, 12 h expiry, validated, cleared on logout in every tab), visible Log out button, storage-blocked mode works. |
+| e. Functional issues / tree view | Done; tree view not found | No tree view exists in PlantMind; the reviewer's tree-view item likely refers to the BOM Sync EBOM tree; asked reviewer to confirm. The sidebar got collapsible groups. Fixed: T1 (deterministic chart data), T2 (handover 83% on both screens), T3 (Weibull, failure scatter, Sustainability target, RUL line, Plant Health legend), T4 ("Rate Of Change"), T5-T6 not touched (see below), T7 (keyboard on rows and headers), T8 (duplicate key), T9 (mock dates), T11 (lint errors), router future flags, Escape on the drawer, predicted failures and Upcoming Maintenance, sparklines, Failure Analysis timeline, What-If baseline and the extra 0.9 factor. |
+| f. Colours, icons, typography, casing, spacing, component styling | Done, with the exceptions below | As c; text contrast raised to WCAG AA (Chronus deviation 11). |
+| g. Graphs and sidebar | Done | Charts: one legend style, one axis style, no overlapping or clipped ticks at 1440 or 390, % and axis titles where the unit is not obvious, accessible names, readable empty states, wrapped category labels. Sidebar: 6 collapsible groups plus Dashboard, Settings in the footer, state remembered per viewer, all open on a first visit. |
+| h. Verified on the running app | Done locally; preview not checkable | Every commit carries a before/after check on the production preview (and dev for console warnings). The Vercel preview is behind Vercel Authentication, so it could not be fetched from here; `vercel.json` adds the SPA rewrite for direct loads. |
+
+### Not done (and why)
+
+- **T5 Settings inputs reset when you leave the tab** and **T6 toasts ignore the app theme**: not in the agreed order of work; unchanged.
+- **T12-T15 housekeeping** (root tsconfig checks nothing, 1.1 MB chunk, `animate-pulse-subtle` undefined, TopBar clock re-render, Playwright config path, README template text): unchanged.
+- **Casing and wording** (`ACK` vs "Acknowledge", abbreviations such as "Total Maint. Cost"), **button variants** (primary/secondary/ghost as one component), and the **Equipment Detail panel being clipped at the bottom**: not done.
+- **Clipped last column in two half-width tables** (Dashboard heat map "Vibration", Failure Analysis Pareto "Trend"): unchanged; both scroll inside their panel as at baseline.
+- **Simulator formulas** other than the baseline failures and the stray 0.9 factor: unchanged.
+- **Production domain:** see the owner-action note below; not a code issue.
+
+### Round 3 commits (after the round 2 table below)
+
+| Commit | Before | After |
+|---|---|---|
+| What-If baseline failures from the equipment data | fixed 12 | 3, same rule as the Dashboard |
+| What-If extra 0.9 factor removed | defaults showed a saving of 98 L | defaults show 0; other rows unchanged |
+| log timestamps relative to now | newest rows 7 months old | newest rows minutes old |
+| sidebar, icons | see the earlier summary | all groups open on a first visit |
+| consistent charts | 14 chart heights, overlapping ticks | 220/280 only, 0 overlaps |
+| KPI grid | each page its own grid | by tile count |
+| one currency and month format | 7 rupee spellings | 1 pattern |
+| Chronus checkbox and slider | native, black thumbs | styled in both themes |
+| quaternary text contrast | 161 of 161 elements below 4.5:1 | 0 below (lowest 4.55 light, 4.76 dark) |
+| Plant Overview right column | blank | Select equipment panel |
+| lint errors | 5 | 0 |
 
 ## Baseline (before any change)
 
@@ -293,7 +333,7 @@ Each commit has its gates (`tsc -p tsconfig.app.json`, `npm test`, `npm run buil
 | Plant Health legend | listed Forecast and PM events, neither drawn | lists what is drawn; 3 PM event lines |
 | Upcoming Maintenance cards widened the page (a regression exposed by the date fix) | page scrolled sideways (scrollX up to 374 / 600) | 0 |
 
-### Not changed yet, waiting on a decision
+### Name table and handover finding (decided and applied in round 3)
 
 **One name per page** (sidebar label, top-bar title and page heading all the same; the long forms move into the subtitle):
 
@@ -345,4 +385,4 @@ Each commit has its gates (`tsc -p tsconfig.app.json`, `npm test`, `npm run buil
 
 ## Environment note
 
-Servers started for this audit: preview on port **4180**, dev on port **5180**. A stale server from an earlier session was found on **4173** and stopped. All of them are stopped now.
+Servers started for this work: preview on port **4180**, dev on port **5180**. A stale server from an earlier session was found on **4173** and stopped. All of them are stopped now.
