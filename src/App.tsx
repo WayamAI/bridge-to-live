@@ -68,7 +68,7 @@ const AppInner = () => {
         <Route path="/equipment/detail" element={<EquipmentHealthPage equipment={data.equipment} selectedEquipmentId={selectedEquipmentId} onSelectEquipment={setSelectedEquipmentId} />} />
         <Route path="/alarms" element={<AlarmManagementPage alerts={data.alerts} onAcknowledge={data.acknowledgeAlert} onSelectEquipment={setSelectedEquipmentId} />} />
         <Route path="/energy" element={<EnergyPage energyMetrics={data.energyMetrics} />} />
-        <Route path="/handover" element={<HandoverPage handoverData={data.handoverData} connectedSystems={data.connectedSystems} plantInfo={data.plantInfo} />} />
+        <Route path="/handover" element={<HandoverPage view="handover" handoverData={data.handoverData} connectedSystems={data.connectedSystems} plantInfo={data.plantInfo} />} />
         <Route path="/failure-analysis" element={<FailureAnalysis equipment={data.equipment} />} />
         <Route path="/rul" element={<RemainingUsefulLife equipment={data.equipment} />} />
         <Route path="/predictive-maintenance" element={<PredictiveMaintenance equipment={data.equipment} />} />
@@ -86,7 +86,7 @@ const AppInner = () => {
         <Route path="/data-completeness" element={<DataCompleteness />} />
         <Route path="/iso-validator" element={<ISOValidator />} />
         <Route path="/simulator" element={<WhatIfSimulator equipment={data.equipment} />} />
-        <Route path="/data-sources" element={<HandoverPage handoverData={data.handoverData} connectedSystems={data.connectedSystems} plantInfo={data.plantInfo} />} />
+        <Route path="/data-sources" element={<HandoverPage view="systems" handoverData={data.handoverData} connectedSystems={data.connectedSystems} plantInfo={data.plantInfo} />} />
         <Route path="/data-quality" element={<DataQuality />} />
         <Route path="/settings" element={<SettingsPage />} />
       </Route>

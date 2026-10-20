@@ -7,16 +7,19 @@ import { formatNumber } from "@/lib/format";
 import { handoverReadiness } from "@/lib/plantStats";
 
 interface HandoverPageProps {
+  /** "handover": project summary and readiness scorecard (/handover). "systems": connected-systems table (/data-sources). */
+  view: "handover" | "systems";
   handoverData: HandoverItem[];
   connectedSystems: ConnectedSystem[];
   plantInfo: { name: string; operator: string; handoverTarget: string; daysRemaining: number };
 }
 
-const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPageProps) => {
+const HandoverPage = ({ view, handoverData, connectedSystems, plantInfo }: HandoverPageProps) => {
   const completedPct = handoverReadiness(handoverData);
 
   return (
     <PageHeader>
+      {view === "handover" && (<>
       {/* Project summary */}
       <Panel title="Active Handover Project">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -78,9 +81,12 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
         </div>
       </Panel>
 
-      {/* Connected systems */}
+      </>)}
+
+      {view === "systems" && (
+      /* Connected systems */
       <Panel
-        title="Connected Systems"
+        title="System Status"
         padded={false}
         action={
           <button className="type-caption inline-flex items-center gap-1 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
@@ -115,6 +121,7 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
           </table>
         </div>
       </Panel>
+      )}
     </PageHeader>
   );
 };
