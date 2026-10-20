@@ -89,7 +89,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
               <YAxis type="category" dataKey="mode" tickLine={false} axisLine={false} interval={0} {...categoryAxis} />
               <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} formatter={(v: number) => [v, "Failures"]} />
               <Bar isAnimationActive={false} dataKey="count" fill={seriesColor(0)} radius={[0, 4, 4, 0]} cursor="pointer"
-                onClick={(d: any) => setSelectedMode(selectedMode === d.mode ? null : d.mode)} />
+                onClick={(d: { mode: string }) => setSelectedMode(selectedMode === d.mode ? null : d.mode)} />
             </BarChart>
           </ChartBox>
           {/* Pareto table */}
