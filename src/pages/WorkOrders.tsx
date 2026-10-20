@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { workOrderStatus, workOrderType, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
+import { shiftIso } from "@/lib/mockDates";
 
 interface WorkOrder {
   id: string;
@@ -18,18 +19,18 @@ interface WorkOrder {
 }
 
 const WORK_ORDERS: WorkOrder[] = [
-  { id: "WO-2026-4401", tag: "COMP-A-001", description: "Replace DE bearing — predicted failure within 36 days", type: "Predictive", priority: 1, status: "In-Progress", created: "2026-03-24", due: "2026-04-08", assignee: "Rotating Equip.", cost: 8.4, hours: 16 },
-  { id: "WO-2026-4398", tag: "HEX-C-003", description: "Chemical cleaning — fouling factor exceeded threshold", type: "Predictive", priority: 1, status: "Awaiting Parts", created: "2026-03-22", due: "2026-04-05", assignee: "Static Equip.", cost: 12.8, hours: 24 },
-  { id: "WO-2026-4405", tag: "FCV-D-022", description: "Replace positioner actuator assembly", type: "Corrective", priority: 1, status: "In-Progress", created: "2026-03-28", due: "2026-04-02", assignee: "Instrumentation", cost: 14.2, hours: 8 },
-  { id: "WO-2026-4390", tag: "TURB-G-001", description: "Quarterly PM — vibration survey + oil analysis", type: "Planned PM", priority: 2, status: "Open", created: "2026-03-15", due: "2026-04-10", assignee: "Rotating Equip.", cost: 4.2, hours: 12 },
-  { id: "WO-2026-4392", tag: "MOT-E-018", description: "Thermographic survey — current imbalance investigation", type: "Predictive", priority: 2, status: "Open", created: "2026-03-18", due: "2026-04-15", assignee: "Electrical", cost: 2.1, hours: 4 },
-  { id: "WO-2026-4385", tag: "PUMP-CW-003", description: "Impeller inspection + clearance check", type: "Planned PM", priority: 3, status: "Completed", created: "2026-03-10", due: "2026-03-25", assignee: "Rotating Equip.", cost: 6.2, hours: 8 },
-  { id: "WO-2026-4380", tag: "COMP-A-001", description: "Replace lube oil filter — DP at threshold", type: "Predictive", priority: 3, status: "Completed", created: "2026-03-08", due: "2026-03-15", assignee: "Rotating Equip.", cost: 1.2, hours: 2 },
-  { id: "WO-2026-4410", tag: "AGC-B-004", description: "Fan motor bearing replacement", type: "Predictive", priority: 2, status: "Open", created: "2026-03-29", due: "2026-04-20", assignee: "Rotating Equip.", cost: 4.8, hours: 12 },
-  { id: "WO-2026-4378", tag: "SUB-E-001", description: "Install capacitor bank — power factor correction", type: "Corrective", priority: 3, status: "Open", created: "2026-03-05", due: "2026-05-15", assignee: "Electrical", cost: 22.0, hours: 40 },
-  { id: "WO-2026-4375", tag: "PUMP-B-012", description: "Annual PM — bearing replacement + alignment", type: "Planned PM", priority: 3, status: "Completed", created: "2026-02-28", due: "2026-03-15", assignee: "Rotating Equip.", cost: 3.8, hours: 6 },
-  { id: "WO-2026-4412", tag: "COMP-B-001", description: "Stage 1 quarterly vibration baseline", type: "Planned PM", priority: 3, status: "Open", created: "2026-03-30", due: "2026-04-30", assignee: "Rotating Equip.", cost: 1.5, hours: 4 },
-  { id: "WO-2026-4370", tag: "GEN-E-001", description: "Load bank test + fuel system inspection", type: "Planned PM", priority: 2, status: "Completed", created: "2026-02-20", due: "2026-03-10", assignee: "Electrical", cost: 5.4, hours: 8 },
+  { id: "WO-2026-4401", tag: "COMP-A-001", description: "Replace DE bearing — predicted failure within 36 days", type: "Predictive", priority: 1, status: "In-Progress", created: shiftIso("2026-03-24"), due: shiftIso("2026-04-08"), assignee: "Rotating Equip.", cost: 8.4, hours: 16 },
+  { id: "WO-2026-4398", tag: "HEX-C-003", description: "Chemical cleaning — fouling factor exceeded threshold", type: "Predictive", priority: 1, status: "Awaiting Parts", created: shiftIso("2026-03-22"), due: shiftIso("2026-04-05"), assignee: "Static Equip.", cost: 12.8, hours: 24 },
+  { id: "WO-2026-4405", tag: "FCV-D-022", description: "Replace positioner actuator assembly", type: "Corrective", priority: 1, status: "In-Progress", created: shiftIso("2026-03-28"), due: shiftIso("2026-04-02"), assignee: "Instrumentation", cost: 14.2, hours: 8 },
+  { id: "WO-2026-4390", tag: "TURB-G-001", description: "Quarterly PM — vibration survey + oil analysis", type: "Planned PM", priority: 2, status: "Open", created: shiftIso("2026-03-15"), due: shiftIso("2026-04-10"), assignee: "Rotating Equip.", cost: 4.2, hours: 12 },
+  { id: "WO-2026-4392", tag: "MOT-E-018", description: "Thermographic survey — current imbalance investigation", type: "Predictive", priority: 2, status: "Open", created: shiftIso("2026-03-18"), due: shiftIso("2026-04-15"), assignee: "Electrical", cost: 2.1, hours: 4 },
+  { id: "WO-2026-4385", tag: "PUMP-CW-003", description: "Impeller inspection + clearance check", type: "Planned PM", priority: 3, status: "Completed", created: shiftIso("2026-03-10"), due: shiftIso("2026-03-25"), assignee: "Rotating Equip.", cost: 6.2, hours: 8 },
+  { id: "WO-2026-4380", tag: "COMP-A-001", description: "Replace lube oil filter — DP at threshold", type: "Predictive", priority: 3, status: "Completed", created: shiftIso("2026-03-08"), due: shiftIso("2026-03-15"), assignee: "Rotating Equip.", cost: 1.2, hours: 2 },
+  { id: "WO-2026-4410", tag: "AGC-B-004", description: "Fan motor bearing replacement", type: "Predictive", priority: 2, status: "Open", created: shiftIso("2026-03-29"), due: shiftIso("2026-04-20"), assignee: "Rotating Equip.", cost: 4.8, hours: 12 },
+  { id: "WO-2026-4378", tag: "SUB-E-001", description: "Install capacitor bank — power factor correction", type: "Corrective", priority: 3, status: "Open", created: shiftIso("2026-03-05"), due: shiftIso("2026-05-15"), assignee: "Electrical", cost: 22.0, hours: 40 },
+  { id: "WO-2026-4375", tag: "PUMP-B-012", description: "Annual PM — bearing replacement + alignment", type: "Planned PM", priority: 3, status: "Completed", created: shiftIso("2026-02-28"), due: shiftIso("2026-03-15"), assignee: "Rotating Equip.", cost: 3.8, hours: 6 },
+  { id: "WO-2026-4412", tag: "COMP-B-001", description: "Stage 1 quarterly vibration baseline", type: "Planned PM", priority: 3, status: "Open", created: shiftIso("2026-03-30"), due: shiftIso("2026-04-30"), assignee: "Rotating Equip.", cost: 1.5, hours: 4 },
+  { id: "WO-2026-4370", tag: "GEN-E-001", description: "Load bank test + fuel system inspection", type: "Planned PM", priority: 2, status: "Completed", created: shiftIso("2026-02-20"), due: shiftIso("2026-03-10"), assignee: "Electrical", cost: 5.4, hours: 8 },
 ];
 
 const WorkOrders = () => {
