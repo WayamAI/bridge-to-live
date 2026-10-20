@@ -6,6 +6,7 @@ import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, Panel } from "@/components/ui/primitives";
 import { formatNumber, formatYearMonth } from "@/lib/format";
+import { createRng } from "@/lib/seeded";
 
 interface Props {
   equipment: Equipment[];
@@ -36,18 +37,19 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
     [equipment]
   );
 
-  const fleetAge = useMemo(() =>
-    Array.from({ length: 12 }, (_, i) => {
+  const fleetAge = useMemo(() => {
+    const rnd = createRng(1203);
+    return Array.from({ length: 12 }, (_, i) => {
       const month = new Date(2025, 4 + i, 1);
       return {
         month: formatYearMonth(month),
-        young: Math.round(18 - i * 0.3 + Math.random() * 2),
-        mid: Math.round(14 + i * 0.2 + Math.random()),
-        old: Math.round(8 + i * 0.4 + Math.random()),
-        failures: Math.round(2 + i * 0.3 + Math.random() * 2),
+        young: Math.round(18 - i * 0.3 + rnd() * 2),
+        mid: Math.round(14 + i * 0.2 + rnd()),
+        old: Math.round(8 + i * 0.4 + rnd()),
+        failures: Math.round(2 + i * 0.3 + rnd() * 2),
       };
-    }), []
-  );
+    });
+  }, []);
 
   const getFailureProb = (rul: number) => rul < 15 ? 92 : rul < 30 ? 74 : rul < 60 ? 48 : 22;
   const getDominantMode = (cls: string) => {

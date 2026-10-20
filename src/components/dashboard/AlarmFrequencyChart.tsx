@@ -4,17 +4,19 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
 import { formatDate } from "@/lib/format";
+import { createRng } from "@/lib/seeded";
 
 const AlarmFrequencyChart = () => {
   const data = useMemo(() => {
     const points = [];
+    const rnd = createRng(2901);
     for (let i = 29; i >= 0; i--) {
       const date = new Date(Date.now() - i * 86400000);
       points.push({
         date: formatDate(date),
-        Critical: Math.floor(Math.random() * 8 + 2),
-        Major: Math.floor(Math.random() * 15 + 5),
-        Minor: Math.floor(Math.random() * 30 + 10),
+        Critical: Math.floor(rnd() * 8 + 2),
+        Major: Math.floor(rnd() * 15 + 5),
+        Minor: Math.floor(rnd() * 30 + 10),
       });
     }
     return points;

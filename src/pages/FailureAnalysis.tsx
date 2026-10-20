@@ -6,6 +6,7 @@ import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { formatNumber } from "@/lib/format";
 import { activatable, activatableFocus } from "@/lib/a11y";
+import { createRng } from "@/lib/seeded";
 
 const FAILURE_MODES = [
   { mode: "Bearing failure", count: 84, pct: 34, downtime: 624, cost: 312, mtbf: 11200, trend: "↑" },
@@ -16,12 +17,14 @@ const FAILURE_MODES = [
   { mode: "Other", count: 15, pct: 6, downtime: 120, cost: 48, mtbf: 28000, trend: "→" },
 ];
 
+const bandRnd = createRng(1500);
+
 const WEIBULL_DATA = Array.from({ length: 50 }, (_, i) => {
   const hours = i * 500;
   const beta = 2.1, eta = 18000;
   const survival = Math.exp(-Math.pow(hours / eta, beta)) * 100;
-  const upper = Math.min(100, survival + 5 + Math.random() * 3);
-  const lower = Math.max(0, survival - 5 - Math.random() * 3);
+  const upper = Math.min(100, survival + 5 + bandRnd() * 3);
+  const lower = Math.max(0, survival - 5 - bandRnd() * 3);
   return { hours, survival: Math.round(survival * 10) / 10, upper: Math.round(upper * 10) / 10, lower: Math.round(lower * 10) / 10 };
 });
 

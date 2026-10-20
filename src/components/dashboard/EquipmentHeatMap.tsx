@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Panel } from "@/components/ui/primitives";
 import type { Equipment } from "@/hooks/usePlantData";
 import { activatable, activatableFocus } from "@/lib/a11y";
+import { createRng } from "@/lib/seeded";
 
 interface EquipmentHeatMapProps {
   equipment: Equipment[];
@@ -38,6 +39,7 @@ function getHealthTextColor(score: number): string {
 
 const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
   const heatData = useMemo(() => {
+    const rnd = createRng(4711); // fixed seed: the sub-scores are the same on every load and every sensor tick
     return PROCESS_UNITS_MAP.map(pu => {
       const puEquip = equipment.filter(e => e.processUnit === pu);
       if (puEquip.length === 0) return null;
@@ -46,7 +48,7 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
       // Generate dimensional scores based on sensors
       const dimensions = HEALTH_DIMENSIONS.map(dim => {
         if (dim === "Overall") return avgHealth;
-        const base = avgHealth + (Math.random() - 0.5) * 20;
+        const base = avgHealth + (rnd() - 0.5) * 20;
         return Math.max(30, Math.min(100, Math.round(base)));
       });
 

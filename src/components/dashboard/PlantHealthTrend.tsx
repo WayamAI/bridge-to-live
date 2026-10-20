@@ -3,14 +3,16 @@ import { Panel } from "@/components/ui/primitives";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { formatDate } from "@/lib/format";
+import { createRng } from "@/lib/seeded";
 
 const PlantHealthTrend = () => {
   const data = useMemo(() => {
     const points = [];
+    const rnd = createRng(9001);
     let health = 91;
     const now = Date.now();
     for (let i = 90; i >= 0; i--) {
-      health += (Math.random() - 0.52) * 1.2;
+      health += (rnd() - 0.52) * 1.2;
       health = Math.max(78, Math.min(96, health));
       const date = new Date(now - i * 86400000);
       points.push({

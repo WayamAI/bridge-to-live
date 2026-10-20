@@ -7,6 +7,7 @@ import { EmptyState, KpiTile, Panel, ToneStatus, Unit } from "@/components/ui/pr
 import { complexityTone, opportunityStatus, workflowTone, toneOf } from "@/lib/status";
 import { formatNumber, formatMonthName } from "@/lib/format";
 import { activatable, activatableFocus } from "@/lib/a11y";
+import { createRng } from "@/lib/seeded";
 
 interface Opportunity {
   id: string;
@@ -31,6 +32,10 @@ const OPPORTUNITIES: Opportunity[] = [
   { id: "o6", opportunity: "Compressed air leak detection and repair program", category: "Leak/loss reduction", system: "Instrument Air", action: "Leak survey + repair", annualSaving: 22, complexity: "Low", payback: "2 months", status: "Under Review", baselineKwh: 18200, projectedKwh: 14800 },
 ];
 
+// Fixed month-to-month noise for the projection chart, so toggling an opportunity does not redraw the whole line.
+const projectionRnd = createRng(1201);
+const PROJECTION_NOISE = Array.from({ length: 12 }, () => ({ baseline: projectionRnd() * 200, projected: projectionRnd() * 200 }));
+
 const LoadOptimisation = () => {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const totalSaving = OPPORTUNITIES.reduce((s, o) => s + o.annualSaving, 0);
@@ -38,8 +43,8 @@ const LoadOptimisation = () => {
 
   const projectionData = Array.from({ length: 12 }, (_, i) => ({
     month: formatMonthName(new Date(2026, 3 + i)),
-    baseline: Math.round(4200 + Math.random() * 200),
-    projected: Math.round(4200 - (selectedSaving / 12) * 10 + Math.random() * 200),
+    baseline: Math.round(4200 + PROJECTION_NOISE[i].baseline),
+    projected: Math.round(4200 - (selectedSaving / 12) * 10 + PROJECTION_NOISE[i].projected),
   }));
 
   const toggle = (id: string) => {
