@@ -23,22 +23,29 @@ describe("Sidebar", () => {
     expect(navGroups.flatMap((g) => g.items)).toHaveLength(26);
   });
 
-  it("opens the group holding the current page and closes the rest", () => {
+  it("opens every group on a first visit", () => {
     setup("/alarms");
-    expect(screen.getByRole("button", { name: "Alarms" })).toHaveAttribute("aria-expanded", "true");
+    const groups = ["Asset Health", "Maintenance", "Energy", "Alarms", "OT Security", "Handover & Data"];
+    groups.forEach((name) => expect(screen.getByRole("button", { name })).toHaveAttribute("aria-expanded", "true"));
+  });
+
+  it("keeps the remembered choice, but always opens the group holding the current page", () => {
+    window.localStorage.setItem(NAV_GROUPS_KEY, JSON.stringify({ Energy: false, Alarms: false }));
+    setup("/alarms");
     expect(screen.getByRole("button", { name: "Energy" })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: "Alarms" })).toHaveAttribute("aria-expanded", "true");
   });
 
   it("toggles a group and remembers the choice in localStorage", () => {
     setup("/alarms");
     act(() => screen.getByRole("button", { name: "Energy" }).click());
-    expect(screen.getByRole("button", { name: "Energy" })).toHaveAttribute("aria-expanded", "true");
-    expect(JSON.parse(window.localStorage.getItem(NAV_GROUPS_KEY) as string).Energy).toBe(true);
+    expect(screen.getByRole("button", { name: "Energy" })).toHaveAttribute("aria-expanded", "false");
+    expect(JSON.parse(window.localStorage.getItem(NAV_GROUPS_KEY) as string).Energy).toBe(false);
   });
 
   it("restores the remembered state", () => {
-    window.localStorage.setItem(NAV_GROUPS_KEY, JSON.stringify({ Maintenance: true }));
+    window.localStorage.setItem(NAV_GROUPS_KEY, JSON.stringify({ Maintenance: false }));
     setup("/alarms");
-    expect(screen.getByRole("button", { name: "Maintenance" })).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("button", { name: "Maintenance" })).toHaveAttribute("aria-expanded", "false");
   });
 });

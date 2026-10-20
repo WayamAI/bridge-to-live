@@ -29,11 +29,11 @@ export function writeOpenGroups(open: OpenGroups) {
 }
 
 /**
- * Open state for every group: the stored choice where there is one, otherwise open only for the group the viewer is
- * in. The group holding the current page is always open, so the active item is never hidden on arrival.
+ * Open state for every group: the stored choice where there is one, otherwise open (a first visit shows everything).
+ * The group holding the current page is always open, so the active item is never hidden on arrival.
  */
 export function initialOpenGroups(sections: string[], activeSection: string, stored: OpenGroups | null): OpenGroups {
   const out: OpenGroups = {};
-  for (const s of sections) out[s] = s === activeSection ? true : stored?.[s] ?? false;
+  for (const s of sections) out[s] = s === activeSection ? true : stored?.[s] ?? true;
   return out;
 }

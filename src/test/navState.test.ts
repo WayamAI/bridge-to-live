@@ -33,11 +33,12 @@ describe("nav group state", () => {
 
   describe("initialOpenGroups", () => {
     const sections = ["A", "B", "C"];
-    it("opens only the viewer's group when nothing is stored", () => {
-      expect(initialOpenGroups(sections, "B", null)).toEqual({ A: false, B: true, C: false });
+    it("opens every group on a first visit", () => {
+      expect(initialOpenGroups(sections, "B", null)).toEqual({ A: true, B: true, C: true });
     });
     it("uses the stored choice and still opens the active group", () => {
       expect(initialOpenGroups(sections, "B", { A: true, B: false, C: false })).toEqual({ A: true, B: true, C: false });
+      expect(initialOpenGroups(sections, "A", { A: false })).toEqual({ A: true, B: true, C: true }); // B and C have no stored choice yet
     });
   });
 });
