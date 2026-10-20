@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
 import { icons } from "@/lib/icons";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,6 +18,10 @@ const Login = () => {
   const [error, setError] = useState("");
   const { isAuthenticated, login } = useAuth();
   const location = useLocation();
+
+  useEffect(() => {
+    document.title = "Sign in · PlantMind";
+  }, []);
 
   const from = (location.state as { from?: string } | null)?.from ?? "/";
 

@@ -33,7 +33,7 @@ const DataQuality = () => {
   const healthy = DATA_SOURCES.filter(d => d.status === "Healthy").length;
 
   return (
-    <PageHeader title="Data Quality Monitor" subtitle="Real-time monitoring of data source health, freshness and ingestion quality">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

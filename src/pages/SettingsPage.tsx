@@ -39,7 +39,7 @@ const SettingsPage = () => {
   ];
 
   return (
-    <PageHeader title="Settings & Configuration" subtitle="System configuration, thresholds, alert rules and model parameters">
+    <PageHeader>
 
       {/* Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">

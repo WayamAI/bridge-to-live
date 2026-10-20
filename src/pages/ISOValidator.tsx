@@ -44,7 +44,7 @@ const ISOValidator = () => {
   const filtered = filterStatus === "all" ? SAMPLE_ERRORS : SAMPLE_ERRORS.filter(e => e.status === filterStatus);
 
   return (
-    <PageHeader title="ISO 15926 / CFIHOS Validator" subtitle="Automated validation of engineering data package against handover standards">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

@@ -40,7 +40,7 @@ const CONNECTIONS = [
 ];
 
 const NetworkSegmentation = () => (
-  <PageHeader title="Network Segmentation Status" subtitle="Purdue model: OT network zone visualization and inter-zone connection monitoring">
+  <PageHeader>
 
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {[

@@ -54,7 +54,7 @@ const LoadOptimisation = () => {
   };
 
   return (
-    <PageHeader title="Load Optimisation" subtitle="Energy cost reduction opportunities ranked by annual value">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

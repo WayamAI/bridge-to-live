@@ -43,7 +43,7 @@ const AlarmRationalisation = () => {
   const reviewed = total - 453;
 
   return (
-    <PageHeader title="Alarm Rationalisation" subtitle="Systematic review of alarm setpoints per ISA-18.2 / IEC 62682 standards">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

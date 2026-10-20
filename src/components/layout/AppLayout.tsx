@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
+import { locate } from "./nav";
 import type { Alert, UserRole } from "@/hooks/usePlantData";
 
 interface AppLayoutProps {
@@ -16,6 +17,11 @@ const AppLayout = ({ alerts, userRole, onRoleChange, breadcrumb }: AppLayoutProp
   const [expanded, setExpanded] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
+
+  // Document title: the page's name from nav.ts, then the product.
+  useEffect(() => {
+    document.title = `${locate(pathname).title} · PlantMind`;
+  }, [pathname]);
 
   // The off-canvas sidebar closes after navigating.
   useEffect(() => setMobileOpen(false), [pathname]);

@@ -75,8 +75,6 @@ const OTAssetRegistry = () => {
 
   return (
     <PageHeader
-      title="OT Asset Registry"
-      subtitle="Comprehensive inventory of all OT assets: IEC 62443 asset management"
       actions={
         <>
           <SearchField value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets…" aria-label="Search assets" />

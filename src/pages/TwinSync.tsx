@@ -35,8 +35,6 @@ const TwinSync = () => {
 
   return (
     <PageHeader
-      title="Engineering Twin Sync"
-      subtitle="Synchronization status between Hexagon SmartPlant engineering twin and PlantMind operational twin"
       actions={
         <button
           onClick={handleSync}

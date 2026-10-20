@@ -49,7 +49,7 @@ const ComplianceDashboard = () => {
   const totalGaps = DOMAINS.reduce((s, d) => s + d.gaps.length, 0);
 
   return (
-    <PageHeader title="Compliance Dashboard" subtitle="IEC 62443 Industrial Cybersecurity Standard: compliance assessment">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

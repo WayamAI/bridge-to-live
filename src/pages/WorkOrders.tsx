@@ -44,8 +44,6 @@ const WorkOrders = () => {
 
   return (
     <PageHeader
-      title="Work Order Integration"
-      subtitle="Integrated view of all maintenance work orders in Maximo CMMS"
       actions={
         <div className="flex flex-wrap gap-2">
           {["all", "Open", "In-Progress", "Awaiting Parts", "Completed"].map(f => (

@@ -37,7 +37,7 @@ const Sustainability = () => {
   const onTrack = ytdEmissions < target;
 
   return (
-    <PageHeader title="Sustainability & Emissions" subtitle="Environmental performance tracking: carbon emissions, water usage and waste management">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

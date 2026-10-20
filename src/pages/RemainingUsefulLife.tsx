@@ -59,7 +59,7 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
   };
 
   return (
-    <PageHeader title="Remaining Useful Life (RUL)" subtitle="Predicted remaining operating life across the equipment fleet">
+    <PageHeader>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* RUL Distribution */}

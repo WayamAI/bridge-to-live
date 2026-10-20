@@ -37,7 +37,7 @@ const MaintenanceCost = () => {
   const variance = ((budgetYTD - totalYTD) / budgetYTD * 100).toFixed(1);
 
   return (
-    <PageHeader title="Maintenance Cost Tracker" subtitle="Budget tracking and cost allocation across maintenance activities">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

@@ -77,8 +77,6 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
 
   return (
     <PageHeader
-      title="Dashboard"
-      subtitle="Plant health, alarms and equipment status at a glance"
       actions={quickActions.map((action) => {
         const Icon = action.icon;
         return (

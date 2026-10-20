@@ -51,7 +51,7 @@ const AlarmAnalytics = ({ alerts }: Props) => {
   const highAlarmPct = "12.4%";
 
   return (
-    <PageHeader title="Alarm History & Analytics" subtitle="Historical alarm performance analysis and chattering alarm identification">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

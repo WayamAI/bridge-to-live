@@ -1,8 +1,6 @@
 import { useState, useMemo } from "react";
 import { EmptyState, EquipmentStatusLabel, Panel, PillSelect, SearchField } from "@/components/ui/primitives";
 import PageHeader from "@/components/layout/PageHeader";
-import { locate } from "@/components/layout/nav";
-import { useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import type { Equipment } from "@/hooks/usePlantData";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
@@ -24,7 +22,6 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
   const [filterUnit, setFilterUnit] = useState<string>("All");
   const [filterStatus, setFilterStatus] = useState<string>("All");
   const [search, setSearch] = useState("");
-  const { pathname } = useLocation();
 
   const selectedEquipment = equipment.find(e => e.id === selectedEquipmentId);
 
@@ -72,8 +69,6 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
 
   return (
     <PageHeader
-      title={locate(pathname).title}
-      subtitle="Equipment status, health and remaining useful life across the plant"
       actions={
         <>
           <SearchField

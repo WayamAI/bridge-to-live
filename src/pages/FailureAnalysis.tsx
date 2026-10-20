@@ -65,7 +65,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
     : SCATTER_POINTS;
 
   return (
-    <PageHeader title="Failure Analysis" subtitle="Statistical failure analysis across equipment classes and systemic issue identification">
+    <PageHeader>
       {/* Quick stats */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
         <KpiTile label="Total Failures (24 mo)" value="247" />

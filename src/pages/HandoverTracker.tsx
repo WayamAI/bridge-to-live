@@ -1,8 +1,6 @@
 import type { HandoverItem, ConnectedSystem } from "@/hooks/usePlantData";
 import { icons } from "@/lib/icons";
-import { useLocation } from "react-router-dom";
 import PageHeader from "@/components/layout/PageHeader";
-import { locate } from "@/components/layout/nav";
 import { Panel, ToneStatus, Unit } from "@/components/ui/primitives";
 import { connectedSystemTone, handoverItemStatus, workflowTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
@@ -15,11 +13,10 @@ interface HandoverPageProps {
 }
 
 const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPageProps) => {
-  const { pathname } = useLocation();
   const completedPct = handoverReadiness(handoverData);
 
   return (
-    <PageHeader title={locate(pathname).title} subtitle="Handover readiness against target and the status of connected systems">
+    <PageHeader>
       {/* Project summary */}
       <Panel title="Active Handover Project">
         <div className="flex flex-wrap items-center justify-between gap-4">

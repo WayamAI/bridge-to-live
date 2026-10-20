@@ -55,7 +55,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
   };
 
   return (
-    <PageHeader title="Predictive Maintenance" subtitle="AI-generated maintenance recommendations ranked by risk and value">
+    <PageHeader>
 
       {/* Summary Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3">

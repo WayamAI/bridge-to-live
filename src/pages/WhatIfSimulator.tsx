@@ -71,7 +71,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
   ];
 
   return (
-    <PageHeader title="What-If Simulator" subtitle="Model operational scenarios and compare impact against current baseline">
+    <PageHeader>
 
       <div className="grid grid-cols-1 lg:grid-cols-[400px_1fr] gap-4">
         {/* Controls */}

@@ -1,10 +1,12 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+import { locate } from "@/components/layout/nav";
 
 const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
+    document.title = `${locate(location.pathname).title} · PlantMind`;
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
   }, [location.pathname]);
 

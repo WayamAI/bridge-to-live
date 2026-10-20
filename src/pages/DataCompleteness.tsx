@@ -24,7 +24,7 @@ const DataCompleteness = () => {
   const atRisk = COMPLETENESS_DATA.filter(d => d.pct < 80).length;
 
   return (
-    <PageHeader title="Data Completeness Monitor" subtitle="Tracking data completeness across all engineering and operational data categories">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

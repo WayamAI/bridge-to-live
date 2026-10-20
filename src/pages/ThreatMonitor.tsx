@@ -31,7 +31,7 @@ const ThreatMonitor = () => {
   const active = THREAT_EVENTS.filter(e => e.status === "Investigating" || e.status === "Contained").length;
 
   return (
-    <PageHeader title="Threat Monitor" subtitle="OT security event log with MITRE ATT&CK for ICS framework mapping">
+    <PageHeader>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[

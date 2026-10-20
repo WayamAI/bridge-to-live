@@ -21,8 +21,6 @@ const optimisationOpps = [
 const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
   return (
     <PageHeader
-      title="Energy Consumption"
-      subtitle="Utility consumption against setpoints, AI-detected anomalies and optimisation opportunities"
     >
       {/* Metric tiles */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">

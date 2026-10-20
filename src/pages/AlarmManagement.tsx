@@ -38,8 +38,6 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
 
   return (
     <PageHeader
-      title="Active Alarms"
-      subtitle="Review, filter and acknowledge plant alarms"
       actions={
         <>
           <PillSelect value={filterSeverity} onChange={(e) => setFilterSeverity(e.target.value)} aria-label="Filter by severity">

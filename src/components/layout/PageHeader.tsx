@@ -1,18 +1,19 @@
 import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
 import { iconForPath, iconSize, markForPath } from "@/lib/icons";
+import { locate } from "./nav";
 
 interface Props {
-  title: string;
-  subtitle?: string;
   actions?: ReactNode;
   children: ReactNode;
 }
 
 // Chronus page pattern: a header with a hairline underneath, then a padded body.
 // The shell's sr-only h1 (TopBar) is the page's only h1, so the visible title is an h2.
-export const PageHeader = ({ title, subtitle, actions, children }: Props) => {
+export const PageHeader = ({ actions, children }: Props) => {
   const { pathname } = useLocation();
+  // The page's name and description come from nav.ts, the same source as the sidebar, the top bar and the document title.
+  const { title, description: subtitle } = locate(pathname);
   const PageIcon = iconForPath(pathname);
   const mark = markForPath(pathname);
   return (
