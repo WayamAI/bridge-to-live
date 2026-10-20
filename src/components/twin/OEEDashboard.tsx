@@ -30,16 +30,11 @@ const OEEGauge = ({ label, value, color }: OEEGaugeProps) => {
 const OEEDashboard = ({ oee }: { oee: OEEMetrics }) => (
   <Panel title="Overall Equipment Effectiveness">
     <div className="flex flex-wrap items-center justify-around gap-4">
-      {/* The gauge colour is fixed per gauge (it does not change with the value), so it is a series colour, not a status. */}
+      {/* The gauge colour is fixed per gauge (it does not change with the value), so it is a series colour, not a status. Overall OEE is a fourth gauge of the same kind. */}
       <OEEGauge label="Availability" value={oee.availability} color={seriesColor(0)} />
       <OEEGauge label="Performance" value={oee.performance} color={seriesColor(0)} />
       <OEEGauge label="Quality" value={oee.quality} color={seriesColor(0)} />
-      <div className="flex flex-col items-center">
-        <div className="flex h-20 w-20 items-center justify-center rounded-full border-4 border-foreground">
-          <span className="type-display-base tabular text-foreground">{oee.overall}<Unit>%</Unit></span>
-        </div>
-        <span className="type-label-sm mt-1 text-foreground">OEE</span>
-      </div>
+      <OEEGauge label="OEE" value={oee.overall} color={seriesColor(0)} />
     </div>
   </Panel>
 );
