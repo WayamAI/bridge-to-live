@@ -32,8 +32,8 @@ const DataCompleteness = () => {
 
       <KpiGrid>
         {[
-          { label: "Overall Completeness", icon: kpi.completeness, value: `${overall}%`, color: overall >= 90 ? "" : "text-warning" },
-          { label: "Categories Tracked", icon: kpi.categories, value: COMPLETENESS_DATA.length.toString() },
+          { label: "Overall completeness", icon: kpi.completeness, value: `${overall}%`, color: overall >= 90 ? "" : "text-warning" },
+          { label: "Categories tracked", icon: kpi.categories, value: COMPLETENESS_DATA.length.toString() },
           { label: "At 100%", icon: kpi.ok, value: COMPLETENESS_DATA.filter(d => d.pct === 100).length.toString() },
           { label: "Below 80%", icon: kpi.below, value: atRisk.toString(), color: atRisk > 0 ? "text-error" : "" },
         ].map(s => (
@@ -60,7 +60,7 @@ const DataCompleteness = () => {
             <thead>
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total Required</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total required</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Complete</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Remaining</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Completeness</th>

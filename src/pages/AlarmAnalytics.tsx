@@ -58,10 +58,10 @@ const AlarmAnalytics = ({ alerts }: Props) => {
 
       <KpiGrid>
         {[
-          { label: "Total Alarms Today", icon: kpi.count, value: totalToday.toString() },
-          { label: "Avg Alarm Rate", icon: kpi.alarmRate, value: `${avgRate}/hr` },
-          { label: "Avg Ack Time", icon: kpi.duration, value: avgAckTime },
-          { label: "Time in High-Alarm State", icon: kpi.alarmState, value: highAlarmPct },
+          { label: "Total alarms today", icon: kpi.count, value: totalToday.toString() },
+          { label: "Average alarm rate", icon: kpi.alarmRate, value: `${avgRate}/hr` },
+          { label: "Average acknowledgement time", icon: kpi.duration, value: avgAckTime },
+          { label: "Time in high-alarm state", icon: kpi.alarmState, value: highAlarmPct },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
@@ -88,10 +88,10 @@ const AlarmAnalytics = ({ alerts }: Props) => {
         </Panel>
 
         {/* 30-Day Trend */}
-        <Panel title="30-Day Alarm Trend + Avg Acknowledgment Time">
+        <Panel title="30-Day Alarm Trend + Average Acknowledgement Time">
             <ChartLegend items={[
               { label: "Total alarms (left)", color: seriesColor(0), kind: "line" },
-              { label: "Avg ack time, minutes (right)", color: seriesColor(1), kind: "line" },
+              { label: "Average acknowledgement time, minutes (right)", color: seriesColor(1), kind: "line" },
             ]} />
             <ChartBox height="standard" label="Alarms per day and average acknowledgement time, last 30 days">
               <LineChart data={DAILY_TREND} margin={{ right: 20, left: 0 }}>
@@ -99,8 +99,8 @@ const AlarmAnalytics = ({ alerts }: Props) => {
                 <YAxis yAxisId="left" tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <YAxis yAxisId="right" orientation="right" tick={axisTick} tickLine={false} axisLine={false} tickFormatter={(v: number) => `${v}m`} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-                <Line isAnimationActive={false} yAxisId="left" type="monotone" dataKey="total" stroke={seriesColor(0)} strokeWidth={2} dot={false} name="Total Alarms" />
-                <Line isAnimationActive={false} yAxisId="right" type="monotone" dataKey="ackTime" stroke={seriesColor(1)} strokeWidth={2} dot={false} name="Avg Ack Time (min)" />
+                <Line isAnimationActive={false} yAxisId="left" type="monotone" dataKey="total" stroke={seriesColor(0)} strokeWidth={2} dot={false} name="Total alarms" />
+                <Line isAnimationActive={false} yAxisId="right" type="monotone" dataKey="ackTime" stroke={seriesColor(1)} strokeWidth={2} dot={false} name="Average acknowledgement time (min)" />
               </LineChart>
             </ChartBox>
         </Panel>
@@ -117,7 +117,7 @@ const AlarmAnalytics = ({ alerts }: Props) => {
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Activations (7d)</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Avg Duration</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Average duration</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Classification</th>
               </tr>
             </thead>

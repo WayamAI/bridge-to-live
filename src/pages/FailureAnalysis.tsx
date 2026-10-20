@@ -72,12 +72,12 @@ const FailureAnalysis = ({ equipment }: Props) => {
     <PageHeader>
       {/* Quick stats */}
       <KpiGrid>
-        <KpiTile icon={kpi.failures} label="Total Failures (24 mo)" value="247" />
-        <KpiTile icon={kpi.downtime} label="Unplanned Downtime" value="1,842" unit="hr" />
-        <KpiTile icon={kpi.cost} label="Total Maint. Cost" value={formatRupees(874)} />
-        <KpiTile icon={kpi.mtbf} label="Avg MTBF (Fleet)" value="14,200" unit="hr" />
-        <KpiTile icon={kpi.trend} label="MTBF Trend" value="−8.3" unit="%" valueClassName="text-warning" />
-        <KpiTile icon={kpi.mostFailing} label="Most Failure-Prone" value="FCV-D-022" hint="14 failures · 5.7% of fleet" valueClassName="type-display-lg" />
+        <KpiTile icon={kpi.failures} label="Total failures (24 months)" value="247" />
+        <KpiTile icon={kpi.downtime} label="Unplanned downtime" value="1,842" unit="hr" />
+        <KpiTile icon={kpi.cost} label="Total maintenance cost" value={formatRupees(874)} />
+        <KpiTile icon={kpi.mtbf} label="Average MTBF (fleet)" value="14,200" unit="hr" />
+        <KpiTile icon={kpi.trend} label="MTBF trend" value="−8.3" unit="%" valueClassName="text-warning" />
+        <KpiTile icon={kpi.mostFailing} label="Most failure-prone" value="FCV-D-022" hint="14 failures · 5.7% of fleet" valueClassName="type-display-lg" />
       </KpiGrid>
 
       {/* Charts row */}
@@ -97,7 +97,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
             <table className="w-full type-body-sm">
               <thead>
                 <tr className="border-b border-hairline">
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Failure Mode</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Failure mode</th>
                   <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Count</th>
                   <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Downtime (hr)</th>
                   <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Cost (₹L)</th>
@@ -138,12 +138,12 @@ const FailureAnalysis = ({ equipment }: Props) => {
           </ChartBox>
           <div className="mt-3 grid grid-cols-2 gap-3">
             <div className="rounded-lg border border-hairline bg-raised p-3">
-              <p className="type-eyebrow text-quaternary">Shape Parameter (β)</p>
+              <p className="type-eyebrow text-quaternary">Shape parameter (β)</p>
               <p className="type-display-lg tabular mt-1 text-foreground">2.1</p>
               <p className="type-caption mt-0.5 text-quaternary">Wear-out failure pattern: failures accelerate with age</p>
             </div>
             <div className="rounded-lg border border-hairline bg-raised p-3">
-              <p className="type-eyebrow text-quaternary">Scale Parameter (η)</p>
+              <p className="type-eyebrow text-quaternary">Scale parameter (η)</p>
               <p className="type-display-lg tabular mt-1 text-foreground">18,000<Unit>hr</Unit></p>
               <p className="type-caption mt-0.5 text-quaternary">63.2% of units fail by this point</p>
             </div>
@@ -167,9 +167,9 @@ const FailureAnalysis = ({ equipment }: Props) => {
       >
         <ChartBox height="standard" label="Operating hours at failure over time">
           <ScatterChart margin={{ top: 12, left: 8, right: 24, bottom: 4 }}>
-            <XAxis tickMargin={8} height={AXIS_TITLE_HEIGHT} dataKey="hours" name="Operating Hours" type="number" domain={[0, "dataMax"]} tickCount={7} tickFormatter={(v: number) => formatNumber(v)} tick={axisTick} tickLine={false} axisLine={false} label={axisTitle("Operating hours at failure")} />
+            <XAxis tickMargin={8} height={AXIS_TITLE_HEIGHT} dataKey="hours" name="Operating hours" type="number" domain={[0, "dataMax"]} tickCount={7} tickFormatter={(v: number) => formatNumber(v)} tick={axisTick} tickLine={false} axisLine={false} label={axisTitle("Operating hours at failure")} />
             <YAxis dataKey="t" name="Date" type="number" domain={["dataMin - 2592000000", "dataMax + 2592000000"]} tickCount={5} tickFormatter={(v: number) => formatMonthYear(v)} tick={axisTick} tickLine={false} axisLine={false} width={56} />
-            <ZAxis dataKey="cost" range={[40, 400]} name="Repair Cost (₹L)" />
+            <ZAxis dataKey="cost" range={[40, 400]} name="Repair cost (₹L)" />
             <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} cursor={{ strokeDasharray: "3 3" }}
               formatter={(val: number, name: string) => [name === "Repair Cost (₹L)" ? formatRupees(val) : name === "Date" ? formatMonthYear(val) : formatNumber(val), name]} />
             <Scatter isAnimationActive={false} data={filteredScatter} fillOpacity={0.85}>

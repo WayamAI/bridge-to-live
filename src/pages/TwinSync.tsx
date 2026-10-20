@@ -50,9 +50,9 @@ const TwinSync = () => {
 
       <KpiGrid>
         {[
-          { label: "Last Sync", icon: kpi.time, value: "6 days ago" },
-          { label: "Records Synced", icon: kpi.records, value: "240,412" },
-          { label: "Sync Errors", icon: kpi.error, value: "2", color: "text-warning" },
+          { label: "Last sync", icon: kpi.time, value: "6 days ago" },
+          { label: "Records synced", icon: kpi.records, value: "240,412" },
+          { label: "Sync errors", icon: kpi.error, value: "2", color: "text-warning" },
           { label: "Coverage", icon: kpi.percent, value: "99.99%" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
@@ -66,10 +66,10 @@ const TwinSync = () => {
             <thead>
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source System</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total Records</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source system</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total records</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Synced</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Delta (Last Sync)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Delta (last sync)</th>
               </tr>
             </thead>
             <tbody>

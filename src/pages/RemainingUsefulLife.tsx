@@ -98,7 +98,7 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
                 <Area isAnimationActive={false} type="monotone" dataKey="young" stackId="1" fill={toneChart.success} fillOpacity={0.6} stroke={toneChart.success} name="<5k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="mid" stackId="1" fill={toneChart.warning} fillOpacity={0.6} stroke={toneChart.warning} name="5k–15k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="old" stackId="1" fill={toneChart.error} fillOpacity={0.6} stroke={toneChart.error} name=">15k hr" />
-                <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke={seriesColor(0)} strokeWidth={2} dot={{ r: 3 }} name="Monthly Failures" />
+                <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke={seriesColor(0)} strokeWidth={2} dot={{ r: 3 }} name="Monthly failures" />
               </ComposedChart>
             </ChartBox>
         </Panel>
@@ -113,12 +113,12 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Class</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Process Unit</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Operating Hours</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Process unit</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Operating hours</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">RUL (days)</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Failure Prob. (90d)</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Dominant Failure Mode</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Recommended Action</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Failure probability (90d)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Dominant failure mode</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Recommended action</th>
               </tr>
             </thead>
             <tbody>

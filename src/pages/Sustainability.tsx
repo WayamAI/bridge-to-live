@@ -43,10 +43,10 @@ const Sustainability = () => {
 
       <KpiGrid>
         {[
-          { label: "YTD CO₂e Emissions", icon: kpi.emissions, value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "" : "text-warning" },
-          { label: "Annual Target", icon: kpi.target, value: `${(target / 1000).toFixed(0)}k T` },
-          { label: "Flaring Reduction", icon: kpi.gas, value: "−24%" },
-          { label: "Water Recycling Rate", icon: kpi.water, value: "32%" },
+          { label: "Year-to-date CO₂e emissions", icon: kpi.emissions, value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "" : "text-warning" },
+          { label: "Annual target", icon: kpi.target, value: `${(target / 1000).toFixed(0)}k T` },
+          { label: "Flaring reduction", icon: kpi.gas, value: "−24%" },
+          { label: "Water recycling rate", icon: kpi.water, value: "32%" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
@@ -56,8 +56,8 @@ const Sustainability = () => {
         {/* Monthly Emissions */}
         <Panel title="Monthly GHG Emissions (T CO₂e)" className="lg:col-span-2">
             <ChartLegend items={[
-              { label: "Scope 1 · Direct", color: seriesColor(0) },
-              { label: "Scope 2 · Grid", color: seriesColor(1) },
+              { label: "Scope 1 · direct", color: seriesColor(0) },
+              { label: "Scope 2 · grid", color: seriesColor(1) },
               { label: "Flaring", color: seriesColor(5) },
             ]} />
             <ChartBox height="tall" label="Monthly greenhouse gas emissions by source">
@@ -65,8 +65,8 @@ const Sustainability = () => {
                 <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
                 <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-                <Bar isAnimationActive={false} dataKey="scope1" stackId="a" fill={seriesColor(0)} name="Scope 1 · Direct" />
-                <Bar isAnimationActive={false} dataKey="scope2" stackId="a" fill={seriesColor(1)} name="Scope 2 · Grid" />
+                <Bar isAnimationActive={false} dataKey="scope1" stackId="a" fill={seriesColor(0)} name="Scope 1 · direct" />
+                <Bar isAnimationActive={false} dataKey="scope2" stackId="a" fill={seriesColor(1)} name="Scope 2 · grid" />
                 <Bar isAnimationActive={false} dataKey="flaring" stackId="a" fill={seriesColor(5)} name="Flaring" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ChartBox>
@@ -105,7 +105,7 @@ const Sustainability = () => {
               <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
               <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
               <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-              <Bar isAnimationActive={false} dataKey="consumption" fill={seriesColor(0)} name="Total Consumption" />
+              <Bar isAnimationActive={false} dataKey="consumption" fill={seriesColor(0)} name="Total consumption" />
               <Bar isAnimationActive={false} dataKey="recycled" fill={seriesColor(1)} name="Recycled" radius={[4, 4, 0, 0]} />
               <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(4)} strokeDasharray="5 5" name="Target" dot={false} />
             </ComposedChart>

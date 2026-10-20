@@ -23,7 +23,7 @@ interface Recommendation {
   actionCost: number;
   deadline: string;
   team: string;
-  status: "Pending" | "Scheduled" | "In-Progress" | "Completed" | "Deferred";
+  status: "Pending" | "Scheduled" | "In progress" | "Completed" | "Deferred";
   confidence: number;
   labourHours: number;
   spareParts: string[];
@@ -32,7 +32,7 @@ interface Recommendation {
 const RECOMMENDATIONS: Recommendation[] = [
   { id: "r1", rank: 1, tag: "COMP-A-001", action: "Inspect Drive End bearing — vibration trending up, probability of failure >40% within 30 days", failureMode: "Bearing failure", probability: 78, consequenceCost: 218, actionCost: 8.4, deadline: "2026-04-08", team: "Rotating Equipment", status: "Pending", confidence: 87, labourHours: 16, spareParts: ["SKF 6328 bearing", "Seal kit COMP-A", "Lube oil filter"] },
   { id: "r2", rank: 2, tag: "HEX-C-003", action: "Chemical cleaning of tube bundle — fouling factor exceeds 0.0005 m²K/W", failureMode: "Fouling/blockage", probability: 92, consequenceCost: 142, actionCost: 12.8, deadline: "2026-04-05", team: "Static Equipment", status: "Scheduled", confidence: 94, labourHours: 24, spareParts: ["Chemical cleaning agent", "Gasket set HEX-C"] },
-  { id: "r3", rank: 3, tag: "FCV-D-022", action: "Replace positioner actuator assembly — intermittent fault, stuck at 68%", failureMode: "Positioner fault", probability: 88, consequenceCost: 96, actionCost: 14.2, deadline: "2026-04-02", team: "Instrumentation", status: "In-Progress", confidence: 91, labourHours: 8, spareParts: ["Fisher DVC6200 positioner", "Actuator spring kit"] },
+  { id: "r3", rank: 3, tag: "FCV-D-022", action: "Replace positioner actuator assembly — intermittent fault, stuck at 68%", failureMode: "Positioner fault", probability: 88, consequenceCost: 96, actionCost: 14.2, deadline: "2026-04-02", team: "Instrumentation", status: "In progress", confidence: 91, labourHours: 8, spareParts: ["Fisher DVC6200 positioner", "Actuator spring kit"] },
   { id: "r4", rank: 4, tag: "MOT-E-018", action: "Thermographic survey + vibration analysis — current imbalance 8.4%", failureMode: "Winding insulation", probability: 42, consequenceCost: 84, actionCost: 2.1, deadline: "2026-04-15", team: "Electrical", status: "Pending", confidence: 72, labourHours: 4, spareParts: [] },
   { id: "r5", rank: 5, tag: "AGC-B-004", action: "Replace fan motor bearings — vibration 4.2 mm/s approaching alarm threshold", failureMode: "Bearing failure", probability: 56, consequenceCost: 38, actionCost: 4.8, deadline: "2026-04-20", team: "Rotating Equipment", status: "Pending", confidence: 78, labourHours: 12, spareParts: ["Fan motor bearing set", "Coupling alignment kit"] },
   { id: "r6", rank: 6, tag: "PUMP-CW-003", action: "Impeller inspection + clearance check — efficiency down 8% from baseline", failureMode: "Impeller wear", probability: 34, consequenceCost: 28, actionCost: 6.2, deadline: "2026-04-25", team: "Rotating Equipment", status: "Deferred", confidence: 65, labourHours: 8, spareParts: ["Impeller CW-003", "Wear ring set"] },
@@ -61,12 +61,12 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
       {/* Summary Metrics */}
       <KpiGrid>
         {[
-          { label: "Actions This Week", icon: kpi.actions, value: totalActions.toString() },
-          { label: "Est. Action Cost", icon: kpi.cost, value: formatRupees(totalActionCost) },
-          { label: "Consequence Cost (No Action)", icon: kpi.cost, value: formatRupees(totalConsequence) },
-          { label: "Projected Savings", icon: kpi.savings, value: formatRupees(totalConsequence - totalActionCost * 10) },
-          { label: "Completed This Month", icon: kpi.done, value: `${completed + 67}` },
-          { label: "Compliance Rate", icon: kpi.compliance, value: "74%", color: "text-warning" },
+          { label: "Actions this week", icon: kpi.actions, value: totalActions.toString() },
+          { label: "Estimated action cost", icon: kpi.cost, value: formatRupees(totalActionCost) },
+          { label: "Consequence cost (no action)", icon: kpi.cost, value: formatRupees(totalConsequence) },
+          { label: "Projected savings", icon: kpi.savings, value: formatRupees(totalConsequence - totalActionCost * 10) },
+          { label: "Completed this month", icon: kpi.done, value: `${completed + 67}` },
+          { label: "Compliance rate", icon: kpi.compliance, value: "74%", color: "text-warning" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
@@ -80,11 +80,11 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary w-8">#</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[200px]">Recommended Action</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Failure Mode</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Prob.</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[200px]">Recommended action</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Failure mode</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Probability</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Consequence (₹L)</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Action Cost (₹L)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Action cost (₹L)</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Deadline</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Actions</th>
@@ -113,7 +113,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                       <div className="flex items-center justify-center gap-1">
                         <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="type-label-sm inline-flex h-7 items-center whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
                           <icons.createWorkOrder className="mr-1 size-[13px]" aria-hidden />
-                          Create WO
+                          Create work order
                         </button>
                         {expandedRow === rec.id ? <icons.chevronUp className="size-3 text-icon-quaternary" aria-hidden /> : <icons.chevronDown className="size-3 text-icon-quaternary" aria-hidden />}
                       </div>
@@ -147,7 +147,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
           <div className="flex h-full w-[420px] max-w-full flex-col overflow-auto border-l border-strong bg-container" onClick={e => e.stopPropagation()}>
             <div className="flex items-start justify-between gap-3 border-b border-hairline px-5 py-4">
               <div>
-                <p className="type-eyebrow text-quaternary">Work Order</p>
+                <p className="type-eyebrow text-quaternary">Work order</p>
                 <h3 className="type-display-lg mt-1 text-foreground">Create Work Order</h3>
               </div>
               <button
@@ -159,17 +159,17 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
               </button>
             </div>
             <div className="type-body-sm flex-1 space-y-3 px-5 py-4">
-              <div><p className="type-eyebrow text-quaternary">Equipment Tag</p><p className="tabular mt-1 font-medium text-foreground">{woPanel.tag}</p></div>
+              <div><p className="type-eyebrow text-quaternary">Equipment tag</p><p className="tabular mt-1 font-medium text-foreground">{woPanel.tag}</p></div>
               <div><p className="type-eyebrow text-quaternary">Action</p><p className="mt-1">{woPanel.action}</p></div>
               <div className="grid grid-cols-2 gap-3">
                 <div><p className="type-eyebrow text-quaternary">Priority</p><p className="mt-1 font-medium text-foreground">P{woPanel.rank}</p></div>
-                <div><p className="type-eyebrow text-quaternary">Est. Hours</p><p className="tabular mt-1">{woPanel.labourHours} hr</p></div>
+                <div><p className="type-eyebrow text-quaternary">Estimated hours</p><p className="tabular mt-1">{woPanel.labourHours} hr</p></div>
               </div>
-              <div><p className="type-eyebrow text-quaternary">Spare Parts</p>
+              <div><p className="type-eyebrow text-quaternary">Spare parts</p>
                 {woPanel.spareParts.map(p => <p key={p} className="tabular type-caption mt-1">• {p}</p>)}
                 {woPanel.spareParts.length === 0 && <p className="mt-1 text-tertiary">None required</p>}
               </div>
-              <div><p className="type-eyebrow text-quaternary">Assigned Team</p><p className="mt-1">{woPanel.team}</p></div>
+              <div><p className="type-eyebrow text-quaternary">Assigned team</p><p className="mt-1">{woPanel.team}</p></div>
               <div><p className="type-eyebrow text-quaternary">Deadline</p><p className="tabular mt-1">{woPanel.deadline}</p></div>
             </div>
             <div className="border-t border-hairline px-5 py-4">

@@ -57,10 +57,10 @@ const ComplianceDashboard = () => {
 
       <KpiGrid>
         {[
-          { label: "Overall Compliance", icon: kpi.compliance, value: `${avgCompliance}%`, color: avgCompliance >= 85 ? "" : "text-warning" },
-          { label: "Domains Assessed", icon: kpi.groups, value: DOMAINS.length.toString() },
-          { label: "Open Findings", icon: kpi.findings, value: totalGaps.toString()},
-          { label: "Critical Gaps", icon: kpi.gap, value: DOMAINS.filter(d => d.status === "red").length.toString(), color: "text-error" },
+          { label: "Overall compliance", icon: kpi.compliance, value: `${avgCompliance}%`, color: avgCompliance >= 85 ? "" : "text-warning" },
+          { label: "Domains assessed", icon: kpi.groups, value: DOMAINS.length.toString() },
+          { label: "Open findings", icon: kpi.findings, value: totalGaps.toString()},
+          { label: "Critical gaps", icon: kpi.gap, value: DOMAINS.filter(d => d.status === "red").length.toString(), color: "text-error" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}

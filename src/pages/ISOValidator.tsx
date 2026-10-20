@@ -49,7 +49,7 @@ const ISOValidator = () => {
 
       <KpiGrid>
         {[
-          { label: "Total Validation Checks", icon: kpi.count, value: formatNumber(totalChecks) },
+          { label: "Total validation checks", icon: kpi.count, value: formatNumber(totalChecks) },
           { label: "Passing", icon: kpi.ok, value: formatNumber(totalPass) },
           { label: "Failures", icon: kpi.error, value: formatNumber(totalFail), color: "text-error" },
           { label: "Warnings", icon: icons.warning, value: formatNumber(totalWarn), color: "text-warning" },
@@ -65,11 +65,11 @@ const ISOValidator = () => {
             <thead>
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total Checks</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total checks</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Pass</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Fail</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Warning</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Pass Rate</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Pass rate</th>
               </tr>
             </thead>
             <tbody>

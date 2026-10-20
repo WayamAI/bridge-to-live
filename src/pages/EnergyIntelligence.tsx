@@ -84,7 +84,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Opportunity</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">System</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Annual Saving</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Annual saving</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Complexity</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Payback</th>
               </tr>

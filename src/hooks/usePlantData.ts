@@ -588,7 +588,7 @@ const CONNECTED_SYSTEMS: ConnectedSystem[] = [
   { name: "OSIsoft PI Historian", type: "Historian", status: "Active", lastSync: "30 sec intervals", recordsPer24h: "6.8M points" },
   { name: "IBM Maximo CMMS", type: "CMMS", status: "Active", lastSync: "15 min ago", recordsPer24h: "1,240 records" },
   { name: "SAP PM / ERP", type: "ERP", status: "Active", lastSync: "4 hr ago (batch)", recordsPer24h: "8,420 records" },
-  { name: "Hexagon SmartPlant (Eng. twin)", type: "Engineering", status: "Active", lastSync: "6 days ago", recordsPer24h: "240K tags" },
+  { name: "Hexagon SmartPlant (engineering twin)", type: "Engineering", status: "Active", lastSync: "6 days ago", recordsPer24h: "240K tags" },
   { name: "Fluke Reliability (vibration)", type: "IoT / Condition", status: "Degraded", lastSync: "2 hr ago (lagging)", recordsPer24h: "42K readings" },
   { name: "Schneider Power Monitoring", type: "Energy / OT", status: "Active", lastSync: "5 min intervals", recordsPer24h: "1.2M readings" },
   { name: "LDAR Leak Detection", type: "Emissions / OT", status: "Active", lastSync: "Hourly", recordsPer24h: "3,840 readings" },
@@ -621,12 +621,12 @@ const MAINTENANCE_EVENTS: MaintenanceEvent[] = [
 ];
 
 const ENERGY_METRICS: EnergyMetric[] = [
-  { label: "Electrical Load", value: 48200, unit: "kW", setpoint: 45000, costPerHour: 24100, trend: generateTrend(48200, 1200) },
-  { label: "Steam Consumption", value: 142, unit: "T/hr", setpoint: 135, costPerHour: 8520, trend: generateTrend(142, 8) },
-  { label: "Cooling Water Flow", value: 8400, unit: "m³/hr", setpoint: 8000, costPerHour: 2100, trend: generateTrend(8400, 400) },
-  { label: "Compressed Air", value: 6800, unit: "Nm³/hr", setpoint: 6500, costPerHour: 1360, trend: generateTrend(6800, 300) },
-  { label: "Natural Gas", value: 18.4, unit: "MMBTU/hr", setpoint: 17.5, costPerHour: 46000, trend: generateTrend(18.4, 1.2) },
-  { label: "Energy Cost Rate", value: 82080, unit: "₹/hr", setpoint: 75000, costPerHour: 82080, trend: generateTrend(82080, 4000) },
+  { label: "Electrical load", value: 48200, unit: "kW", setpoint: 45000, costPerHour: 24100, trend: generateTrend(48200, 1200) },
+  { label: "Steam consumption", value: 142, unit: "T/hr", setpoint: 135, costPerHour: 8520, trend: generateTrend(142, 8) },
+  { label: "Cooling water flow", value: 8400, unit: "m³/hr", setpoint: 8000, costPerHour: 2100, trend: generateTrend(8400, 400) },
+  { label: "Compressed air", value: 6800, unit: "Nm³/hr", setpoint: 6500, costPerHour: 1360, trend: generateTrend(6800, 300) },
+  { label: "Natural gas", value: 18.4, unit: "MMBTU/hr", setpoint: 17.5, costPerHour: 46000, trend: generateTrend(18.4, 1.2) },
+  { label: "Energy cost rate", value: 82080, unit: "₹/hr", setpoint: 75000, costPerHour: 82080, trend: generateTrend(82080, 4000) },
 ];
 
 export function usePlantData() {

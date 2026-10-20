@@ -37,10 +37,10 @@ const ThreatMonitor = () => {
 
       <KpiGrid>
         {[
-          { label: "Events (7 Days)", icon: kpi.events, value: THREAT_EVENTS.length.toString() },
-          { label: "Critical Events", icon: kpi.critical, value: critical.toString(), color: critical > 0 ? "text-error" : "" },
-          { label: "Active Investigations", icon: kpi.investigation, value: active.toString() },
-          { label: "Mean Response Time", icon: kpi.duration, value: "18 min" },
+          { label: "Events (7 days)", icon: kpi.events, value: THREAT_EVENTS.length.toString() },
+          { label: "Critical events", icon: kpi.critical, value: critical.toString(), color: critical > 0 ? "text-error" : "" },
+          { label: "Active investigations", icon: kpi.investigation, value: active.toString() },
+          { label: "Mean response time", icon: kpi.duration, value: "18 min" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
@@ -53,10 +53,10 @@ const ThreatMonitor = () => {
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Timestamp</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Asset</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Event Type</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Event type</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Severity</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">MITRE Tactic</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">MITRE tactic</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary min-w-[250px]">Details</th>
               </tr>
             </thead>

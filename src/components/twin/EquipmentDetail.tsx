@@ -77,7 +77,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
       {/* Sensors */}
       {/* Beside the list (lg and up) the panel takes the row's height and the sensors scroll inside it, header and maintenance stay in view; stacked, everything fits. */}
       <div className="scrollbar-thin space-y-3 p-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
-        <h4 className="type-eyebrow text-quaternary">Live Sensors</h4>
+        <h4 className="type-eyebrow text-quaternary">Live sensors</h4>
         {equipment.sensors.map((s) => {
           const isOutOfRange = s.value < s.normalMin || s.value > s.normalMax;
           const deviation = s.setpoint !== 0 ? ((s.value - s.setpoint) / s.setpoint * 100).toFixed(1) : "0";

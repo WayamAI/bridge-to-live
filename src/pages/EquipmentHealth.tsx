@@ -131,9 +131,9 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                 <tr className="border-b border-hairline">
                   {sortHeader("Tag", "tag")}
                   {sortHeader("Class", "classLabel")}
-                  {sortHeader("Process Unit", "processUnit")}
+                  {sortHeader("Process unit", "processUnit")}
                   {sortHeader("Health", "health")}
-                  {sortHeader("Last Alarm", "lastAlarm")}
+                  {sortHeader("Last alarm", "lastAlarm")}
                   {sortHeader("RUL", "rulDays")}
                   {sortHeader("Status", "status")}
                 </tr>

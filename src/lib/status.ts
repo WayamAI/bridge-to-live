@@ -62,7 +62,7 @@ export interface WorkflowTone { tone: Tone; solid?: boolean }
 export const recommendationStatus: Record<string, WorkflowTone> = {
   Pending: { tone: "warning" },
   Scheduled: { tone: "info" },
-  "In-Progress": { tone: "info" },
+  "In progress": { tone: "info" },
   Completed: { tone: "success" },
   Deferred: { tone: "neutral" },
 };
@@ -75,11 +75,11 @@ export const workOrderType: Record<string, WorkflowTone> = {
   Emergency: { tone: "error", solid: true },
 };
 
-/** Work-order status: Awaiting Parts means blocked, so it is the one solid badge. */
+/** Work-order status: Awaiting parts means blocked, so it is the one solid badge. */
 export const workOrderStatus: Record<string, WorkflowTone> = {
   Open: { tone: "warning" },
-  "In-Progress": { tone: "info" },
-  "Awaiting Parts": { tone: "error", solid: true },
+  "In progress": { tone: "info" },
+  "Awaiting parts": { tone: "error", solid: true },
   Completed: { tone: "success" },
   Cancelled: { tone: "neutral" },
 };

@@ -42,25 +42,25 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
   // Values keep a status colour only when the old card did and the state needs attention.
   const kpis = [
     {
-      label: "Overall Plant Health", icon: kpi.health, value: avgHealth.toString(), unit: "%",
+      label: "Overall plant health", icon: kpi.health, value: avgHealth.toString(), unit: "%",
       delta: "-2.1%", hint: "vs last month", tone: "error" as const,
       valueClassName: avgHealth >= 90 ? "" : "text-warning",
     },
     {
-      label: "Active Critical Alarms", icon: kpi.critical, value: criticalAlarms.toString(),
+      label: "Active critical alarms", icon: kpi.critical, value: criticalAlarms.toString(),
       delta: "+3", hint: "vs yesterday", tone: "error" as const,
       valueClassName: criticalAlarms > 0 ? "text-error" : "",
     },
     {
-      label: "Predicted Failures (30d)", icon: kpi.failures, value: predictedFailures.toString(),
+      label: "Predicted failures (30d)", icon: kpi.failures, value: predictedFailures.toString(),
       hint: `${flaggedComponents} components flagged in 90 days`,
     },
     {
-      label: "Energy Efficiency Index", icon: kpi.efficiency, value: "82.1", unit: "%",
+      label: "Energy efficiency index", icon: kpi.efficiency, value: "82.1", unit: "%",
       hint: "₹14.2 L annual savings opportunity",
     },
     {
-      label: "Handover Readiness", icon: kpi.handover, value: handoverPct.toString(), unit: "%",
+      label: "Handover readiness", icon: kpi.handover, value: handoverPct.toString(), unit: "%",
       hint: "Ratnagiri LNG Phase 2",
       valueClassName: handoverPct >= 90 ? "" : "text-warning",
     },

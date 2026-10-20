@@ -68,7 +68,7 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
         <table className="w-full type-body-sm">
           <thead>
             <tr className="border-b border-hairline">
-              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-40">Process Unit</th>
+              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-40">Process unit</th>
               {HEALTH_DIMENSIONS.map(d => (
                 <th key={d} className="type-eyebrow whitespace-nowrap px-2 py-2 text-center text-quaternary">{d}</th>
               ))}

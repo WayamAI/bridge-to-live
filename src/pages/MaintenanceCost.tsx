@@ -45,10 +45,10 @@ const MaintenanceCost = () => {
 
       <KpiGrid>
         {[
-          { label: "YTD Spend", icon: kpi.spend, value: formatRupees(totalYTD) },
-          { label: "YTD Budget", icon: kpi.budget, value: formatRupees(budgetYTD) },
+          { label: "Year-to-date spend", icon: kpi.spend, value: formatRupees(totalYTD) },
+          { label: "Year-to-date budget", icon: kpi.budget, value: formatRupees(budgetYTD) },
           { label: "Variance", icon: kpi.variance, value: `${variance}% under` },
-          { label: "Planned:Reactive Ratio", icon: kpi.ratio, value: "82:18" },
+          { label: "Planned to reactive ratio", icon: kpi.ratio, value: "82:18" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}

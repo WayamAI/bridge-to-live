@@ -90,10 +90,10 @@ const OTAssetRegistry = () => {
 
       <KpiGrid>
         {[
-          { label: "Total OT Assets", icon: kpi.assets, value: OT_ASSETS.length.toString() },
-          { label: "Up to Date", icon: kpi.ok, value: upToDate.toString() },
-          { label: "Patch Available", icon: kpi.patch, value: patchAvail.toString() },
-          { label: "End-of-Life / High Risk", icon: kpi.endOfLife, value: `${eol} EOL · ${highRisk} high risk`, color: "text-error" },
+          { label: "Total OT assets", icon: kpi.assets, value: OT_ASSETS.length.toString() },
+          { label: "Up to date", icon: kpi.ok, value: upToDate.toString() },
+          { label: "Patch available", icon: kpi.patch, value: patchAvail.toString() },
+          { label: "End-of-life / high risk", icon: kpi.endOfLife, value: `${eol} EOL · ${highRisk} high risk`, color: "text-error" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
@@ -105,14 +105,14 @@ const OTAssetRegistry = () => {
           <table className="w-full type-body-sm">
             <thead>
               <tr className="border-b border-hairline">
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Asset Name</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Asset name</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Type</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Vendor</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Firmware</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Last Seen</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Last seen</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Purdue</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Protocols</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Patch Status</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Patch status</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Risk</th>
               </tr>
             </thead>

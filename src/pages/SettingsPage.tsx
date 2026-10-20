@@ -32,10 +32,10 @@ const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("thresholds");
 
   const tabs = [
-    { id: "thresholds", label: "Sensor Thresholds" },
-    { id: "alerts", label: "Alert Configuration" },
-    { id: "models", label: "Model Parameters" },
-    { id: "users", label: "User Management" },
+    { id: "thresholds", label: "Sensor thresholds" },
+    { id: "alerts", label: "Alert configuration" },
+    { id: "models", label: "Model parameters" },
+    { id: "users", label: "User management" },
   ];
 
   return (
@@ -64,10 +64,10 @@ const SettingsPage = () => {
           <table className="w-full type-body-sm">
             <thead>
               <tr className="border-b border-hairline">
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag Pattern</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag pattern</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH Alarm</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH-HIGH Alarm</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH alarm</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH-HIGH alarm</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Unit</th>
               </tr>
             </thead>
@@ -140,9 +140,9 @@ const SettingsPage = () => {
             <thead>
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Role</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Primary Focus</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Screen Access</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Active Users</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Primary focus</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Screen access</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Active users</th>
               </tr>
             </thead>
             <tbody>

@@ -101,8 +101,8 @@ const HandoverPage = ({ view, handoverData, connectedSystems, plantInfo }: Hando
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">System</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Type</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Last Sync</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Records / 24hr</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Last sync</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Records / 24 hr</th>
               </tr>
             </thead>
             <tbody>

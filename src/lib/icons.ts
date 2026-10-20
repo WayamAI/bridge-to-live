@@ -173,12 +173,12 @@ export const kpi = {
 
 /** Energy page tiles are named by the data, so their icons are looked up by label. */
 export const energyKpiIcon: Record<string, LucideIcon> = {
-  "Electrical Load": kpi.electricity,
-  "Steam Consumption": kpi.steam,
-  "Cooling Water Flow": kpi.water,
-  "Compressed Air": kpi.air,
-  "Natural Gas": kpi.gas,
-  "Energy Cost Rate": kpi.cost,
+  "Electrical load": kpi.electricity,
+  "Steam consumption": kpi.steam,
+  "Cooling water flow": kpi.water,
+  "Compressed air": kpi.air,
+  "Natural gas": kpi.gas,
+  "Energy cost rate": kpi.cost,
 };
 
 /** Empty-state icons (24px). One per kind of emptiness. */

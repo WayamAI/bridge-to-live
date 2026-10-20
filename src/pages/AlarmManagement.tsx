@@ -53,8 +53,8 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
       {/* KPI row */}
       <KpiGrid>
         <KpiTile icon={kpi.alarmsPending} label="Unacknowledged" value={unacknowledged} valueClassName={unacknowledged > 0 ? "text-error" : ""} />
-        <KpiTile icon={kpi.critical} label="Critical Active" value={critical} valueClassName={critical > 0 ? "text-error" : ""} />
-        <KpiTile icon={kpi.alarmRate} label="Alarm Rate" value={avgRate} unit="/hr" />
+        <KpiTile icon={kpi.critical} label="Critical active" value={critical} valueClassName={critical > 0 ? "text-error" : ""} />
+        <KpiTile icon={kpi.alarmRate} label="Alarm rate" value={avgRate} unit="/hr" />
         <KpiTile icon={kpi.count} label="Total (24h)" value={alerts.length} />
       </KpiGrid>
 
@@ -70,7 +70,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Type</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Message</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Duration</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">ACK</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -105,14 +105,14 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                         <StatusDot tone={toneOf(severityTone, alert.severity)} className="mr-0.5" />
                         <span className="sr-only">{alert.severity}</span>
                         <Icon className="size-3 text-quaternary" aria-hidden />
-                        <span className="capitalize">{formatKey(alert.type)}</span>
+                        <span className="first-letter:uppercase">{formatKey(alert.type)}</span>
                       </span>
                     </td>
                     <td className="max-w-[400px] truncate px-3 py-2" title={alert.message}>{alert.message}</td>
                     <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{alert.duration}</td>
                     <td className="px-3 py-2">
                       {alert.acknowledged ? (
-                        <span className="type-body-sm tabular text-quaternary">ACK</span>
+                        <span className="type-body-sm tabular text-quaternary">Acknowledged</span>
                       ) : (
                         <button
                           onClick={() => onAcknowledge(alert.id)}

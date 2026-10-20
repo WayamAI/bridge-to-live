@@ -61,9 +61,9 @@ const LoadOptimisation = () => {
 
       <KpiGrid>
         {[
-          { label: "Total Identified Savings", icon: kpi.savings, value: formatRupees(totalSaving, { per: "yr" }) },
-          { label: "Selected Scenario Savings", icon: kpi.savings, value: formatRupees(selectedSaving, { per: "yr" }) },
-          { label: "Opportunities Identified", icon: kpi.opportunity, value: OPPORTUNITIES.length.toString() },
+          { label: "Total identified savings", icon: kpi.savings, value: formatRupees(totalSaving, { per: "yr" }) },
+          { label: "Selected scenario savings", icon: kpi.savings, value: formatRupees(selectedSaving, { per: "yr" }) },
+          { label: "Opportunities identified", icon: kpi.opportunity, value: OPPORTUNITIES.length.toString() },
           { label: "Implemented", icon: kpi.done, value: OPPORTUNITIES.filter(o => o.status === "Implemented").length.toString() },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
@@ -85,7 +85,7 @@ const LoadOptimisation = () => {
                   <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary min-w-[160px]">Opportunity</th>
                   <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Category</th>
                   <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">System</th>
-                  <th className="type-eyebrow px-2 py-2 text-right text-quaternary">Annual Saving</th>
+                  <th className="type-eyebrow px-2 py-2 text-right text-quaternary">Annual saving</th>
                   <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Complexity</th>
                   <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Payback</th>
                   <th className="type-eyebrow whitespace-nowrap px-2 py-2 text-left text-quaternary">Status</th>
@@ -131,12 +131,12 @@ const LoadOptimisation = () => {
                     <p className="type-display-lg tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{formatNumber(Math.round(totalSaving / 365 * 100 + 8400))}</p>
                   </div>
                   <div className="rounded-lg border border-strong bg-raised p-3">
-                    <p className="type-eyebrow text-quaternary">After Changes (₹/day)</p>
+                    <p className="type-eyebrow text-quaternary">After changes (₹/day)</p>
                     <p className="type-display-lg tabular mt-1 text-foreground"><Unit className="ml-0 mr-0.5">₹</Unit>{formatNumber(Math.round((totalSaving - selectedSaving) / 365 * 100 + 8400))}</p>
                   </div>
                 </div>
                 <div className="rounded-lg border border-hairline bg-raised p-3 text-center">
-                  <p className="type-eyebrow text-quaternary">12-Month Net Savings</p>
+                  <p className="type-eyebrow text-quaternary">12-Month net savings</p>
                   <p className="type-display-xl tabular mt-1 text-foreground">{formatRupees(selectedSaving)}</p>
                 </div>
                 <ChartLegend items={[

@@ -38,10 +38,10 @@ const DataQuality = () => {
 
       <KpiGrid>
         {[
-          { label: "Avg Data Freshness", icon: kpi.freshness, value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
-          { label: "Avg Completeness", icon: kpi.completeness, value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "" : "text-warning" },
-          { label: "Healthy Sources", icon: kpi.health, value: `${healthy}/${DATA_SOURCES.length}` },
-          { label: "Total Ingestion Errors (24h)", icon: kpi.error, value: "102", color: "text-warning" },
+          { label: "Average data freshness", icon: kpi.freshness, value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
+          { label: "Average completeness", icon: kpi.completeness, value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "" : "text-warning" },
+          { label: "Healthy sources", icon: kpi.health, value: `${healthy}/${DATA_SOURCES.length}` },
+          { label: "Total ingestion errors (24h)", icon: kpi.error, value: "102", color: "text-warning" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
