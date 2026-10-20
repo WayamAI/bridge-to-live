@@ -1,5 +1,5 @@
 import { Children } from "react";
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import type { CSSProperties, ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
 import type { LucideIcon } from "lucide-react";
 import { emptyIcon, icons, iconSize } from "@/lib/icons";
 import { cn } from "@/lib/utils";
@@ -220,6 +220,27 @@ export const SearchField = ({ className, ...props }: InputHTMLAttributes<HTMLInp
 );
 
 /** Toggle chip (filters and segmented controls): outline when idle, near-black fill when active. */
+/** Checkbox with a label: a native input (so state, keyboard and forms are unchanged) drawn in the Chronus style. */
+export const Checkbox = ({ label, className, ...props }: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & { label: ReactNode }) => (
+  <label className={cn("type-label-sm inline-flex h-8 cursor-pointer items-center gap-2 text-tertiary transition-colors duration-[180ms] hover:text-secondary-foreground", className)}>
+    <span className="relative inline-flex size-4 shrink-0">
+      <input
+        type="checkbox"
+        {...props}
+        className="peer absolute inset-0 size-4 cursor-pointer appearance-none rounded-[4px] border border-strong bg-container outline-none transition-colors duration-[180ms] checked:border-transparent checked:bg-action-primary focus-visible:ring-2 focus-visible:ring-active"
+      />
+      <icons.selected className="pointer-events-none absolute inset-0 m-auto size-3 text-on-color opacity-0 peer-checked:opacity-100" aria-hidden />
+    </span>
+    {label}
+  </label>
+);
+
+/** Range slider: a native range input drawn in the Chronus style (filled track, ringed thumb); see .slider in index.css. */
+export const Slider = ({ className, style, ...props }: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & { min: number; max: number; value: number }) => {
+  const fill = ((props.value - props.min) / (props.max - props.min || 1)) * 100;
+  return <input type="range" {...props} style={{ ...style, "--fill": `${fill}%` } as CSSProperties} className={cn("slider", className)} />;
+};
+
 export const Chip = ({
   active,
   className,

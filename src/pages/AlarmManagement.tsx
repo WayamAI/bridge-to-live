@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Alert } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
-import { EmptyState, KpiGrid, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
+import { EmptyState, KpiGrid, KpiTile, Panel, PillSelect, StatusDot, Checkbox } from "@/components/ui/primitives";
 import { priorityTone, severityTone, toneBadgeClass, toneOf } from "@/lib/status";
 import { icons, alarmIcon, kpi, emptyIcon } from "@/lib/icons";
 import { formatKey } from "@/lib/format";
@@ -46,15 +46,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
             <option value="warning">Warning</option>
             <option value="info">Info</option>
           </PillSelect>
-          <label className="type-label-sm flex h-8 items-center gap-1.5 text-tertiary">
-            <input
-              type="checkbox"
-              checked={showAcknowledged}
-              onChange={(e) => setShowAcknowledged(e.target.checked)}
-              className="size-4 rounded-[4px] accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active"
-            />
-            Show acknowledged
-          </label>
+          <Checkbox label="Show acknowledged" checked={showAcknowledged} onChange={(e) => setShowAcknowledged(e.target.checked)} />
         </>
       }
     >

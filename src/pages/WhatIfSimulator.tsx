@@ -2,7 +2,7 @@ import { useState, useMemo } from "react";
 import { icons, kpi } from "@/lib/icons";
 import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
-import { Panel, PillSelect, Unit } from "@/components/ui/primitives";
+import { Panel, PillSelect, Unit, Slider } from "@/components/ui/primitives";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { predictedFailureCounts } from "@/lib/plantStats";
 import { formatRupees } from "@/lib/format";
@@ -88,8 +88,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
             {/* PM Frequency */}
             <div>
               <label htmlFor="whatif-pm-frequency" className="type-label-sm text-secondary-foreground">PM Frequency Change: {config.pmFrequency > 0 ? "+" : ""}{config.pmFrequency}%</label>
-              <input id="whatif-pm-frequency" type="range" min={-50} max={100} value={config.pmFrequency} onChange={e => setConfig(c => ({ ...c, pmFrequency: +e.target.value }))}
-                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
+              <Slider id="whatif-pm-frequency" className="mt-2" min={-50} max={100} value={config.pmFrequency} onChange={e => setConfig(c => ({ ...c, pmFrequency: +e.target.value }))} />
               <div className="flex justify-between type-caption text-tertiary"><span>−50%</span><span>Current</span><span>+100%</span></div>
             </div>
 
@@ -107,22 +106,19 @@ const WhatIfSimulator = ({ equipment }: Props) => {
             {/* Air Pressure */}
             <div>
               <label htmlFor="whatif-air-pressure" className="type-label-sm text-secondary-foreground">Compressed Air Setpoint: {config.airPressure} bar</label>
-              <input id="whatif-air-pressure" type="range" min={6} max={10} step={0.1} value={config.airPressure} onChange={e => setConfig(c => ({ ...c, airPressure: +e.target.value }))}
-                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
+              <Slider id="whatif-air-pressure" className="mt-2" min={6} max={10} step={0.1} value={config.airPressure} onChange={e => setConfig(c => ({ ...c, airPressure: +e.target.value }))} />
             </div>
 
             {/* Startup Shift */}
             <div>
               <label htmlFor="whatif-startup-shift" className="type-label-sm text-secondary-foreground">Comp B Startup Shift: {config.startupShift} hr</label>
-              <input id="whatif-startup-shift" type="range" min={-4} max={4} value={config.startupShift} onChange={e => setConfig(c => ({ ...c, startupShift: +e.target.value }))}
-                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
+              <Slider id="whatif-startup-shift" className="mt-2" min={-4} max={4} value={config.startupShift} onChange={e => setConfig(c => ({ ...c, startupShift: +e.target.value }))} />
             </div>
 
             {/* Throughput */}
             <div>
               <label htmlFor="whatif-throughput" className="type-label-sm text-secondary-foreground">Operating Throughput: {config.throughput}%</label>
-              <input id="whatif-throughput" type="range" min={60} max={110} value={config.throughput} onChange={e => setConfig(c => ({ ...c, throughput: +e.target.value }))}
-                className="mt-2 h-1 w-full cursor-pointer appearance-none rounded-full bg-raised-2 accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active" />
+              <Slider id="whatif-throughput" className="mt-2" min={60} max={110} value={config.throughput} onChange={e => setConfig(c => ({ ...c, throughput: +e.target.value }))} />
             </div>
 
             {/* Failure Sim */}

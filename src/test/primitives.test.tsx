@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { emptyIcon, kpi, panelIcon } from "@/lib/icons";
-import { EmptyState, EquipmentStatusLabel, KpiGrid, KpiTile, Panel, PillSelect, QuietStatus, SearchField, StatusDot, Unit } from "@/components/ui/primitives";
+import { Checkbox, EmptyState, EquipmentStatusLabel, KpiGrid, KpiTile, Slider, Panel, PillSelect, QuietStatus, SearchField, StatusDot, Unit } from "@/components/ui/primitives";
 
 describe("Chronus primitives", () => {
   it("Panel renders an eyebrow title, an action and its body", () => {
@@ -136,5 +136,24 @@ describe("KpiGrid", () => {
   ])("sets the columns for %i tiles", (n, cls) => {
     const { container } = render(<KpiGrid>{tiles(n)}</KpiGrid>);
     expect(container.firstElementChild).toHaveClass("grid", "gap-3", cls);
+  });
+});
+
+describe("Checkbox and Slider", () => {
+  it("Checkbox is a native checkbox with its label and reports changes", () => {
+    let checked = false;
+    render(<Checkbox label="Show acknowledged" checked={checked} onChange={(e) => (checked = e.target.checked)} />);
+    const box = screen.getByLabelText("Show acknowledged") as HTMLInputElement;
+    expect(box.type).toBe("checkbox");
+    fireEvent.click(box);
+    expect(checked).toBe(true);
+  });
+
+  it("Slider is a native range input with the filled share of its track as --fill", () => {
+    const { container } = render(<Slider id="s" min={-50} max={100} value={25} onChange={() => {}} />);
+    const input = container.querySelector("input") as HTMLInputElement;
+    expect(input.type).toBe("range");
+    expect(input).toHaveClass("slider");
+    expect(input.style.getPropertyValue("--fill")).toBe("50%");
   });
 });
