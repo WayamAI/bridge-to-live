@@ -6,6 +6,7 @@ import { locate } from "@/components/layout/nav";
 import { Panel, ToneStatus, Unit } from "@/components/ui/primitives";
 import { connectedSystemTone, handoverItemStatus, workflowTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
+import { handoverReadiness } from "@/lib/plantStats";
 
 interface HandoverPageProps {
   handoverData: HandoverItem[];
@@ -15,9 +16,7 @@ interface HandoverPageProps {
 
 const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPageProps) => {
   const { pathname } = useLocation();
-  const completedPct = Math.round(
-    handoverData.reduce((a, h) => a + h.completed, 0) / handoverData.reduce((a, h) => a + h.target, 0) * 100
-  );
+  const completedPct = handoverReadiness(handoverData);
 
   return (
     <PageHeader title={locate(pathname).title} subtitle="Handover readiness against target and the status of connected systems">

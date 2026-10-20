@@ -13,7 +13,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
 import { severityTone, toneOf } from "@/lib/status";
 import { useNavigate } from "react-router-dom";
-import { predictedFailureCounts } from "@/lib/plantStats";
+import { handoverReadiness, predictedFailureCounts } from "@/lib/plantStats";
 
 interface DashboardProps {
   data: ReturnType<typeof usePlantData>;
@@ -36,7 +36,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
 
   const criticalAlarms = alerts.filter(a => a.severity === "critical" && !a.acknowledged).length;
   const { within30: predictedFailures, within90: flaggedComponents } = predictedFailureCounts(equipment);
-  const handoverPct = 73;
+  const handoverPct = handoverReadiness(data.handoverData);
 
   // Values keep a status colour only when the old card did and the state needs attention.
   const kpis = [
