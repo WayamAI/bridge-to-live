@@ -1,4 +1,5 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Line, PieChart, Pie, Cell } from "recharts";
+import ChartLegend from "@/components/dashboard/ChartLegend";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel , KpiTile } from "@/components/ui/primitives";
@@ -52,6 +53,11 @@ const Sustainability = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Monthly Emissions */}
         <Panel title="Monthly GHG Emissions (T CO₂e)" className="lg:col-span-2">
+            <ChartLegend items={[
+              { label: "Scope 1 · Direct", color: seriesColor(0) },
+              { label: "Scope 2 · Grid", color: seriesColor(1) },
+              { label: "Flaring", color: seriesColor(5) },
+            ]} />
             <ResponsiveContainer width="100%" height={280}>
               <BarChart data={MONTHLY_EMISSIONS}>
                 <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
@@ -87,15 +93,20 @@ const Sustainability = () => {
 
       {/* Water Usage */}
       <Panel title="Water Consumption & Recycling (m³/month)">
+          <ChartLegend items={[
+            { label: "Total consumption", color: seriesColor(0) },
+            { label: "Recycled", color: seriesColor(1) },
+            { label: "Target", color: seriesColor(4), kind: "dashed" },
+          ]} />
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={WATER_DATA}>
+            <ComposedChart data={WATER_DATA}>
               <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
               <YAxis tick={axisTick} tickLine={false} axisLine={false} />
               <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
               <Bar isAnimationActive={false} dataKey="consumption" fill={seriesColor(0)} name="Total Consumption" />
               <Bar isAnimationActive={false} dataKey="recycled" fill={seriesColor(1)} name="Recycled" radius={[4, 4, 0, 0]} />
-              <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(4)} strokeDasharray="5 5" name="Target" />
-            </BarChart>
+              <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(4)} strokeDasharray="5 5" name="Target" dot={false} />
+            </ComposedChart>
           </ResponsiveContainer>
       </Panel>
     </PageHeader>
