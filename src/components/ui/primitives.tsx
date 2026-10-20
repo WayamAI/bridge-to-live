@@ -155,11 +155,12 @@ export const EquipmentStatusLabel = ({ status }: { status?: EquipmentStatus | nu
   return <QuietStatus tone={toneOf(equipmentTone, status)}>{label}</QuietStatus>;
 };
 
-/** Plain statement, no illustration, no call to action. */
-export const EmptyState = ({ title = "Nothing to show", detail, className }: { title?: string; detail?: string; className?: string }) => (
+/** Plain statement, no illustration. `action` is for a single way out (a link back), not a call to action. */
+export const EmptyState = ({ title = "Nothing to show", detail, action, className }: { title?: string; detail?: string; action?: ReactNode; className?: string }) => (
   <div className={cn("flex min-h-[160px] flex-col items-center justify-center gap-1.5 px-6 text-center", className)}>
     <p className="type-body-md text-tertiary">{title}</p>
     {detail && <p className="type-body-sm text-quaternary">{detail}</p>}
+    {action && <div className="mt-2">{action}</div>}
   </div>
 );
 

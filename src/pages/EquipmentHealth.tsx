@@ -7,6 +7,7 @@ import EquipmentDetail from "@/components/twin/EquipmentDetail";
 import FactoryFloor from "@/components/twin/FactoryFloor";
 import { icons } from "@/lib/icons";
 import { activatable, activatableFocus } from "@/lib/a11y";
+import { Link, useLocation } from "react-router-dom";
 
 interface EquipmentHealthPageProps {
   equipment: Equipment[];
@@ -24,6 +25,8 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
   const [search, setSearch] = useState("");
 
   const selectedEquipment = equipment.find(e => e.id === selectedEquipmentId);
+  const { pathname } = useLocation();
+  const detailOnly = pathname === "/equipment/detail";
 
   const processUnits = useMemo(() => {
     const units = new Set(equipment.map(e => e.processUnit));
@@ -66,6 +69,28 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
       </span>
     </th>
   );
+
+  // Equipment Detail is for one machine: with none selected there is nothing to show, so point back to the list.
+  if (detailOnly && !selectedEquipment) {
+    return (
+      <PageHeader>
+        <Panel>
+          <EmptyState
+            title="Select equipment"
+            detail="Pick a machine in the registry to see its health, live sensors and maintenance."
+            action={
+              <Link
+                to="/equipment"
+                className="type-label-sm inline-flex h-8 items-center rounded-full border border-hairline bg-action px-3 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
+              >
+                Go to Plant Overview
+              </Link>
+            }
+          />
+        </Panel>
+      </PageHeader>
+    );
+  }
 
   return (
     <PageHeader
