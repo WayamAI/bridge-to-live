@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Panel } from "@/components/ui/primitives";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart } from "recharts";
+import { Line, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine, ComposedChart } from "recharts";
+import ChartLegend from "@/components/dashboard/ChartLegend";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { formatDate } from "@/lib/format";
 import { createRng } from "@/lib/seeded";
@@ -18,7 +19,6 @@ const PlantHealthTrend = () => {
       points.push({
         date: formatDate(date),
         health: Math.round(health * 10) / 10,
-        isForecast: i < 30,
       });
     }
     // Add maintenance markers
@@ -32,11 +32,11 @@ const PlantHealthTrend = () => {
     <Panel
       title="Plant Health Trend · 90 Days"
     >
-      <div className="type-caption mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-quaternary">
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 inline-block" /> Health Score</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 opacity-30 inline-block" /> Forecast</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 border-t border-dashed border-quaternary inline-block" /> PM Events</span>
-      </div>
+      <ChartLegend items={[
+        { label: "Health score", color: seriesColor(0), kind: "line" },
+        { label: "Target 90%", color: seriesColor(4), kind: "dashed" },
+        { label: "PM events", color: "var(--text-quaternary)", kind: "dashed" },
+      ]} />
       <ResponsiveContainer width="100%" height={180}>
         <ComposedChart data={data} margin={{ top: 5, right: 30, left: -15, bottom: 0 }}>
           <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
@@ -46,6 +46,9 @@ const PlantHealthTrend = () => {
             labelStyle={chartTooltipLabelStyle}
           />
           <ReferenceLine y={90} stroke={seriesColor(4)} strokeDasharray="5 5" strokeWidth={1} label={{ value: "Target 90%", position: "right", fontSize: 9, fill: "var(--text-quaternary)" }} />
+          {data.filter(d => d.maintenance).map(d => (
+            <ReferenceLine key={d.date} x={d.date} stroke="var(--text-quaternary)" strokeDasharray="2 3" strokeWidth={1} />
+          ))}
           <Line isAnimationActive={false} type="monotone" dataKey="health" stroke={seriesColor(0)} strokeWidth={1.5} dot={false} />
         </ComposedChart>
       </ResponsiveContainer>
