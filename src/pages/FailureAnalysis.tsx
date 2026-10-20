@@ -5,6 +5,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { formatNumber } from "@/lib/format";
+import { activatable, activatableFocus } from "@/lib/a11y";
 
 const FAILURE_MODES = [
   { mode: "Bearing failure", count: 84, pct: 34, downtime: 624, cost: 312, mtbf: 11200, trend: "↑" },
@@ -97,8 +98,8 @@ const FailureAnalysis = ({ equipment }: Props) => {
               </thead>
               <tbody>
                 {FAILURE_MODES.map(f => (
-                  <tr key={f.mode} className={`cursor-pointer border-b border-hairline hover:bg-raised ${selectedMode === f.mode ? "bg-raised" : ""}`}
-                    onClick={() => setSelectedMode(selectedMode === f.mode ? null : f.mode)}>
+                  <tr key={f.mode} className={`cursor-pointer border-b border-hairline hover:bg-raised ${activatableFocus} ${selectedMode === f.mode ? "bg-raised" : ""}`}
+                    {...activatable(() => setSelectedMode(selectedMode === f.mode ? null : f.mode))}>
                     <td className={`py-2 px-3 font-medium ${selectedMode === f.mode ? "text-foreground" : ""}`}>{f.mode}</td>
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.count}</td>
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.downtime}</td>

@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 import { Panel } from "@/components/ui/primitives";
 import type { Equipment } from "@/hooks/usePlantData";
+import { activatable, activatableFocus } from "@/lib/a11y";
 
 interface EquipmentHeatMapProps {
   equipment: Equipment[];
@@ -74,8 +75,8 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
             {heatData.map((row) => row && (
               <tr
                 key={row.processUnit}
-                className="border-b border-hairline last:border-0 cursor-pointer hover:bg-raised"
-                onClick={() => onSelect(row.firstId)}
+                className={`border-b border-hairline last:border-0 cursor-pointer hover:bg-raised ${activatableFocus}`}
+                {...activatable(() => onSelect(row.firstId))}
               >
                 <td className="px-3 py-2 font-medium text-foreground">{row.processUnit}</td>
                 {row.dimensions.map((score, i) => (

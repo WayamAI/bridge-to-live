@@ -14,6 +14,7 @@ import { EmptyState, KpiTile, Panel, StatusDot } from "@/components/ui/primitive
 import { severityTone, toneOf } from "@/lib/status";
 import { useNavigate } from "react-router-dom";
 import { handoverReadiness, predictedFailureCounts } from "@/lib/plantStats";
+import { activatable, activatableFocus } from "@/lib/a11y";
 
 interface DashboardProps {
   data: ReturnType<typeof usePlantData>;
@@ -124,8 +125,8 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
               {topAlerts.map((alert) => (
                 <div
                   key={alert.id}
-                  className="cursor-pointer border-b border-hairline px-4 py-2.5 transition-colors duration-150 last:border-0 hover:bg-raised"
-                  onClick={() => onSelectEquipment(alert.equipmentId)}
+                  className={`cursor-pointer border-b border-hairline px-4 py-2.5 transition-colors duration-150 last:border-0 hover:bg-raised ${activatableFocus}`}
+                  role="button" {...activatable(() => onSelectEquipment(alert.equipmentId))}
                 >
                   <div className="flex items-start gap-2">
                     <StatusDot tone={toneOf(severityTone, alert.severity)} className="mt-1.5" />

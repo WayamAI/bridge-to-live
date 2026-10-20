@@ -8,6 +8,7 @@ import type { Equipment } from "@/hooks/usePlantData";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
 import FactoryFloor from "@/components/twin/FactoryFloor";
 import { icons } from "@/lib/icons";
+import { activatable, activatableFocus } from "@/lib/a11y";
 
 interface EquipmentHealthPageProps {
   equipment: Equipment[];
@@ -53,11 +54,14 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
     else { setSortKey(key); setSortAsc(true); }
   };
 
-  const SortHeader = ({ label, k }: { label: string; k: SortKey }) => (
+  // A plain render function, not a component: a component defined here is a new type on every render, which remounts the
+  // header and drops keyboard focus after each sort.
+  const sortHeader = (label: string, k: SortKey) => (
     <th
+      key={k}
       aria-sort={sortKey === k ? (sortAsc ? "ascending" : "descending") : "none"}
-      className="type-eyebrow cursor-pointer select-none whitespace-nowrap px-3 py-2 text-left text-quaternary hover:text-secondary-foreground"
-      onClick={() => handleSort(k)}
+      className={`type-eyebrow cursor-pointer select-none whitespace-nowrap px-3 py-2 text-left text-quaternary hover:text-secondary-foreground ${activatableFocus}`}
+      {...activatable(() => handleSort(k))}
     >
       <span className="flex items-center gap-1">
         {label}
@@ -104,21 +108,21 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
             <table className="w-full type-body-sm">
               <thead className="sticky top-0 z-10 bg-container">
                 <tr className="border-b border-hairline">
-                  <SortHeader label="Tag" k="tag" />
-                  <SortHeader label="Class" k="classLabel" />
-                  <SortHeader label="Process Unit" k="processUnit" />
-                  <SortHeader label="Health" k="health" />
-                  <SortHeader label="Last Alarm" k="lastAlarm" />
-                  <SortHeader label="RUL" k="rulDays" />
-                  <SortHeader label="Status" k="status" />
+                  {sortHeader("Tag", "tag")}
+                  {sortHeader("Class", "classLabel")}
+                  {sortHeader("Process Unit", "processUnit")}
+                  {sortHeader("Health", "health")}
+                  {sortHeader("Last Alarm", "lastAlarm")}
+                  {sortHeader("RUL", "rulDays")}
+                  {sortHeader("Status", "status")}
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((eq) => (
                   <tr
                     key={eq.id}
-                    onClick={() => onSelectEquipment(eq.id)}
-                    className={`border-b border-hairline last:border-0 cursor-pointer transition-colors hover:bg-raised ${selectedEquipmentId === eq.id ? "bg-raised" : ""}`}
+                    {...activatable(() => onSelectEquipment(eq.id))}
+                    className={`border-b border-hairline last:border-0 cursor-pointer transition-colors hover:bg-raised ${activatableFocus} ${selectedEquipmentId === eq.id ? "bg-raised" : ""}`}
                   >
                     <td className="px-3 py-2 tabular text-foreground font-medium whitespace-nowrap">{eq.tag}</td>
                     <td className="px-3 py-2 text-tertiary">{eq.classLabel}</td>

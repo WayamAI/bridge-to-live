@@ -5,6 +5,7 @@ import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { recommendationStatus, workflowTone } from "@/lib/status";
+import { activatable, activatableFocus } from "@/lib/a11y";
 
 interface Props {
   equipment: Equipment[];
@@ -92,8 +93,8 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
               {RECOMMENDATIONS.map(rec => (
                 <Fragment key={rec.id}>
                   <tr
-                    className="border-b border-hairline hover:bg-raised cursor-pointer"
-                    onClick={() => setExpandedRow(expandedRow === rec.id ? null : rec.id)}>
+                    className={`border-b border-hairline hover:bg-raised cursor-pointer ${activatableFocus}`}
+                    {...activatable(() => setExpandedRow(expandedRow === rec.id ? null : rec.id))}>
                     <td className="text-center py-2 px-3 tabular font-semibold whitespace-nowrap">{rec.rank}</td>
                     <td className="py-2 px-3 tabular font-medium text-foreground whitespace-nowrap">{rec.tag}</td>
                     <td className="py-2 px-3">{rec.action}</td>

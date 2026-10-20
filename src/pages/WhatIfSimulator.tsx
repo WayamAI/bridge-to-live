@@ -3,6 +3,7 @@ import { icons } from "@/lib/icons";
 import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel, PillSelect, Unit } from "@/components/ui/primitives";
+import { activatable, activatableFocus } from "@/lib/a11y";
 
 interface ScenarioConfig {
   pmFrequency: number;
@@ -184,7 +185,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
             <Panel title={<>Saved Scenarios ({savedScenarios.length})</>} padded={false}>
               <div className="divide-y divide-border">
                 {savedScenarios.map((s, i) => (
-                  <div key={i} className="px-4 py-2 flex items-center justify-between hover:bg-raised cursor-pointer" onClick={() => setConfig({ ...s.config })}>
+                  <div key={i} className={`px-4 py-2 flex items-center justify-between hover:bg-raised cursor-pointer ${activatableFocus}`} role="button" {...activatable(() => setConfig({ ...s.config }))}>
                     <span className="type-body-sm font-medium">{s.name}</span>
                     <span className="type-caption inline-flex items-center gap-0.5 text-foreground">Load <icons.chevronRight className="size-3" aria-hidden /></span>
                   </div>

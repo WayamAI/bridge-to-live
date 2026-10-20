@@ -6,6 +6,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, ToneStatus, Unit } from "@/components/ui/primitives";
 import { complexityTone, opportunityStatus, workflowTone, toneOf } from "@/lib/status";
 import { formatNumber, formatMonthName } from "@/lib/format";
+import { activatable, activatableFocus } from "@/lib/a11y";
 
 interface Opportunity {
   id: string;
@@ -84,7 +85,7 @@ const LoadOptimisation = () => {
               </thead>
               <tbody>
                 {OPPORTUNITIES.map(o => (
-                  <tr key={o.id} className={`border-b border-hairline hover:bg-raised cursor-pointer ${selected.has(o.id) ? "bg-raised" : ""}`} onClick={() => toggle(o.id)}>
+                  <tr key={o.id} className={`border-b border-hairline hover:bg-raised cursor-pointer ${activatableFocus} ${selected.has(o.id) ? "bg-raised" : ""}`} {...activatable(() => toggle(o.id))}>
                     <td className="py-2 px-2 text-center">
                       <div
                         role="checkbox"
