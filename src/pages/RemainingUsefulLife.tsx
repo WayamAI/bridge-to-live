@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, Line, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ComposedChart, Area, Line, Cell } from "recharts";
+import ChartLegend from "@/components/dashboard/ChartLegend";
 import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
@@ -63,7 +64,6 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* RUL Distribution */}
         <Panel title="RUL Distribution · Equipment Fleet">
-          <p className="type-caption mb-3 text-quaternary">Dashed line = standard PM interval (3,000 hr)</p>
             <ResponsiveContainer width="100%" height={260}>
               <BarChart data={distribution}>
                 <XAxis dataKey="range" tick={axisTick} tickLine={false} axisLine={false} />
@@ -83,16 +83,22 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
 
         {/* Fleet Age Profile */}
         <Panel title="Fleet Age Profile · Monthly Trend">
+            <ChartLegend items={[
+              { label: "<5k hr", color: toneChart.success },
+              { label: "5k–15k hr", color: toneChart.warning },
+              { label: ">15k hr", color: toneChart.error },
+              { label: "Monthly failures", color: seriesColor(0), kind: "line" },
+            ]} />
             <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={fleetAge}>
+              <ComposedChart data={fleetAge}>
                 <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
                 <YAxis tick={axisTick} tickLine={false} axisLine={false} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Area isAnimationActive={false} type="monotone" dataKey="young" stackId="1" fill={toneChart.success} fillOpacity={0.6} stroke={toneChart.success} name="<5k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="mid" stackId="1" fill={toneChart.warning} fillOpacity={0.6} stroke={toneChart.warning} name="5k–15k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="old" stackId="1" fill={toneChart.error} fillOpacity={0.6} stroke={toneChart.error} name=">15k hr" />
-                <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke="var(--text-foreground)" strokeWidth={2} dot={{ r: 3 }} name="Monthly Failures" />
-              </AreaChart>
+                <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke={seriesColor(0)} strokeWidth={2} dot={{ r: 3 }} name="Monthly Failures" />
+              </ComposedChart>
             </ResponsiveContainer>
         </Panel>
       </div>
