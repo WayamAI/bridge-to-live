@@ -2,6 +2,7 @@ import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
 import { Chip, EmptyState, KpiTile, Panel, SearchField, ToneStatus } from "@/components/ui/primitives";
 import { patchStatus, workflowTone } from "@/lib/status";
+import { kpi, emptyIcon } from "@/lib/icons";
 
 interface OTAsset {
   name: string;
@@ -89,12 +90,12 @@ const OTAssetRegistry = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total OT Assets", value: OT_ASSETS.length.toString() },
-          { label: "Up to Date", value: upToDate.toString() },
-          { label: "Patch Available", value: patchAvail.toString() },
-          { label: "End-of-Life / High Risk", value: `${eol} EOL · ${highRisk} high risk`, color: "text-error" },
+          { label: "Total OT Assets", icon: kpi.assets, value: OT_ASSETS.length.toString() },
+          { label: "Up to Date", icon: kpi.ok, value: upToDate.toString() },
+          { label: "Patch Available", icon: kpi.patch, value: patchAvail.toString() },
+          { label: "End-of-Life / High Risk", icon: kpi.endOfLife, value: `${eol} EOL · ${highRisk} high risk`, color: "text-error" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
@@ -133,7 +134,7 @@ const OTAssetRegistry = () => {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={9}><EmptyState title="No assets match this filter" className="min-h-[96px]" /></td>
+                  <td colSpan={9}><EmptyState icon={emptyIcon.noMatch} title="No assets match this filter" className="min-h-[96px]" /></td>
                 </tr>
               )}
             </tbody>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { navGroups } from "@/components/layout/nav";
-import { alarmIcon, alarmTypeIcon, eventIcon, eventTypeIcon, icons, iconForPath, markForPath, navIcon, unknownTypeIcon } from "@/lib/icons";
+import { alarmIcon, emptyIcon, energyKpiIcon, kpi, panelIcon, alarmTypeIcon, eventIcon, eventTypeIcon, icons, iconForPath, markForPath, navIcon, unknownTypeIcon } from "@/lib/icons";
 
 describe("icon mapping", () => {
   it("gives every nav item its mapped icon and no two pages share one", () => {
@@ -34,5 +34,27 @@ describe("icon mapping", () => {
     navGroups.flatMap((g) => g.items).forEach((i) => expect(markForPath(i.to), i.to).toBeTruthy());
     expect(markForPath("/equipment")).toBe(markForPath("/equipment/detail"));
     expect(markForPath("/no-such-page")).toBeUndefined();
+  });
+
+  it("gives each KPI meaning its own icon, and only alarms share the sidebar bell", () => {
+    const values = Object.values(kpi);
+    expect(new Set(values).size).toBe(values.length);
+    const nav = new Set<unknown>(Object.values(navIcon));
+    Object.entries(kpi).forEach(([name, icon]) => {
+      if (name === "alarms") return; // alarms and the alarms page are the same thing
+      expect(nav.has(icon), `kpi.${name} duplicates a nav icon`).toBe(false);
+    });
+    expect(kpi.alarms).toBe(navIcon["/alarms"]);
+  });
+
+  it("keeps the energy tile icons to kpi meanings", () => {
+    const allowed = new Set<unknown>(Object.values(kpi));
+    Object.entries(energyKpiIcon).forEach(([label, icon]) => expect(allowed.has(icon), label).toBe(true));
+  });
+
+  it("has distinct empty-state icons and distinct Dashboard panel icons", () => {
+    expect(new Set(Object.values(emptyIcon)).size).toBe(Object.keys(emptyIcon).length);
+    expect(new Set(Object.values(panelIcon)).size).toBe(Object.keys(panelIcon).length);
+    expect(panelIcon.alerts).toBe(navIcon["/alarms"]);
   });
 });

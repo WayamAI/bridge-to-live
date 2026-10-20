@@ -4,7 +4,7 @@ import type { Alert } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
 import { priorityTone, severityTone, toneBadgeClass, toneOf } from "@/lib/status";
-import { icons, alarmIcon } from "@/lib/icons";
+import { icons, alarmIcon, kpi, emptyIcon } from "@/lib/icons";
 import { formatKey } from "@/lib/format";
 
 interface AlarmManagementPageProps {
@@ -60,10 +60,10 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
     >
       {/* KPI row */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <KpiTile label="Unacknowledged" value={unacknowledged} valueClassName={unacknowledged > 0 ? "text-error" : ""} />
-        <KpiTile label="Critical Active" value={critical} valueClassName={critical > 0 ? "text-error" : ""} />
-        <KpiTile label="Alarm Rate" value={avgRate} unit="/hr" />
-        <KpiTile label="Total (24h)" value={alerts.length} />
+        <KpiTile icon={kpi.alarmsPending} label="Unacknowledged" value={unacknowledged} valueClassName={unacknowledged > 0 ? "text-error" : ""} />
+        <KpiTile icon={kpi.critical} label="Critical Active" value={critical} valueClassName={critical > 0 ? "text-error" : ""} />
+        <KpiTile icon={kpi.alarmRate} label="Alarm Rate" value={avgRate} unit="/hr" />
+        <KpiTile icon={kpi.count} label="Total (24h)" value={alerts.length} />
       </div>
 
       {/* Alarm console table */}
@@ -135,7 +135,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7}><EmptyState title="No alarms match this filter" className="min-h-[96px]" /></td>
+                  <td colSpan={7}><EmptyState icon={emptyIcon.noMatch} title="No alarms match this filter" className="min-h-[96px]" /></td>
                 </tr>
               )}
             </tbody>

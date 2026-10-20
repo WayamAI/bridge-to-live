@@ -7,6 +7,7 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from
 import { formatMonthYear, formatNumber, yearMonthToTime } from "@/lib/format";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { createRng } from "@/lib/seeded";
+import { kpi } from "@/lib/icons";
 
 const FAILURE_MODES = [
   { mode: "Bearing failure", count: 84, pct: 34, downtime: 624, cost: 312, mtbf: 11200, trend: "↑" },
@@ -68,12 +69,12 @@ const FailureAnalysis = ({ equipment }: Props) => {
     <PageHeader>
       {/* Quick stats */}
       <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
-        <KpiTile label="Total Failures (24 mo)" value="247" />
-        <KpiTile label="Unplanned Downtime" value="1,842" unit="hr" />
-        <KpiTile label="Total Maint. Cost" prefix="₹" value="8.74" unit="Cr" />
-        <KpiTile label="Avg MTBF (Fleet)" value="14,200" unit="hr" />
-        <KpiTile label="MTBF Trend" value="−8.3" unit="%" valueClassName="text-warning" />
-        <KpiTile label="Most Failure-Prone" value="FCV-D-022" hint="14 failures · 5.7% of fleet" valueClassName="type-display-lg" />
+        <KpiTile icon={kpi.failures} label="Total Failures (24 mo)" value="247" />
+        <KpiTile icon={kpi.downtime} label="Unplanned Downtime" value="1,842" unit="hr" />
+        <KpiTile icon={kpi.cost} label="Total Maint. Cost" prefix="₹" value="8.74" unit="Cr" />
+        <KpiTile icon={kpi.mtbf} label="Avg MTBF (Fleet)" value="14,200" unit="hr" />
+        <KpiTile icon={kpi.trend} label="MTBF Trend" value="−8.3" unit="%" valueClassName="text-warning" />
+        <KpiTile icon={kpi.mostFailing} label="Most Failure-Prone" value="FCV-D-022" hint="14 failures · 5.7% of fleet" valueClassName="type-display-lg" />
       </div>
 
       {/* Charts row */}

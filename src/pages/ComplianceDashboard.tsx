@@ -4,6 +4,7 @@ import { toneChart, toneOf } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
 import { zoneTone } from "@/lib/status";
+import { kpi } from "@/lib/icons";
 
 interface ComplianceDomain {
   domain: string;
@@ -53,12 +54,12 @@ const ComplianceDashboard = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Overall Compliance", value: `${avgCompliance}%`, color: avgCompliance >= 85 ? "" : "text-warning" },
-          { label: "Domains Assessed", value: DOMAINS.length.toString() },
-          { label: "Open Findings", value: totalGaps.toString()},
-          { label: "Critical Gaps", value: DOMAINS.filter(d => d.status === "red").length.toString(), color: "text-error" },
+          { label: "Overall Compliance", icon: kpi.compliance, value: `${avgCompliance}%`, color: avgCompliance >= 85 ? "" : "text-warning" },
+          { label: "Domains Assessed", icon: kpi.groups, value: DOMAINS.length.toString() },
+          { label: "Open Findings", icon: kpi.findings, value: totalGaps.toString()},
+          { label: "Critical Gaps", icon: kpi.gap, value: DOMAINS.filter(d => d.status === "red").length.toString(), color: "text-error" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 

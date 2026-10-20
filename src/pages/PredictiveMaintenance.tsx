@@ -1,5 +1,5 @@
 import { Fragment, useState } from "react";
-import { icons } from "@/lib/icons";
+import { icons, kpi } from "@/lib/icons";
 import { toast } from "sonner";
 import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
@@ -60,14 +60,14 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
       {/* Summary Metrics */}
       <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3">
         {[
-          { label: "Actions This Week", value: totalActions.toString() },
-          { label: "Est. Action Cost", value: `₹${totalActionCost.toFixed(1)}L` },
-          { label: "Consequence Cost (No Action)", value: `₹${(totalConsequence / 100).toFixed(2)} Cr` },
-          { label: "Projected Savings", value: `₹${((totalConsequence - totalActionCost * 10) / 100).toFixed(2)} Cr` },
-          { label: "Completed This Month", value: `${completed + 67}` },
-          { label: "Compliance Rate", value: "74%", color: "text-warning" },
+          { label: "Actions This Week", icon: kpi.actions, value: totalActions.toString() },
+          { label: "Est. Action Cost", icon: kpi.cost, value: `₹${totalActionCost.toFixed(1)}L` },
+          { label: "Consequence Cost (No Action)", icon: kpi.cost, value: `₹${(totalConsequence / 100).toFixed(2)} Cr` },
+          { label: "Projected Savings", icon: kpi.savings, value: `₹${((totalConsequence - totalActionCost * 10) / 100).toFixed(2)} Cr` },
+          { label: "Completed This Month", icon: kpi.done, value: `${completed + 67}` },
+          { label: "Compliance Rate", icon: kpi.compliance, value: "74%", color: "text-warning" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
@@ -111,6 +111,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                     <td className="py-2 px-3 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="type-label-sm inline-flex h-7 items-center whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
+                          <icons.createWorkOrder className="mr-1 size-[13px]" aria-hidden />
                           Create WO
                         </button>
                         {expandedRow === rec.id ? <icons.chevronUp className="size-3 text-icon-quaternary" aria-hidden /> : <icons.chevronDown className="size-3 text-icon-quaternary" aria-hidden />}
@@ -175,7 +176,10 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                 onClick={() => createWorkOrder(woPanel)}
                 className="type-label-md h-11 w-full rounded-full bg-action-primary text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active"
               >
-                Confirm and create work order
+                <span className="inline-flex items-center justify-center gap-2">
+                  <icons.createWorkOrder className="size-[13px]" aria-hidden />
+                  Confirm and create work order
+                </span>
               </button>
             </div>
           </div>

@@ -2,6 +2,7 @@ import type { OEEMetrics } from "@/hooks/usePlantData";
 import { motion } from "framer-motion";
 import { seriesColor } from "@/components/dashboard/chartTheme";
 import { Panel, Unit } from "@/components/ui/primitives";
+import { panelIcon } from "@/lib/icons";
 
 interface OEEGaugeProps { label: string; value: number; color: string; }
 
@@ -28,7 +29,7 @@ const OEEGauge = ({ label, value, color }: OEEGaugeProps) => {
 };
 
 const OEEDashboard = ({ oee }: { oee: OEEMetrics }) => (
-  <Panel title="Overall Equipment Effectiveness">
+  <Panel title="Overall Equipment Effectiveness" icon={panelIcon.oee}>
     <div className="flex flex-wrap items-center justify-around gap-4">
       {/* The gauge colour is fixed per gauge (it does not change with the value), so it is a series colour, not a status. Overall OEE is a fourth gauge of the same kind. */}
       <OEEGauge label="Availability" value={oee.availability} color={seriesColor(0)} />

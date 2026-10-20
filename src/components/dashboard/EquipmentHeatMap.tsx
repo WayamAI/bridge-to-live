@@ -3,6 +3,7 @@ import { Panel } from "@/components/ui/primitives";
 import type { Equipment } from "@/hooks/usePlantData";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { createRng } from "@/lib/seeded";
+import { panelIcon } from "@/lib/icons";
 
 interface EquipmentHeatMapProps {
   equipment: Equipment[];
@@ -62,7 +63,7 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
   }, [equipment]);
 
   return (
-    <Panel title="Equipment Health Heat Map" padded={false}>
+    <Panel title="Equipment Health Heat Map" icon={panelIcon.heatMap} padded={false}>
       <div className="overflow-x-auto">
         <table className="w-full type-body-sm">
           <thead>

@@ -4,6 +4,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
 import { complexityTone, toneOf } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
+import { energyKpiIcon, kpi } from "@/lib/icons";
 
 interface EnergyPageProps {
   energyMetrics: EnergyMetric[];
@@ -30,6 +31,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
           return (
             <KpiTile
               key={m.label}
+              icon={energyKpiIcon[m.label] ?? kpi.efficiency}
               label={m.label}
               value={formatNumber(m.value)}
               unit={m.unit}

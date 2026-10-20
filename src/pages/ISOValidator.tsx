@@ -3,6 +3,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { validationStatus, workflowTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
+import { kpi, icons, emptyIcon } from "@/lib/icons";
 
 interface ValidationRecord {
   id: string;
@@ -48,12 +49,12 @@ const ISOValidator = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Validation Checks", value: formatNumber(totalChecks) },
-          { label: "Passing", value: formatNumber(totalPass) },
-          { label: "Failures", value: formatNumber(totalFail), color: "text-error" },
-          { label: "Warnings", value: formatNumber(totalWarn), color: "text-warning" },
+          { label: "Total Validation Checks", icon: kpi.count, value: formatNumber(totalChecks) },
+          { label: "Passing", icon: kpi.ok, value: formatNumber(totalPass) },
+          { label: "Failures", icon: kpi.error, value: formatNumber(totalFail), color: "text-error" },
+          { label: "Warnings", icon: icons.warning, value: formatNumber(totalWarn), color: "text-warning" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
@@ -124,7 +125,7 @@ const ISOValidator = () => {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5}><EmptyState title="No records match this filter" className="min-h-[96px]" /></td>
+                  <td colSpan={5}><EmptyState icon={emptyIcon.noMatch} title="No records match this filter" className="min-h-[96px]" /></td>
                 </tr>
               )}
             </tbody>

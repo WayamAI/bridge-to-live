@@ -7,6 +7,7 @@ import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { chatteringStatus } from "@/lib/status";
 import { formatDate } from "@/lib/format";
 import { createRng } from "@/lib/seeded";
+import { kpi } from "@/lib/icons";
 
 const rnd = createRng(2402);
 
@@ -55,12 +56,12 @@ const AlarmAnalytics = ({ alerts }: Props) => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Alarms Today", value: totalToday.toString() },
-          { label: "Avg Alarm Rate", value: `${avgRate}/hr` },
-          { label: "Avg Ack Time", value: avgAckTime },
-          { label: "Time in High-Alarm State", value: highAlarmPct },
+          { label: "Total Alarms Today", icon: kpi.count, value: totalToday.toString() },
+          { label: "Avg Alarm Rate", icon: kpi.alarmRate, value: `${avgRate}/hr` },
+          { label: "Avg Ack Time", icon: kpi.duration, value: avgAckTime },
+          { label: "Time in High-Alarm State", icon: kpi.alarmState, value: highAlarmPct },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
       </div>
 

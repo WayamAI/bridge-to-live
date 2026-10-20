@@ -5,6 +5,7 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from
 import { toneChart } from "@/lib/status";
 import { formatDate } from "@/lib/format";
 import { createRng } from "@/lib/seeded";
+import { panelIcon } from "@/lib/icons";
 
 const AlarmFrequencyChart = () => {
   const data = useMemo(() => {
@@ -25,6 +26,7 @@ const AlarmFrequencyChart = () => {
   return (
     <Panel
       title="Alarm Frequency · 30 Days"
+      icon={panelIcon.alarmFrequency}
     >
       <div className="type-caption mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-quaternary">
           <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-sm bg-series-4 inline-block" /> Critical</span>

@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { icons } from "@/lib/icons";
+import { icons, kpi } from "@/lib/icons";
 import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel, PillSelect, Unit } from "@/components/ui/primitives";
@@ -65,7 +65,7 @@ const WhatIfSimulator = ({ equipment }: Props) => {
 
   const metrics = [
     { label: "Predicted Failures (90d)", baseVal: results.baseline.failures, scenVal: results.scenario.failures, unit: "" },
-    { label: "Unplanned Downtime", baseVal: results.baseline.downtime, scenVal: results.scenario.downtime, unit: " hr/yr" },
+    { label: "Unplanned Downtime", icon: kpi.downtime, baseVal: results.baseline.downtime, scenVal: results.scenario.downtime, unit: " hr/yr" },
     { label: "Maintenance Cost", baseVal: results.baseline.maintenanceCost, scenVal: results.scenario.maintenanceCost, unit: "₹", prefix: true, suffix: "L" },
     { label: "Energy Cost", baseVal: results.baseline.energyCost, scenVal: results.scenario.energyCost, unit: "₹", prefix: true, suffix: "L" },
     { label: "OEE", baseVal: results.baseline.oee, scenVal: results.scenario.oee, unit: "%" },
@@ -138,7 +138,10 @@ const WhatIfSimulator = ({ equipment }: Props) => {
 
             <button onClick={saveScenario}
               className="type-label-sm h-8 w-full rounded-full border border-hairline bg-action text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
-              Save scenario
+              <span className="inline-flex items-center justify-center gap-1.5">
+                <icons.save className="size-[13px]" aria-hidden />
+                Save scenario
+              </span>
             </button>
           </div>
         </Panel>

@@ -1,5 +1,6 @@
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
-import { icons } from "@/lib/icons";
+import type { LucideIcon } from "lucide-react";
+import { emptyIcon, icons, iconSize } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
 import type { EquipmentStatus } from "@/hooks/usePlantData";
@@ -34,6 +35,7 @@ export const Unit = ({ children, className }: { children: ReactNode; className?:
 /** Content card: 8px radius, hairline border, no shadow, optional eyebrow header. Titles are Title Case in source. */
 export const Panel = ({
   title,
+  icon: Icon,
   action,
   padded = true,
   className,
@@ -41,6 +43,8 @@ export const Panel = ({
   children,
 }: {
   title?: ReactNode;
+  /** Header icon. Only the Dashboard panels use one; leave it off everywhere else. */
+  icon?: LucideIcon;
   action?: ReactNode;
   padded?: boolean;
   className?: string;
@@ -50,7 +54,10 @@ export const Panel = ({
   <section className={cn("flex flex-col overflow-hidden rounded-lg border border-hairline bg-container", className)}>
     {title && (
       <header className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-hairline px-4">
-        <h3 className="type-eyebrow truncate text-quaternary">{title}</h3>
+        <h3 className="type-eyebrow flex min-w-0 items-center gap-2 text-quaternary">
+          {Icon && <Icon className={cn(iconSize.kpi, "shrink-0 text-icon-tertiary")} aria-hidden />}
+          <span className="truncate">{title}</span>
+        </h3>
         {action && <div className="shrink-0">{action}</div>}
       </header>
     )}
@@ -75,6 +82,7 @@ const splitValue = (v: ReactNode) => {
  */
 export const KpiTile = ({
   label,
+  icon: Icon,
   value,
   prefix,
   unit,
@@ -87,6 +95,8 @@ export const KpiTile = ({
   children,
 }: {
   label: string;
+  /** What the figure is, as a 14px greyscale icon top-right (see `kpi` in lib/icons.ts). */
+  icon: LucideIcon;
   value: ReactNode;
   prefix?: string;
   unit?: string;
@@ -101,7 +111,10 @@ export const KpiTile = ({
   const parts = prefix === undefined && unit === undefined ? splitValue(value) : null;
   const body = (
     <>
-      <span className="type-eyebrow text-quaternary">{label}</span>
+      <span className="flex items-start justify-between gap-2">
+        <span className="type-eyebrow text-quaternary">{label}</span>
+        <Icon className={cn(iconSize.kpi, "mt-px shrink-0 text-icon-tertiary")} aria-hidden />
+      </span>
       <span className={cn("type-display-xl sm:type-display-2xl tabular text-foreground", valueClassName)}>
         {(parts ? parts.prefix : prefix) && <Unit className="ml-0 mr-0.5">{parts ? parts.prefix : prefix}</Unit>}
         {parts ? parts.num : value}
@@ -155,9 +168,10 @@ export const EquipmentStatusLabel = ({ status }: { status?: EquipmentStatus | nu
   return <QuietStatus tone={toneOf(equipmentTone, status)}>{label}</QuietStatus>;
 };
 
-/** Plain statement, no illustration. `action` is for a single way out (a link back), not a call to action. */
-export const EmptyState = ({ title = "Nothing to show", detail, action, className }: { title?: string; detail?: string; action?: ReactNode; className?: string }) => (
+/** A 24px greyscale icon and a plain statement. `action` is for a single way out (a link back), not a call to action. */
+export const EmptyState = ({ title = "Nothing to show", detail, action, icon: Icon = emptyIcon.nothing, className }: { title?: string; detail?: string; action?: ReactNode; icon?: LucideIcon; className?: string }) => (
   <div className={cn("flex min-h-[160px] flex-col items-center justify-center gap-1.5 px-6 text-center", className)}>
+    <Icon className={cn(iconSize.empty, "mb-1 text-icon-quaternary")} aria-hidden />
     <p className="type-body-md text-tertiary">{title}</p>
     {detail && <p className="type-body-sm text-quaternary">{detail}</p>}
     {action && <div className="mt-2">{action}</div>}

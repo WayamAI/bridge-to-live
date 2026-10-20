@@ -3,7 +3,7 @@ import { EmptyState, Panel, StatusDot } from "@/components/ui/primitives";
 import type { Tone } from "@/lib/status";
 import { toneOf } from "@/lib/status";
 import { formatDate } from "@/lib/format";
-import { eventIcon } from "@/lib/icons";
+import { eventIcon, emptyIcon, panelIcon } from "@/lib/icons";
 
 interface MaintenanceTimelineProps {
   events: MaintenanceEvent[];
@@ -26,10 +26,11 @@ const MaintenanceTimeline = ({ events }: MaintenanceTimelineProps) => {
   return (
     <Panel
       title="Upcoming Maintenance · Next 60 Days"
+      icon={panelIcon.upcoming}
       action={<span className="type-caption tabular text-quaternary">{upcoming.length} events</span>}
     >
       {upcoming.length === 0 ? (
-        <EmptyState title="No maintenance in the next 60 days" className="min-h-[96px]" />
+        <EmptyState icon={emptyIcon.noEvents} title="No maintenance in the next 60 days" className="min-h-[96px]" />
       ) : (
         <div className="relative flex gap-2 overflow-x-auto pb-2">
           {upcoming.map((event) => {

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { icons } from "@/lib/icons";
+import { icons, kpi, emptyIcon } from "@/lib/icons";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
@@ -58,12 +58,12 @@ const LoadOptimisation = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Identified Savings", value: `₹${(totalSaving / 100).toFixed(2)} Cr/yr` },
-          { label: "Selected Scenario Savings", value: `₹${selectedSaving}L/yr` },
-          { label: "Opportunities Identified", value: OPPORTUNITIES.length.toString() },
-          { label: "Implemented", value: OPPORTUNITIES.filter(o => o.status === "Implemented").length.toString() },
+          { label: "Total Identified Savings", icon: kpi.savings, value: `₹${(totalSaving / 100).toFixed(2)} Cr/yr` },
+          { label: "Selected Scenario Savings", icon: kpi.savings, value: `₹${selectedSaving}L/yr` },
+          { label: "Opportunities Identified", icon: kpi.opportunity, value: OPPORTUNITIES.length.toString() },
+          { label: "Implemented", icon: kpi.done, value: OPPORTUNITIES.filter(o => o.status === "Implemented").length.toString() },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
       </div>
 
@@ -119,7 +119,7 @@ const LoadOptimisation = () => {
         <Panel title="Scenario Impact" padded={false}>
           <div className="p-4 space-y-3">
             {selected.size === 0 ? (
-              <EmptyState title="Select opportunities to model combined savings" />
+              <EmptyState icon={emptyIcon.select} title="Select opportunities to model combined savings" />
             ) : (
               <>
                 <div className="grid grid-cols-2 gap-3">

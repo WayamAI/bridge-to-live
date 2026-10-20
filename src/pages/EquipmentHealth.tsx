@@ -5,7 +5,7 @@ import { AnimatePresence } from "framer-motion";
 import type { Equipment } from "@/hooks/usePlantData";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
 import FactoryFloor from "@/components/twin/FactoryFloor";
-import { icons } from "@/lib/icons";
+import { icons, emptyIcon } from "@/lib/icons";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { Link, useLocation } from "react-router-dom";
 
@@ -76,6 +76,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
       <PageHeader>
         <Panel>
           <EmptyState
+            icon={emptyIcon.select}
             title="Select equipment"
             detail="Pick a machine in the registry to see its health, live sensors and maintenance."
             action={
@@ -177,7 +178,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={7}><EmptyState title="No equipment match this filter" className="min-h-[96px]" /></td>
+                    <td colSpan={7}><EmptyState icon={emptyIcon.noMatch} title="No equipment match this filter" className="min-h-[96px]" /></td>
                   </tr>
                 )}
               </tbody>

@@ -3,6 +3,7 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from
 import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel , KpiTile } from "@/components/ui/primitives";
+import { kpi } from "@/lib/icons";
 
 const MONTHLY_COST = [
   { month: "Oct '25", planned: 42, predictive: 28, corrective: 18, emergency: 8 },
@@ -41,12 +42,12 @@ const MaintenanceCost = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "YTD Spend", value: `₹${(totalYTD / 100).toFixed(2)} Cr` },
-          { label: "YTD Budget", value: `₹${(budgetYTD / 100).toFixed(2)} Cr` },
-          { label: "Variance", value: `${variance}% under` },
-          { label: "Planned:Reactive Ratio", value: "82:18" },
+          { label: "YTD Spend", icon: kpi.spend, value: `₹${(totalYTD / 100).toFixed(2)} Cr` },
+          { label: "YTD Budget", icon: kpi.budget, value: `₹${(budgetYTD / 100).toFixed(2)} Cr` },
+          { label: "Variance", icon: kpi.variance, value: `${variance}% under` },
+          { label: "Planned:Reactive Ratio", icon: kpi.ratio, value: "82:18" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
       </div>
 

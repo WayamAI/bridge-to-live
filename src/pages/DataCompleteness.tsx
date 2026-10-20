@@ -5,6 +5,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { completenessState } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
+import { kpi } from "@/lib/icons";
 
 const COMPLETENESS_DATA = [
   { category: "Equipment tags", total: 2847, complete: 2847, pct: 100, color: toneChart.success },
@@ -28,12 +29,12 @@ const DataCompleteness = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Overall Completeness", value: `${overall}%`, color: overall >= 90 ? "" : "text-warning" },
-          { label: "Categories Tracked", value: COMPLETENESS_DATA.length.toString() },
-          { label: "At 100%", value: COMPLETENESS_DATA.filter(d => d.pct === 100).length.toString() },
-          { label: "Below 80%", value: atRisk.toString(), color: atRisk > 0 ? "text-error" : "" },
+          { label: "Overall Completeness", icon: kpi.completeness, value: `${overall}%`, color: overall >= 90 ? "" : "text-warning" },
+          { label: "Categories Tracked", icon: kpi.categories, value: COMPLETENESS_DATA.length.toString() },
+          { label: "At 100%", icon: kpi.ok, value: COMPLETENESS_DATA.filter(d => d.pct === 100).length.toString() },
+          { label: "Below 80%", icon: kpi.below, value: atRisk.toString(), color: atRisk > 0 ? "text-error" : "" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 

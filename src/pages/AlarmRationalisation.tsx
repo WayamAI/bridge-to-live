@@ -6,6 +6,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { rationalisationStatus } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
+import { kpi } from "@/lib/icons";
 
 interface AlarmPoint {
   id: string;
@@ -47,12 +48,12 @@ const AlarmRationalisation = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Total Alarm Points", value: formatNumber(total) },
-          { label: "Reviewed", value: `${formatNumber(reviewed)} (${Math.round(reviewed / total * 100)}%)` },
-          { label: "Pending Review", value: "453" },
-          { label: "Chattering Eliminated", value: "82" },
+          { label: "Total Alarm Points", icon: kpi.count, value: formatNumber(total) },
+          { label: "Reviewed", icon: kpi.review, value: `${formatNumber(reviewed)} (${Math.round(reviewed / total * 100)}%)` },
+          { label: "Pending Review", icon: kpi.pending, value: "453" },
+          { label: "Chattering Eliminated", icon: kpi.chattering, value: "82" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
       </div>
 

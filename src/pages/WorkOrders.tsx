@@ -3,6 +3,7 @@ import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/pr
 import { workOrderStatus, workOrderType, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { shiftIso } from "@/lib/mockDates";
+import { kpi, emptyIcon } from "@/lib/icons";
 
 interface WorkOrder {
   id: string;
@@ -56,10 +57,10 @@ const WorkOrders = () => {
     >
 
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <KpiTile label="Open" value={open} />
-        <KpiTile label="In Progress" value={inProgress} />
-        <KpiTile label="Completed (Month)" value={completed} />
-        <KpiTile label="Overdue" value={overdue} valueClassName={overdue > 0 ? "text-error" : ""} />
+        <KpiTile icon={kpi.open} label="Open" value={open} />
+        <KpiTile icon={kpi.inProgress} label="In Progress" value={inProgress} />
+        <KpiTile icon={kpi.done} label="Completed (Month)" value={completed} />
+        <KpiTile icon={kpi.overdue} label="Overdue" value={overdue} valueClassName={overdue > 0 ? "text-error" : ""} />
       </div>
 
       {/* Table */}
@@ -97,7 +98,7 @@ const WorkOrders = () => {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={10}><EmptyState title="No work orders match this filter" className="min-h-[96px]" /></td>
+                  <td colSpan={10}><EmptyState icon={emptyIcon.noMatch} title="No work orders match this filter" className="min-h-[96px]" /></td>
                 </tr>
               )}
             </tbody>

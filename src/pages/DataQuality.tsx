@@ -3,6 +3,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { sourceHealth, workflowTone } from "@/lib/status";
 import { shiftTimestamp } from "@/lib/mockDates";
+import { kpi } from "@/lib/icons";
 
 const DATA_SOURCES = [
   { source: "Honeywell Experion DCS", freshness: 100, completeness: 99.8, accuracy: 99.9, status: "Healthy" },
@@ -38,12 +39,12 @@ const DataQuality = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Avg Data Freshness", value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
-          { label: "Avg Completeness", value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "" : "text-warning" },
-          { label: "Healthy Sources", value: `${healthy}/${DATA_SOURCES.length}` },
-          { label: "Total Ingestion Errors (24h)", value: "102", color: "text-warning" },
+          { label: "Avg Data Freshness", icon: kpi.freshness, value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
+          { label: "Avg Completeness", icon: kpi.completeness, value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "" : "text-warning" },
+          { label: "Healthy Sources", icon: kpi.health, value: `${healthy}/${DATA_SOURCES.length}` },
+          { label: "Total Ingestion Errors (24h)", icon: kpi.error, value: "102", color: "text-warning" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 

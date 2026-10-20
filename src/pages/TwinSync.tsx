@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { icons } from "@/lib/icons";
+import { icons, kpi } from "@/lib/icons";
 import { toast } from "sonner";
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
@@ -50,12 +50,12 @@ const TwinSync = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Last Sync", value: "6 days ago" },
-          { label: "Records Synced", value: "240,412" },
-          { label: "Sync Errors", value: "2", color: "text-warning" },
-          { label: "Coverage", value: "99.99%" },
+          { label: "Last Sync", icon: kpi.time, value: "6 days ago" },
+          { label: "Records Synced", icon: kpi.records, value: "240,412" },
+          { label: "Sync Errors", icon: kpi.error, value: "2", color: "text-warning" },
+          { label: "Coverage", icon: kpi.percent, value: "99.99%" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 

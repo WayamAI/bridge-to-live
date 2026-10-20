@@ -5,6 +5,7 @@ import ChartLegend from "@/components/dashboard/ChartLegend";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { formatDate } from "@/lib/format";
 import { createRng } from "@/lib/seeded";
+import { panelIcon } from "@/lib/icons";
 
 const PlantHealthTrend = () => {
   const data = useMemo(() => {
@@ -31,6 +32,7 @@ const PlantHealthTrend = () => {
   return (
     <Panel
       title="Plant Health Trend · 90 Days"
+      icon={panelIcon.healthTrend}
     >
       <ChartLegend items={[
         { label: "Health score", color: seriesColor(0), kind: "line" },

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
-import { icons, iconForPath } from "@/lib/icons";
+import { icons, iconForPath, kpi, emptyIcon, panelIcon } from "@/lib/icons";
 import { usePlantData } from "@/hooks/usePlantData";
 import FactoryFloor from "@/components/twin/FactoryFloor";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
@@ -42,25 +42,25 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
   // Values keep a status colour only when the old card did and the state needs attention.
   const kpis = [
     {
-      label: "Overall Plant Health", value: avgHealth.toString(), unit: "%",
+      label: "Overall Plant Health", icon: kpi.health, value: avgHealth.toString(), unit: "%",
       delta: "-2.1%", hint: "vs last month", tone: "error" as const,
       valueClassName: avgHealth >= 90 ? "" : "text-warning",
     },
     {
-      label: "Active Critical Alarms", value: criticalAlarms.toString(),
+      label: "Active Critical Alarms", icon: kpi.critical, value: criticalAlarms.toString(),
       delta: "+3", hint: "vs yesterday", tone: "error" as const,
       valueClassName: criticalAlarms > 0 ? "text-error" : "",
     },
     {
-      label: "Predicted Failures (30d)", value: predictedFailures.toString(),
+      label: "Predicted Failures (30d)", icon: kpi.failures, value: predictedFailures.toString(),
       hint: `${flaggedComponents} components flagged in 90 days`,
     },
     {
-      label: "Energy Efficiency Index", value: "82.1", unit: "%",
+      label: "Energy Efficiency Index", icon: kpi.efficiency, value: "82.1", unit: "%",
       hint: "₹14.2L annual savings opportunity",
     },
     {
-      label: "Handover Readiness", value: handoverPct.toString(), unit: "%",
+      label: "Handover Readiness", icon: kpi.handover, value: handoverPct.toString(), unit: "%",
       hint: "Ratnagiri LNG Phase 2",
       valueClassName: handoverPct >= 90 ? "" : "text-warning",
     },
@@ -106,6 +106,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
 
         <Panel
           title="Top Active Alerts"
+          icon={panelIcon.alerts}
           padded={false}
           action={
             <button
@@ -117,7 +118,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
           }
         >
           {topAlerts.length === 0 ? (
-            <EmptyState title="No active alerts" />
+            <EmptyState icon={emptyIcon.noAlerts} title="No active alerts" />
           ) : (
             <div>
               {topAlerts.map((alert) => (
@@ -151,7 +152,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
             />
           ) : (
             <Panel>
-              <EmptyState title="Select equipment from the heat map or alerts to view details" />
+              <EmptyState icon={emptyIcon.select} title="Select equipment from the heat map or alerts to view details" />
             </Panel>
           )}
         </AnimatePresence>

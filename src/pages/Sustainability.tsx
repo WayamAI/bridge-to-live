@@ -3,6 +3,7 @@ import ChartLegend from "@/components/dashboard/ChartLegend";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel , KpiTile } from "@/components/ui/primitives";
+import { kpi } from "@/lib/icons";
 
 const MONTHLY_EMISSIONS = [
   { month: "Oct '25", scope1: 4200, scope2: 2800, flaring: 840 },
@@ -41,12 +42,12 @@ const Sustainability = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "YTD CO₂e Emissions", value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "" : "text-warning" },
-          { label: "Annual Target", value: `${(target / 1000).toFixed(0)}k T` },
-          { label: "Flaring Reduction", value: "−24%" },
-          { label: "Water Recycling Rate", value: "32%" },
+          { label: "YTD CO₂e Emissions", icon: kpi.emissions, value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "" : "text-warning" },
+          { label: "Annual Target", icon: kpi.target, value: `${(target / 1000).toFixed(0)}k T` },
+          { label: "Flaring Reduction", icon: kpi.gas, value: "−24%" },
+          { label: "Water Recycling Rate", icon: kpi.water, value: "32%" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 

@@ -2,6 +2,7 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle } from "@/component
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
 import { zoneTone, toneOf } from "@/lib/status";
+import { kpi } from "@/lib/icons";
 
 interface PurdueLevel {
   level: string;
@@ -44,12 +45,12 @@ const NetworkSegmentation = () => (
 
     <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
       {[
-        { label: "Network Zones", value: "6 (L0–L4+DMZ)" },
-        { label: "Monitored Connections", value: "48" },
-        { label: "Policy Violations", value: "1", color: "text-error" },
-        { label: "Unmonitored Flows", value: "0" },
+        { label: "Network Zones", icon: kpi.groups, value: "6 (L0–L4+DMZ)" },
+        { label: "Monitored Connections", icon: kpi.connections, value: "48" },
+        { label: "Policy Violations", icon: kpi.risk, value: "1", color: "text-error" },
+        { label: "Unmonitored Flows", icon: kpi.unmonitored, value: "0" },
       ].map(s => (
-        <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+        <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
       ))}
     </div>
 

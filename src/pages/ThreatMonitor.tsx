@@ -2,6 +2,7 @@ import PageHeader from "@/components/layout/PageHeader";
 import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { threatSeverity, threatStatus, workflowTone } from "@/lib/status";
 import { shiftTimestamp } from "@/lib/mockDates";
+import { kpi } from "@/lib/icons";
 
 interface ThreatEvent {
   id: string;
@@ -36,12 +37,12 @@ const ThreatMonitor = () => {
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
         {[
-          { label: "Events (7 Days)", value: THREAT_EVENTS.length.toString() },
-          { label: "Critical Events", value: critical.toString(), color: critical > 0 ? "text-error" : "" },
-          { label: "Active Investigations", value: active.toString() },
-          { label: "Mean Response Time", value: "18 min" },
+          { label: "Events (7 Days)", icon: kpi.events, value: THREAT_EVENTS.length.toString() },
+          { label: "Critical Events", icon: kpi.critical, value: critical.toString(), color: critical > 0 ? "text-error" : "" },
+          { label: "Active Investigations", icon: kpi.investigation, value: active.toString() },
+          { label: "Mean Response Time", icon: kpi.duration, value: "18 min" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
       </div>
 
