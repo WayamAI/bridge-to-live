@@ -2,7 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cel
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
-import { Panel , KpiTile } from "@/components/ui/primitives";
+import { Panel , KpiGrid, KpiTile } from "@/components/ui/primitives";
 import { kpi } from "@/lib/icons";
 import { ChartBox } from "@/components/dashboard/chartKit";
 import ChartLegend from "@/components/dashboard/ChartLegend";
@@ -42,7 +42,7 @@ const MaintenanceCost = () => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "YTD Spend", icon: kpi.spend, value: `₹${(totalYTD / 100).toFixed(2)} Cr` },
           { label: "YTD Budget", icon: kpi.budget, value: `₹${(budgetYTD / 100).toFixed(2)} Cr` },
@@ -51,7 +51,7 @@ const MaintenanceCost = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
-      </div>
+      </KpiGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Monthly Stacked Bar */}

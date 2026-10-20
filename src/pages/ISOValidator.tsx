@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { Chip, EmptyState, KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { validationStatus, workflowTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 import { kpi, icons, emptyIcon } from "@/lib/icons";
@@ -47,7 +47,7 @@ const ISOValidator = () => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Total Validation Checks", icon: kpi.count, value: formatNumber(totalChecks) },
           { label: "Passing", icon: kpi.ok, value: formatNumber(totalPass) },
@@ -56,7 +56,7 @@ const ISOValidator = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Summary by Category */}
       <Panel title="Validation Summary by Category" padded={false}>

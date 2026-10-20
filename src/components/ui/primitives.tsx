@@ -1,3 +1,4 @@
+import { Children } from "react";
 import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
 import type { LucideIcon } from "lucide-react";
 import { emptyIcon, icons, iconSize } from "@/lib/icons";
@@ -141,6 +142,16 @@ export const KpiTile = ({
   ) : (
     <div className={cn(base, className)}>{body}</div>
   );
+};
+
+/**
+ * The row of KPI tiles on a page. Columns follow the tile count so every page lines up the same way:
+ * 4 tiles: 2 columns, then 4 from lg; 5 tiles: 2, 3 from md, 5 from xl; 6 tiles: 2, 3 from md, 6 from 2xl.
+ */
+export const KpiGrid = ({ children, className }: { children: ReactNode; className?: string }) => {
+  const n = Children.count(children);
+  const cols = n >= 6 ? "grid-cols-2 md:grid-cols-3 2xl:grid-cols-6" : n === 5 ? "grid-cols-2 md:grid-cols-3 xl:grid-cols-5" : n === 3 ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-2 lg:grid-cols-4";
+  return <div className={cn("grid gap-3", cols, className)}>{children}</div>;
 };
 
 export const StatusDot = ({ tone = "neutral", className }: { tone?: Tone; className?: string }) => (

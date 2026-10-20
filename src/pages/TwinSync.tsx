@@ -2,7 +2,7 @@ import { useState } from "react";
 import { icons, kpi } from "@/lib/icons";
 import { toast } from "sonner";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { syncRunTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 import { shiftTimestamp } from "@/lib/mockDates";
@@ -48,7 +48,7 @@ const TwinSync = () => {
       }
     >
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Last Sync", icon: kpi.time, value: "6 days ago" },
           { label: "Records Synced", icon: kpi.records, value: "240,412" },
@@ -57,7 +57,7 @@ const TwinSync = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Data Source Mapping */}
       <Panel title="Data Source Mapping · Current Sync State" padded={false}>

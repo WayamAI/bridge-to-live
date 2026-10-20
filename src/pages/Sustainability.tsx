@@ -2,7 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart, Lin
 import ChartLegend from "@/components/dashboard/ChartLegend";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
-import { Panel , KpiTile } from "@/components/ui/primitives";
+import { Panel , KpiGrid, KpiTile } from "@/components/ui/primitives";
 import { kpi } from "@/lib/icons";
 import { ChartBox } from "@/components/dashboard/chartKit";
 
@@ -41,7 +41,7 @@ const Sustainability = () => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "YTD CO₂e Emissions", icon: kpi.emissions, value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "" : "text-warning" },
           { label: "Annual Target", icon: kpi.target, value: `${(target / 1000).toFixed(0)}k T` },
@@ -50,7 +50,7 @@ const Sustainability = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Monthly Emissions */}

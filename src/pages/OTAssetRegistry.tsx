@@ -1,6 +1,6 @@
 import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import { Chip, EmptyState, KpiTile, Panel, SearchField, ToneStatus } from "@/components/ui/primitives";
+import { Chip, EmptyState, KpiGrid, KpiTile, Panel, SearchField, ToneStatus } from "@/components/ui/primitives";
 import { patchStatus, workflowTone } from "@/lib/status";
 import { kpi, emptyIcon } from "@/lib/icons";
 
@@ -88,7 +88,7 @@ const OTAssetRegistry = () => {
       }
     >
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Total OT Assets", icon: kpi.assets, value: OT_ASSETS.length.toString() },
           { label: "Up to Date", icon: kpi.ok, value: upToDate.toString() },
@@ -97,7 +97,7 @@ const OTAssetRegistry = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Table */}
       <Panel title="OT Assets" padded={false}>

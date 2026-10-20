@@ -2,7 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recha
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart, toneOf } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
 import { zoneTone } from "@/lib/status";
 import { kpi } from "@/lib/icons";
 import { ChartBox } from "@/components/dashboard/chartKit";
@@ -55,7 +55,7 @@ const ComplianceDashboard = () => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Overall Compliance", icon: kpi.compliance, value: `${avgCompliance}%`, color: avgCompliance >= 85 ? "" : "text-warning" },
           { label: "Domains Assessed", icon: kpi.groups, value: DOMAINS.length.toString() },
@@ -64,7 +64,7 @@ const ComplianceDashboard = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Compliance Chart */}
       <Panel title="Compliance by Domain (%)">

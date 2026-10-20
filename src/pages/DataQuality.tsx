@@ -1,5 +1,5 @@
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { sourceHealth, workflowTone } from "@/lib/status";
 import { shiftTimestamp } from "@/lib/mockDates";
 import { kpi } from "@/lib/icons";
@@ -36,7 +36,7 @@ const DataQuality = () => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Avg Data Freshness", icon: kpi.freshness, value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
           { label: "Avg Completeness", icon: kpi.completeness, value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "" : "text-warning" },
@@ -45,7 +45,7 @@ const DataQuality = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Source Quality Table */}
       <Panel title="Data Source Quality Scores" padded={false}>

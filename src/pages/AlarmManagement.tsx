@@ -2,7 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Alert } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
-import { EmptyState, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
+import { EmptyState, KpiGrid, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
 import { priorityTone, severityTone, toneBadgeClass, toneOf } from "@/lib/status";
 import { icons, alarmIcon, kpi, emptyIcon } from "@/lib/icons";
 import { formatKey } from "@/lib/format";
@@ -59,12 +59,12 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
       }
     >
       {/* KPI row */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <KpiGrid>
         <KpiTile icon={kpi.alarmsPending} label="Unacknowledged" value={unacknowledged} valueClassName={unacknowledged > 0 ? "text-error" : ""} />
         <KpiTile icon={kpi.critical} label="Critical Active" value={critical} valueClassName={critical > 0 ? "text-error" : ""} />
         <KpiTile icon={kpi.alarmRate} label="Alarm Rate" value={avgRate} unit="/hr" />
         <KpiTile icon={kpi.count} label="Total (24h)" value={alerts.length} />
-      </div>
+      </KpiGrid>
 
       {/* Alarm console table */}
       <Panel title="Alarm Console" padded={false}>

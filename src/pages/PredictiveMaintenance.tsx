@@ -3,7 +3,7 @@ import { icons, kpi } from "@/lib/icons";
 import { toast } from "sonner";
 import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { recommendationStatus, workflowTone } from "@/lib/status";
 import { activatable, activatableFocus } from "@/lib/a11y";
 
@@ -58,7 +58,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
     <PageHeader>
 
       {/* Summary Metrics */}
-      <div className="grid grid-cols-2 md:grid-cols-3 2xl:grid-cols-6 gap-3">
+      <KpiGrid>
         {[
           { label: "Actions This Week", icon: kpi.actions, value: totalActions.toString() },
           { label: "Est. Action Cost", icon: kpi.cost, value: `₹${totalActionCost.toFixed(1)}L` },
@@ -69,7 +69,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Recommendations Table */}
       <Panel title="Maintenance Recommendations · Priority Ranked" padded={false}>

@@ -1,5 +1,5 @@
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { threatSeverity, threatStatus, workflowTone } from "@/lib/status";
 import { shiftTimestamp } from "@/lib/mockDates";
 import { kpi } from "@/lib/icons";
@@ -35,7 +35,7 @@ const ThreatMonitor = () => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Events (7 Days)", icon: kpi.events, value: THREAT_EVENTS.length.toString() },
           { label: "Critical Events", icon: kpi.critical, value: critical.toString(), color: critical > 0 ? "text-error" : "" },
@@ -44,7 +44,7 @@ const ThreatMonitor = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       <Panel title="Security Event Log · Most Recent" padded={false}>
         <div className="overflow-x-auto">

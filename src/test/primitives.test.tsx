@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { emptyIcon, kpi, panelIcon } from "@/lib/icons";
-import { EmptyState, EquipmentStatusLabel, KpiTile, Panel, PillSelect, QuietStatus, SearchField, StatusDot, Unit } from "@/components/ui/primitives";
+import { EmptyState, EquipmentStatusLabel, KpiGrid, KpiTile, Panel, PillSelect, QuietStatus, SearchField, StatusDot, Unit } from "@/components/ui/primitives";
 
 describe("Chronus primitives", () => {
   it("Panel renders an eyebrow title, an action and its body", () => {
@@ -124,5 +124,17 @@ describe("icons in primitives", () => {
     expect(container.querySelector("header svg")).toBeNull();
     rerender(<Panel title="With icon" icon={panelIcon.heatMap}>x</Panel>);
     expect(container.querySelector("header svg")).not.toBeNull();
+  });
+});
+
+describe("KpiGrid", () => {
+  const tiles = (n: number) => Array.from({ length: n }, (_, i) => <KpiTile key={i} icon={kpi.count} label={`T${i}`} value="1" />);
+  it.each([
+    [4, "lg:grid-cols-4"],
+    [5, "xl:grid-cols-5"],
+    [6, "2xl:grid-cols-6"],
+  ])("sets the columns for %i tiles", (n, cls) => {
+    const { container } = render(<KpiGrid>{tiles(n)}</KpiGrid>);
+    expect(container.firstElementChild).toHaveClass("grid", "gap-3", cls);
   });
 });

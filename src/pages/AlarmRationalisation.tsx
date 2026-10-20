@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, PieChart, Pie, Cel
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { rationalisationStatus } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 import { kpi } from "@/lib/icons";
@@ -47,7 +47,7 @@ const AlarmRationalisation = () => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Total Alarm Points", icon: kpi.count, value: formatNumber(total) },
           { label: "Reviewed", icon: kpi.review, value: `${formatNumber(reviewed)} (${Math.round(reviewed / total * 100)}%)` },
@@ -56,7 +56,7 @@ const AlarmRationalisation = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
-      </div>
+      </KpiGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
         {/* Rationalisation Table */}

@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import { Chip, KpiTile, Panel, Unit } from "@/components/ui/primitives";
+import { Chip, KpiGrid, KpiTile, Panel, Unit } from "@/components/ui/primitives";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, Area, ComposedChart, ScatterChart, Scatter, ZAxis, Cell } from "recharts";
 import type { Equipment } from "@/hooks/usePlantData";
 import { AXIS_TITLE_HEIGHT, axisTick, axisTitle, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
@@ -71,14 +71,14 @@ const FailureAnalysis = ({ equipment }: Props) => {
   return (
     <PageHeader>
       {/* Quick stats */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
+      <KpiGrid>
         <KpiTile icon={kpi.failures} label="Total Failures (24 mo)" value="247" />
         <KpiTile icon={kpi.downtime} label="Unplanned Downtime" value="1,842" unit="hr" />
         <KpiTile icon={kpi.cost} label="Total Maint. Cost" prefix="₹" value="8.74" unit="Cr" />
         <KpiTile icon={kpi.mtbf} label="Avg MTBF (Fleet)" value="14,200" unit="hr" />
         <KpiTile icon={kpi.trend} label="MTBF Trend" value="−8.3" unit="%" valueClassName="text-warning" />
         <KpiTile icon={kpi.mostFailing} label="Most Failure-Prone" value="FCV-D-022" hint="14 failures · 5.7% of fleet" valueClassName="type-display-lg" />
-      </div>
+      </KpiGrid>
 
       {/* Charts row */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

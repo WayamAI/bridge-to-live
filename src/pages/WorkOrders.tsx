@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { Chip, EmptyState, KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { workOrderStatus, workOrderType, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { shiftIso } from "@/lib/mockDates";
@@ -56,12 +56,12 @@ const WorkOrders = () => {
       }
     >
 
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+      <KpiGrid>
         <KpiTile icon={kpi.open} label="Open" value={open} />
         <KpiTile icon={kpi.inProgress} label="In Progress" value={inProgress} />
         <KpiTile icon={kpi.done} label="Completed (Month)" value={completed} />
         <KpiTile icon={kpi.overdue} label="Overdue" value={overdue} valueClassName={overdue > 0 ? "text-error" : ""} />
-      </div>
+      </KpiGrid>
 
       {/* Table */}
       <Panel title="Work Orders" padded={false}>

@@ -3,7 +3,7 @@ import type { Alert } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor, timeAxisProps } from "@/components/dashboard/chartTheme";
 import { toneChart, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { chatteringStatus } from "@/lib/status";
 import { formatDate, formatIsoDayMonth } from "@/lib/format";
 import { createRng } from "@/lib/seeded";
@@ -56,7 +56,7 @@ const AlarmAnalytics = ({ alerts }: Props) => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Total Alarms Today", icon: kpi.count, value: totalToday.toString() },
           { label: "Avg Alarm Rate", icon: kpi.alarmRate, value: `${avgRate}/hr` },
@@ -65,7 +65,7 @@ const AlarmAnalytics = ({ alerts }: Props) => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
-      </div>
+      </KpiGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Alarms by Hour */}

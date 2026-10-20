@@ -3,7 +3,7 @@ import { icons, kpi, emptyIcon } from "@/lib/icons";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, Area, AreaChart } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
-import { EmptyState, KpiTile, Panel, ToneStatus, Unit } from "@/components/ui/primitives";
+import { EmptyState, KpiGrid, KpiTile, Panel, ToneStatus, Unit } from "@/components/ui/primitives";
 import { complexityTone, opportunityStatus, workflowTone, toneOf } from "@/lib/status";
 import { formatNumber, formatMonthName } from "@/lib/format";
 import { activatable, activatableFocus } from "@/lib/a11y";
@@ -58,7 +58,7 @@ const LoadOptimisation = () => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Total Identified Savings", icon: kpi.savings, value: `₹${(totalSaving / 100).toFixed(2)} Cr/yr` },
           { label: "Selected Scenario Savings", icon: kpi.savings, value: `₹${selectedSaving}L/yr` },
@@ -67,7 +67,7 @@ const LoadOptimisation = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
-      </div>
+      </KpiGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-4">
         {/* Opportunities Table */}

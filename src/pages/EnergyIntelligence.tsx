@@ -1,7 +1,7 @@
 import { seriesColor } from "@/components/dashboard/chartTheme";
 import type { EnergyMetric } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
 import { complexityTone, toneOf } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 import { energyKpiIcon, kpi } from "@/lib/icons";
@@ -24,7 +24,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
     <PageHeader
     >
       {/* Metric tiles */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
+      <KpiGrid>
         {energyMetrics.map((m) => {
           const deviation = ((m.value - m.setpoint) / m.setpoint * 100).toFixed(1);
           const isOver = m.value > m.setpoint;
@@ -52,7 +52,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
             </KpiTile>
           );
         })}
-      </div>
+      </KpiGrid>
 
       {/* Anomalies */}
       <Panel title="Energy Anomalies · AI Detected">

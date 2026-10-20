@@ -10,7 +10,7 @@ import MaintenanceTimeline from "@/components/dashboard/MaintenanceTimeline";
 import PlantHealthTrend from "@/components/dashboard/PlantHealthTrend";
 import AlarmFrequencyChart from "@/components/dashboard/AlarmFrequencyChart";
 import PageHeader from "@/components/layout/PageHeader";
-import { EmptyState, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
+import { EmptyState, KpiGrid, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
 import { severityTone, toneOf } from "@/lib/status";
 import { useNavigate } from "react-router-dom";
 import { handoverReadiness, predictedFailureCounts } from "@/lib/plantStats";
@@ -88,11 +88,11 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
       })}
     >
       {/* KPI row */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+      <KpiGrid>
         {kpis.map((kpi) => (
           <KpiTile key={kpi.label} {...kpi} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Charts row */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

@@ -1,6 +1,6 @@
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
 import { zoneTone, toneOf } from "@/lib/status";
 import { kpi } from "@/lib/icons";
 
@@ -43,7 +43,7 @@ const CONNECTIONS = [
 const NetworkSegmentation = () => (
   <PageHeader>
 
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <KpiGrid>
       {[
         { label: "Network Zones", icon: kpi.groups, value: "6 (L0–L4+DMZ)" },
         { label: "Monitored Connections", icon: kpi.connections, value: "48" },
@@ -52,7 +52,7 @@ const NetworkSegmentation = () => (
       ].map(s => (
         <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
       ))}
-    </div>
+    </KpiGrid>
 
     {/* Purdue Model */}
     <Panel title="Purdue Model · Network Zone Map" padded={false}>

@@ -2,7 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recha
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { completenessState } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 import { kpi } from "@/lib/icons";
@@ -30,7 +30,7 @@ const DataCompleteness = () => {
   return (
     <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
           { label: "Overall Completeness", icon: kpi.completeness, value: `${overall}%`, color: overall >= 90 ? "" : "text-warning" },
           { label: "Categories Tracked", icon: kpi.categories, value: COMPLETENESS_DATA.length.toString() },
@@ -39,7 +39,7 @@ const DataCompleteness = () => {
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       <Panel title="Completeness by Category">
           <ChartBox height="tall" label="Completeness by category, percent">
