@@ -6,7 +6,7 @@ How this was checked: production build (`vite preview`, port 4180) and `npm run 
 
 ## Final status
 
-Branch `review-fixes` (42 commits on top of origin/main, one per fix). Final gates: `tsc -p tsconfig.app.json` passes; 140 tests pass (was 49); `npm run build` passes; `npm run lint` 0 errors, 9 warnings (was 6 errors, 9 warnings; the warnings are react-refresh in shadcn files). Final sweep: production and dev, 28 routes x light/dark x 1440/390 = 112 combinations each, 0 structural failures, no console warnings except the intentional 404 test route. Chart check (10 chart pages x 2 themes x 2 widths): 0 overlapping or clipped labels, only the two chart heights. Screenshots of all 26 routes in light/dark at 1440 and 390 are kept outside the repo in `D:/bridge-to-live-shots/final/` (104 files), with one folder per earlier batch.
+Branch `review-fixes` (49 commits on top of origin/main, one per fix). Final gates: `tsc -p tsconfig.app.json` passes; 140 tests pass (was 49); `npm run build` passes; `npm run lint` 0 errors, 9 warnings (was 6 errors, 9 warnings; the warnings are react-refresh in shadcn files). Final sweep: production and dev, 28 routes x light/dark x 1440/390 = 112 combinations each, 0 structural failures, no console warnings except the intentional 404 test route. Chart check (10 chart pages x 2 themes x 2 widths): 0 overlapping or clipped labels, only the two chart heights. Screenshots of all 26 routes in light/dark at 1440 and 390 are kept outside the repo in `D:/bridge-to-live-shots/final/` (104 files), with one folder per earlier batch.
 
 | Item | Status | What was done |
 |---|---|---|
@@ -15,7 +15,7 @@ Branch `review-fixes` (42 commits on top of origin/main, one per fix). Final gat
 | c. UI consistency | Done, with the exceptions below | KPI grid columns follow the tile count (`KpiGrid`); two chart heights; one rupee and month format (`format.ts`); Chronus checkbox and slider; Plant Overview keeps its right-hand column; one name per page from `nav.ts`; log timestamps and mock dates relative to now. |
 | d. Login flow | Done | The route guard already blocked every route without a session (verified in a fresh profile). Added: `/login` redirects when signed in, session shared across tabs (`localStorage`, 12 h expiry, validated, cleared on logout in every tab), visible Log out button, storage-blocked mode works. |
 | e. Functional issues / tree view | Done; tree view not found | No tree view exists in PlantMind; the reviewer's tree-view item likely refers to the BOM Sync EBOM tree; asked reviewer to confirm. The sidebar got collapsible groups. Fixed: T1 (deterministic chart data), T2 (handover 83% on both screens), T3 (Weibull, failure scatter, Sustainability target, RUL line, Plant Health legend), T4 ("Rate Of Change"), T5-T6 not touched (see below), T7 (keyboard on rows and headers), T8 (duplicate key), T9 (mock dates), T11 (lint errors), router future flags, Escape on the drawer, predicted failures and Upcoming Maintenance, sparklines, Failure Analysis timeline, What-If baseline and the extra 0.9 factor. |
-| f. Colours, icons, typography, casing, spacing, component styling | Done, with the exceptions below | As c; text contrast raised to WCAG AA (Chronus deviation 11). |
+| f. Colours, icons, typography, casing, spacing, component styling | Done, with the exception below | As c; text contrast raised to WCAG AA (Chronus deviation 11); sentence case for labels and Title Case for panel titles, abbreviations written out (full list in "Casing and wording changes" below); the Equipment Detail panel scrolls inside its panel. |
 | g. Graphs and sidebar | Done | Charts: one legend style, one axis style, no overlapping or clipped ticks at 1440 or 390, % and axis titles where the unit is not obvious, accessible names, readable empty states, wrapped category labels. Sidebar: 6 collapsible groups plus Dashboard, Settings in the footer, state remembered per viewer, all open on a first visit. |
 | h. Verified on the running app | Done locally; preview not checkable | Every commit carries a before/after check on the production preview (and dev for console warnings). The Vercel preview is behind Vercel Authentication, so it could not be fetched from here; `vercel.json` adds the SPA rewrite for direct loads. |
 
@@ -23,7 +23,7 @@ Branch `review-fixes` (42 commits on top of origin/main, one per fix). Final gat
 
 - **T5 Settings inputs reset when you leave the tab** and **T6 toasts ignore the app theme**: not in the agreed order of work; unchanged.
 - **T12-T15 housekeeping** (root tsconfig checks nothing, 1.1 MB chunk, `animate-pulse-subtle` undefined, TopBar clock re-render, Playwright config path, README template text): unchanged.
-- **Casing and wording** (`ACK` vs "Acknowledge", abbreviations such as "Total Maint. Cost"), **button variants** (primary/secondary/ghost as one component), and the **Equipment Detail panel being clipped at the bottom**: not done.
+- **One shared button component** (primary/secondary/ghost): the buttons are consistent by hand, not by a component; unchanged.
 - **Clipped last column in two half-width tables** (Dashboard heat map "Vibration", Failure Analysis Pareto "Trend"): unchanged; both scroll inside their panel as at baseline.
 - **Simulator formulas** other than the baseline failures and the stray 0.9 factor: unchanged.
 - **Production domain:** see the owner-action note below; not a code issue.
@@ -43,6 +43,162 @@ Branch `review-fixes` (42 commits on top of origin/main, one per fix). Final gat
 | quaternary text contrast | 161 of 161 elements below 4.5:1 | 0 below (lowest 4.55 light, 4.76 dark) |
 | Plant Overview right column | blank | Select equipment panel |
 | lint errors | 5 | 0 |
+| Equipment Detail panel | sensors capped at 320 px of 1556 (Plant Overview) and the panel stuck out below the registry | from lg the panel takes the row height, sensors scroll inside it with Maintenance pinned; below lg everything fits (checked 1440 and 390, light and dark) |
+| casing and abbreviations | 109 Title Case labels, 14 abbreviations or all-caps labels | 0 and 0 (147 changes, listed below) |
+
+## Casing and wording changes
+
+Rule: panel titles Title Case; table headers, KPI and form labels, tab, legend and series names, statuses and eyebrow labels sentence case; page names as in nav.ts; non-standard abbreviations written out; domain acronyms kept (OEE, MTBF, RUL, PM, OT, MITRE, ISO, CMMS, SAP). Not touched: data (equipment, system and parameter names, tags). Also changed: alarm types use first-letter capitalisation (Rate of change); work-order assignees "Rotating Equip." and "Static Equip." are written out.
+
+| Before | After | Where |
+|---|---|---|
+| 12-Month Net Savings | 12-Month net savings | LoadOptimisation |
+| ACK | Action | AlarmManagement |
+| Action Cost (₹L) | Action cost (₹L) | PredictiveMaintenance |
+| Actions This Week | Actions this week | PredictiveMaintenance |
+| Active Critical Alarms | Active critical alarms | Dashboard |
+| Active Investigations | Active investigations | ThreatMonitor |
+| Active Users | Active users | SettingsPage |
+| After Changes (₹/day) | After changes (₹/day) | LoadOptimisation |
+| Alarm Rate | Alarm rate | AlarmManagement |
+| Alert Configuration | Alert configuration | SettingsPage |
+| Annual Saving | Annual saving | EnergyIntelligence, LoadOptimisation |
+| Annual Target | Annual target | Sustainability |
+| Asset Name | Asset name | OTAssetRegistry |
+| Assigned Team | Assigned team | PredictiveMaintenance |
+| Avg Ack Time | Average acknowledgement time | AlarmAnalytics |
+| Avg Ack Time (min) | Average acknowledgement time (min) | AlarmAnalytics |
+| Avg ack time, minutes (right) | Average acknowledgement time, minutes (right) | AlarmAnalytics |
+| Avg Alarm Rate | Average alarm rate | AlarmAnalytics |
+| Avg Completeness | Average completeness | DataQuality |
+| Avg Data Freshness | Average data freshness | DataQuality |
+| Avg Duration | Average duration | AlarmAnalytics |
+| Avg MTBF (Fleet) | Average MTBF (fleet) | FailureAnalysis |
+| Carbon Emissions | Carbon emissions | WhatIfSimulator |
+| Categories Tracked | Categories tracked | DataCompleteness |
+| Chattering Eliminated | Chattering eliminated | AlarmRationalisation |
+| Completed This Month | Completed this month | PredictiveMaintenance |
+| Compliance Rate | Compliance rate | PredictiveMaintenance |
+| Compressed Air | Compressed air | usePlantData |
+| Consequence Cost (No Action) | Consequence cost (no action) | PredictiveMaintenance |
+| Cooling Water Flow | Cooling water flow | usePlantData |
+| Critical Active | Critical active | AlarmManagement |
+| Critical Events | Critical events | ThreatMonitor |
+| Critical Gaps | Critical gaps | ComplianceDashboard |
+| Delta (Last Sync) | Delta (last sync) | TwinSync |
+| DMZ / Firewall | DMZ / firewall | NetworkSegmentation |
+| Domains Assessed | Domains assessed | ComplianceDashboard |
+| Dominant Failure Mode | Dominant failure mode | RemainingUsefulLife |
+| Electrical Load | Electrical load | usePlantData |
+| End-of-Life / High Risk | End-of-life / high risk | OTAssetRegistry |
+| Energy Cost | Energy cost | WhatIfSimulator |
+| Energy Cost Rate | Energy cost rate | usePlantData |
+| Energy Efficiency Index | Energy efficiency index | Dashboard |
+| Equipment Tag | Equipment tag | PredictiveMaintenance |
+| Est. Action Cost | Estimated action cost | PredictiveMaintenance |
+| Est. Hours | Estimated hours | PredictiveMaintenance |
+| Event Type | Event type | ThreatMonitor |
+| Events (7 Days) | Events (7 days) | ThreatMonitor |
+| Failure Mode | Failure mode | FailureAnalysis, PredictiveMaintenance |
+| Failure Prob. (90d) | Failure probability (90d) | RemainingUsefulLife |
+| Field Devices / Sensors | Field devices / sensors | NetworkSegmentation |
+| Flaring Reduction | Flaring reduction | Sustainability |
+| Handover Readiness | Handover readiness | Dashboard |
+| Healthy Sources | Healthy sources | DataQuality |
+| HIGH Alarm | HIGH alarm | SettingsPage |
+| HIGH-HIGH Alarm | HIGH-HIGH alarm | SettingsPage |
+| In Progress | In progress | WorkOrders |
+| Last Seen | Last seen | OTAssetRegistry |
+| Last Sync | Last sync | HandoverTracker, TwinSync |
+| Live Sensors | Live sensors | EquipmentDetail |
+| Maintenance Cost | Maintenance cost | WhatIfSimulator |
+| Mean Response Time | Mean response time | ThreatMonitor |
+| MITRE Tactic | MITRE tactic | ThreatMonitor |
+| Model Parameters | Model parameters | SettingsPage |
+| Monitored Connections | Monitored connections | NetworkSegmentation |
+| Monthly Failures | Monthly failures | RemainingUsefulLife |
+| Most Failure-Prone | Most failure-prone | FailureAnalysis |
+| MTBF Trend | MTBF trend | FailureAnalysis |
+| Natural Gas | Natural gas | usePlantData |
+| Net Financial Impact (Annual) | Net financial impact (Annual) | WhatIfSimulator |
+| Network Zones | Network zones | NetworkSegmentation |
+| Open Findings | Open findings | ComplianceDashboard |
+| Operating Hours | Operating hours | FailureAnalysis, RemainingUsefulLife |
+| Opportunities Identified | Opportunities identified | LoadOptimisation |
+| Overall Completeness | Overall completeness | DataCompleteness |
+| Overall Compliance | Overall compliance | ComplianceDashboard |
+| Overall Plant Health | Overall plant health | Dashboard |
+| Pass Rate | Pass rate | ISOValidator |
+| Patch Available | Patch available | OTAssetRegistry |
+| Patch Status | Patch status | OTAssetRegistry |
+| Pending Review | Pending review | AlarmRationalisation |
+| Planned:Reactive Ratio | Planned to reactive ratio | MaintenanceCost |
+| Plant Network / Historians | Plant network / historians | NetworkSegmentation |
+| PLCs / RTUs / Controllers | PLCs / RTUs / controllers | NetworkSegmentation |
+| Policy Violations | Policy violations | NetworkSegmentation |
+| Predicted Failures (30d) | Predicted failures (30d) | Dashboard |
+| Predicted Failures (90d) | Predicted failures (90d) | WhatIfSimulator |
+| Primary Focus | Primary focus | SettingsPage |
+| Prob. | Probability | PredictiveMaintenance |
+| Process Unit | Process unit | EquipmentHeatMap, RemainingUsefulLife |
+| Projected Savings | Projected savings | PredictiveMaintenance |
+| Recommended Action | Recommended action | PredictiveMaintenance, RemainingUsefulLife |
+| Records / 24hr | Records / 24 hr | HandoverTracker |
+| Records Synced | Records synced | TwinSync |
+| Repair Cost (₹L) | Repair cost (₹L) | FailureAnalysis |
+| Scale Parameter (η) | Scale parameter (η) | FailureAnalysis |
+| Scope 1 · Direct | Scope 1 · direct | Sustainability |
+| Scope 2 · Grid | Scope 2 · grid | Sustainability |
+| Screen Access | Screen access | SettingsPage |
+| Selected Scenario Savings | Selected scenario savings | LoadOptimisation |
+| Sensor Thresholds | Sensor thresholds | SettingsPage |
+| Shape Parameter (β) | Shape parameter (β) | FailureAnalysis |
+| Source System | Source system | TwinSync |
+| Source → Destination | Source → destination | NetworkSegmentation |
+| Spare Parts | Spare parts | PredictiveMaintenance |
+| Steam Consumption | Steam consumption | usePlantData |
+| Sync Errors | Sync errors | TwinSync |
+| Tag Pattern | Tag pattern | SettingsPage |
+| Time in High-Alarm State | Time in high-alarm state | AlarmAnalytics |
+| Total Alarm Points | Total alarm points | AlarmRationalisation |
+| Total Alarms | Total alarms | AlarmAnalytics |
+| Total Alarms Today | Total alarms today | AlarmAnalytics |
+| Total Checks | Total checks | ISOValidator |
+| Total Consumption | Total consumption | Sustainability |
+| Total Failures (24 mo) | Total failures (24 months) | FailureAnalysis |
+| Total Identified Savings | Total identified savings | LoadOptimisation |
+| Total Ingestion Errors (24h) | Total ingestion errors (24h) | DataQuality |
+| Total Maint. Cost | Total maintenance cost | FailureAnalysis |
+| Total OT Assets | Total OT assets | OTAssetRegistry |
+| Total Records | Total records | TwinSync |
+| Total Required | Total required | DataCompleteness |
+| Total Validation Checks | Total validation checks | ISOValidator |
+| Unmonitored Flows | Unmonitored flows | NetworkSegmentation |
+| Unplanned Downtime | Unplanned downtime | FailureAnalysis, WhatIfSimulator |
+| Up to Date | Up to date | OTAssetRegistry |
+| User Management | User management | SettingsPage |
+| Water Recycling Rate | Water recycling rate | Sustainability |
+| WO ID | Work order | WorkOrders |
+| Work Order | Work order | PredictiveMaintenance |
+| YTD Budget | Year-to-date budget | MaintenanceCost |
+| YTD CO₂e Emissions | Year-to-date CO₂e emissions | Sustainability |
+| YTD Spend | Year-to-date spend | MaintenanceCost |
+| ACK (table header) | Action | AlarmManagement |
+| ACK (acknowledged row) | Acknowledged | AlarmManagement |
+| Create WO | Create work order | PredictiveMaintenance |
+| Comp B Startup Shift | Compressor B startup shift | WhatIfSimulator |
+| PM Frequency Change | PM frequency change | WhatIfSimulator |
+| Compressed Air Setpoint | Compressed air setpoint | WhatIfSimulator |
+| Operating Throughput | Operating throughput | WhatIfSimulator |
+| Predictive-Only Maintenance | Predictive-only maintenance | WhatIfSimulator |
+| Simulate Equipment Failure | Simulate equipment failure | WhatIfSimulator |
+| Net Financial Impact (Annual) | Net financial impact (annual) | WhatIfSimulator |
+| Hexagon SmartPlant (Eng. twin) | Hexagon SmartPlant (engineering twin) | usePlantData (Connected Systems row) |
+| In-Progress (work-order status) | In progress | WorkOrders, status map |
+| Awaiting Parts (work-order status) | Awaiting parts | WorkOrders, status map |
+| Process Unit / Last Alarm (sortable headers) | Process unit / Last alarm | EquipmentHealth |
+| Completed (Month) | Completed (month) | WorkOrders |
+| 30-Day Alarm Trend + Avg Acknowledgment Time (panel title) | 30-Day Alarm Trend + Average Acknowledgement Time | AlarmAnalytics |
 
 ## Baseline (before any change)
 
