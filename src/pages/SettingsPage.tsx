@@ -30,6 +30,10 @@ const thresholdInput =
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("thresholds");
+  // Threshold edits live here, not in the tab, so they survive switching tabs (they are not saved anywhere: a reload resets them).
+  const [thresholds, setThresholds] = useState(() => THRESHOLD_PRESETS.map((t) => ({ high: String(t.high), highHigh: String(t.highHigh) })));
+  const editThreshold = (i: number, field: "high" | "highHigh", value: string) =>
+    setThresholds((all) => all.map((row, j) => (j === i ? { ...row, [field]: value } : row)));
 
   const tabs = [
     { id: "thresholds", label: "Sensor thresholds" },
@@ -76,8 +80,8 @@ const SettingsPage = () => {
                 <tr key={i} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 tabular text-foreground whitespace-nowrap">{t.tag}</td>
                   <td className="py-2 px-3">{t.parameter}</td>
-                  <td className="py-2 px-3 text-right"><input defaultValue={t.high} aria-label={`${t.tag} ${t.parameter} high alarm`} className={thresholdInput} /></td>
-                  <td className="py-2 px-3 text-right"><input defaultValue={t.highHigh} aria-label={`${t.tag} ${t.parameter} high-high alarm`} className={thresholdInput} /></td>
+                  <td className="py-2 px-3 text-right"><input value={thresholds[i].high} onChange={(e) => editThreshold(i, "high", e.target.value)} aria-label={`${t.tag} ${t.parameter} high alarm`} className={thresholdInput} /></td>
+                  <td className="py-2 px-3 text-right"><input value={thresholds[i].highHigh} onChange={(e) => editThreshold(i, "highHigh", e.target.value)} aria-label={`${t.tag} ${t.parameter} high-high alarm`} className={thresholdInput} /></td>
                   <td className="py-2 px-3 text-tertiary">{t.unit}</td>
                 </tr>
               ))}
