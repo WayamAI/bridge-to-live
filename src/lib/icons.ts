@@ -267,7 +267,7 @@ export const networkZoneIcon: Record<string, IconName> = {
 
 /** Icon sizes by context, in px (the Icon component picks the 48px file up to 24px and the 96px file above). */
 export const iconSize = {
-  sidebar: 20, // sidebar rows and the collapse control
+  sidebar: 22, // sidebar rows and the collapse control
   kpi: 20, // KPI tiles
   header: 20, // page-header icon on phones (the 44px mark replaces it from sm up)
   button: 16, // inside buttons

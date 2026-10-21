@@ -18,10 +18,6 @@ interface SidebarProps {
   mobileOpen: boolean;
 }
 
-// Images cannot take a text colour: an inactive icon is faded and grey, hover brings the colour back, the active item is full colour.
-const navIconState = (active: boolean) =>
-  cn("transition-[opacity,filter] duration-[180ms]", active ? "opacity-100" : "opacity-60 grayscale group-hover:grayscale-0 dark:opacity-75");
-
 type Flyout = { group: string; label: string; top: number };
 
 const scrollingGroups = navGroups.filter((g) => !g.pinned);
@@ -68,21 +64,21 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
         onBlur={hideFlyout}
         className={({ isActive }) =>
           cn(
-            "group flex h-8 items-center gap-3 rounded-lg px-2.5 outline-none transition-colors duration-[180ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
+            "group flex h-[34px] items-center gap-3 rounded-lg px-3 outline-none transition-colors duration-[180ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
             !expanded && "lg:justify-center lg:px-0",
-            isActive ? "bg-raised text-foreground" : "text-tertiary hover:bg-raised hover:text-secondary-foreground",
+            isActive ? "bg-raised-2 text-foreground" : "text-tertiary hover:bg-raised hover:text-secondary-foreground",
           )
         }
       >
         {({ isActive }) => (
           <>
-            <span className="relative grid size-5 shrink-0 place-items-center">
-              <Icon name={icon} size={iconSize.sidebar} className={cn(navIconState(isActive))} />
+            <span className="relative grid size-[22px] shrink-0 place-items-center">
+              <Icon name={icon} size={iconSize.sidebar} />
               {count > 0 && (
                 <span className={cn("absolute -right-1 -top-1 hidden size-2 rounded-full bg-error ring-2 ring-container", !expanded && "lg:block")} aria-hidden />
               )}
             </span>
-            <span className={cn("type-label-sm flex-1 truncate text-left", isActive && "text-foreground", railOnly)}>{label}</span>
+            <span className={cn("type-label-md flex-1 truncate text-left", isActive && "text-foreground", railOnly)}>{label}</span>
             {count > 0 && (
               <span className={cn("type-caption tabular rounded-full bg-error-badge px-1.5 py-0.5 text-badge", railOnly)} aria-hidden>
                 {count}
@@ -134,21 +130,21 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
             const hiddenAlerts = !isOpen ? group.items.some((i) => i.alertBadge) && unacknowledgedAlerts > 0 : false;
             return (
               <div key={group.section} className="flex flex-col">
-                {gi > 0 && <div className={cn("mx-1 my-1 border-t border-hairline", !expanded && "lg:mx-2")} />}
+                {gi > 0 && <div className={cn("my-1 border-t border-hairline", expanded ? "-mx-3" : "-mx-3 lg:-mx-[14px]")} />}
                 <button
                   type="button"
                   aria-expanded={isOpen}
                   aria-controls={panelId}
                   onClick={() => toggleGroup(group.section)}
                   className={cn(
-                    "type-eyebrow flex h-7 shrink-0 items-center justify-between gap-2 rounded-md px-2.5 text-quaternary outline-none transition-colors duration-[180ms] hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active",
+                    "type-eyebrow flex h-8 shrink-0 items-center justify-between gap-2 rounded-md px-3 text-quaternary outline-none transition-colors duration-[180ms] hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active",
                     railOnly && "lg:hidden",
                   )}
                 >
                   <span className="truncate">{group.section}</span>
                   <span className="flex items-center gap-1.5">
                     {hiddenAlerts && <span className="size-1.5 rounded-full bg-error" aria-label={`${unacknowledgedAlerts} unacknowledged alarms`} />}
-                    <Icon name={icons.chevron} size={iconSize.chevron} className={cn("transition-transform duration-[180ms]", !isOpen && "-rotate-90")} />
+                    <Icon name={icons.chevron} size={iconSize.chevron} className={cn("opacity-60 grayscale transition-transform duration-[180ms]", !isOpen && "-rotate-90")} />
                   </span>
                 </button>
                 {/* On the rail (lg and up, not expanded) every group shows its icons; elsewhere the group follows its open state. */}
@@ -172,12 +168,12 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
           aria-expanded={expanded}
           title={expanded ? "Collapse sidebar" : "Expand sidebar"}
           className={cn(
-            "group hidden h-8 w-full items-center gap-3 rounded-lg px-2.5 text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active lg:flex",
+            "group hidden h-[34px] w-full items-center gap-3 rounded-lg px-3 text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active lg:flex",
             !expanded && "lg:justify-center lg:px-0",
           )}
         >
-          <Icon name={icons.collapse} size={iconSize.sidebar} className={cn(navIconState(false), !expanded && "-scale-x-100")} />
-          <span className={cn("type-label-sm", railOnly)}>{expanded ? "Collapse sidebar" : "Expand sidebar"}</span>
+          <Icon name={icons.collapse} size={iconSize.sidebar} className={cn(!expanded && "-scale-x-100")} />
+          <span className={cn("type-label-md", railOnly)}>{expanded ? "Collapse sidebar" : "Expand sidebar"}</span>
         </button>
       </div>
 

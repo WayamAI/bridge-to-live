@@ -131,8 +131,8 @@ describe("icon mapping", () => {
     expect(Object.keys(networkZoneIcon)).toHaveLength(6);
   });
 
-  it("sizes: 20px sidebar and KPI tiles, 16px rows, buttons and controls, 14px chevrons, 48px empty, 96px 404", () => {
-    expect(iconSize).toMatchObject({ sidebar: 20, kpi: 20, header: 20, button: 16, row: 16, control: 16, chevron: 14, empty: 48, notFound: 96 });
+  it("sizes: 22px sidebar, 20px KPI tiles, 16px rows, buttons and controls, 14px chevrons, 48px empty, 96px 404", () => {
+    expect(iconSize).toMatchObject({ sidebar: 22, kpi: 20, header: 20, button: 16, row: 16, control: 16, chevron: 14, empty: 48, notFound: 96 });
   });
 });
 
