@@ -3,7 +3,6 @@ import { MemoryRouter } from "react-router-dom";
 import { beforeEach, describe, expect, it } from "vitest";
 import Sidebar from "@/components/layout/Sidebar";
 import { navGroups } from "@/components/layout/nav";
-import { NAV_GROUPS_KEY } from "@/lib/navState";
 
 const setup = (path = "/alarms") =>
   render(
@@ -23,29 +22,32 @@ describe("Sidebar", () => {
     expect(navGroups.flatMap((g) => g.items)).toHaveLength(26);
   });
 
-  it("opens every group on a first visit", () => {
+  const groups = ["Asset Health", "Maintenance", "Energy", "Alarms", "OT Security", "Handover & Data"];
+  const expanded = () => groups.filter((name) => screen.getByRole("button", { name }).getAttribute("aria-expanded") === "true");
+
+  it("opens only the group holding the current page", () => {
     setup("/alarms");
-    const groups = ["Asset Health", "Maintenance", "Energy", "Alarms", "OT Security", "Handover & Data"];
-    groups.forEach((name) => expect(screen.getByRole("button", { name })).toHaveAttribute("aria-expanded", "true"));
+    expect(expanded()).toEqual(["Alarms"]);
   });
 
-  it("keeps the remembered choice, but always opens the group holding the current page", () => {
-    window.localStorage.setItem(NAV_GROUPS_KEY, JSON.stringify({ Energy: false, Alarms: false }));
-    setup("/alarms");
-    expect(screen.getByRole("button", { name: "Energy" })).toHaveAttribute("aria-expanded", "false");
-    expect(screen.getByRole("button", { name: "Alarms" })).toHaveAttribute("aria-expanded", "true");
+  it("opens no group on the Dashboard", () => {
+    setup("/");
+    expect(expanded()).toEqual([]);
   });
 
-  it("toggles a group and remembers the choice in localStorage", () => {
+  it("is an accordion: opening a group closes the open one", () => {
     setup("/alarms");
     act(() => screen.getByRole("button", { name: "Energy" }).click());
-    expect(screen.getByRole("button", { name: "Energy" })).toHaveAttribute("aria-expanded", "false");
-    expect(JSON.parse(window.localStorage.getItem(NAV_GROUPS_KEY) as string).Energy).toBe(false);
+    expect(expanded()).toEqual(["Energy"]);
+    act(() => screen.getByRole("button", { name: "Energy" }).click());
+    expect(expanded()).toEqual([]);
   });
 
-  it("restores the remembered state", () => {
-    window.localStorage.setItem(NAV_GROUPS_KEY, JSON.stringify({ Maintenance: false }));
+  it("remembers nothing: a toggle writes no storage and a stored map is ignored", () => {
+    window.localStorage.setItem("wayam-nav-groups", JSON.stringify({ Energy: true, Alarms: false }));
     setup("/alarms");
-    expect(screen.getByRole("button", { name: "Maintenance" })).toHaveAttribute("aria-expanded", "false");
+    expect(expanded()).toEqual(["Alarms"]);
+    act(() => screen.getByRole("button", { name: "Maintenance" }).click());
+    expect(window.localStorage.getItem("wayam-nav-groups")).toBe(JSON.stringify({ Energy: true, Alarms: false }));
   });
 });

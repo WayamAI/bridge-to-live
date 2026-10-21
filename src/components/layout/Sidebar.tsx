@@ -8,7 +8,6 @@ import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
 import wayamWordmarkLight from "@/assets/brand/wayam-wordmark-light.svg";
 import wayamWordmarkDark from "@/assets/brand/wayam-wordmark-dark.svg";
 import { locate, navGroups, type NavItem } from "./nav";
-import { initialOpenGroups, readOpenGroups, writeOpenGroups, type OpenGroups } from "@/lib/navState";
 
 interface SidebarProps {
   alerts: Alert[];
@@ -29,17 +28,12 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
   const { pathname } = useLocation();
   const activeSection = locate(pathname).group;
 
-  // Open groups: remembered per viewer; the group holding the current page is always open when you arrive in it.
-  const [open, setOpen] = useState<OpenGroups>(() => initialOpenGroups(collapsibleSections, activeSection, readOpenGroups()));
+  // Accordion: one group open at a time, never remembered. The group holding the current page opens when you arrive in it.
+  const [openSection, setOpenSection] = useState<string | null>(() => (collapsibleSections.includes(activeSection) ? activeSection : null));
   useEffect(() => {
-    if (collapsibleSections.includes(activeSection)) setOpen((o) => (o[activeSection] ? o : { ...o, [activeSection]: true }));
+    if (collapsibleSections.includes(activeSection)) setOpenSection(activeSection);
   }, [activeSection]);
-  const toggleGroup = (section: string) =>
-    setOpen((o) => {
-      const next = { ...o, [section]: !o[section] };
-      writeOpenGroups(next);
-      return next;
-    });
+  const toggleGroup = (section: string) => setOpenSection((o) => (o === section ? null : section));
 
   // Collapsed rail: hovering or focusing an item shows a label flyout to its right.
   // The nav column scrolls (and clips), so the flyout is position:fixed.
@@ -69,7 +63,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
         onBlur={hideFlyout}
         className={({ isActive }) =>
           cn(
-            "group flex h-9 items-center gap-3 rounded-lg px-2.5 outline-none transition-colors duration-[180ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
+            "group flex h-8 items-center gap-3 rounded-lg px-2.5 outline-none transition-colors duration-[180ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
             !expanded && "lg:justify-center lg:px-0",
             isActive ? "bg-raised text-foreground" : "text-tertiary hover:bg-raised hover:text-secondary-foreground",
           )
@@ -127,25 +121,25 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
 
       {/* Navigation */}
       <div className="flex-1 overflow-y-auto scrollbar-thin">
-        <nav aria-label="Primary" className={cn("flex flex-col gap-0.5 px-3 py-3", !expanded && "lg:px-[14px]")}>
+        <nav aria-label="Primary" className={cn("flex flex-col px-3 py-2", !expanded && "lg:px-[14px]")}>
           {scrollingGroups.map((group, gi) => {
             if (group.flat) {
-              return <div key={group.section} className="flex flex-col gap-0.5">{group.items.map((item) => renderItem(group.section, item))}</div>;
+              return <div key={group.section} className="flex flex-col">{group.items.map((item) => renderItem(group.section, item))}</div>;
             }
-            const isOpen = !!open[group.section];
+            const isOpen = openSection === group.section;
             const panelId = `nav-group-${group.section.replace(/\W+/g, "-").toLowerCase()}`;
             // A closed group must not hide a live alert count.
             const hiddenAlerts = !isOpen ? group.items.some((i) => i.alertBadge) && unacknowledgedAlerts > 0 : false;
             return (
-              <div key={group.section} className="flex flex-col gap-0.5">
-                {gi > 0 && <div className={cn("mx-1 my-1.5 border-t border-hairline", !expanded && "lg:mx-2")} />}
+              <div key={group.section} className="flex flex-col">
+                {gi > 0 && <div className={cn("mx-1 my-1 border-t border-hairline", !expanded && "lg:mx-2")} />}
                 <button
                   type="button"
                   aria-expanded={isOpen}
                   aria-controls={panelId}
                   onClick={() => toggleGroup(group.section)}
                   className={cn(
-                    "type-eyebrow flex h-7 items-center justify-between gap-2 rounded-md px-2.5 text-quaternary outline-none transition-colors duration-[180ms] hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active",
+                    "type-eyebrow flex h-7 shrink-0 items-center justify-between gap-2 rounded-md px-2.5 text-quaternary outline-none transition-colors duration-[180ms] hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active",
                     railOnly && "lg:hidden",
                   )}
                 >
@@ -156,7 +150,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
                   </span>
                 </button>
                 {/* On the rail (lg and up, not expanded) every group shows its icons; elsewhere the group follows its open state. */}
-                <div id={panelId} className={cn("flex flex-col gap-0.5", !isOpen && (expanded ? "hidden" : "hidden lg:flex"))}>
+                <div id={panelId} className={cn("flex flex-col pb-1", !isOpen && (expanded ? "hidden" : "hidden lg:flex"))}>
                   {group.items.map((item) => renderItem(group.section, item))}
                 </div>
               </div>
@@ -166,8 +160,8 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
       </div>
 
       {/* Footer: pinned items (Settings), then collapse / expand (desktop rail only) */}
-      <div className={cn("shrink-0 border-t border-hairline py-3", expanded ? "px-3" : "px-3 lg:px-[14px]")}>
-        <nav aria-label="Settings" className="flex flex-col gap-0.5">
+      <div className={cn("shrink-0 border-t border-hairline py-2", expanded ? "px-3" : "px-3 lg:px-[14px]")}>
+        <nav aria-label="Settings" className="flex flex-col">
           {pinnedGroups.flatMap((g) => g.items.map((item) => renderItem(g.section, item)))}
         </nav>
         <button
@@ -176,7 +170,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
           aria-expanded={expanded}
           title={expanded ? "Collapse sidebar" : "Expand sidebar"}
           className={cn(
-            "group mt-0.5 hidden h-9 w-full items-center gap-3 rounded-lg px-2.5 text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active lg:flex",
+            "group hidden h-8 w-full items-center gap-3 rounded-lg px-2.5 text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active lg:flex",
             !expanded && "lg:justify-center lg:px-0",
           )}
         >
