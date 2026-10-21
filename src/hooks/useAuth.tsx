@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import { AUTH_EMAIL_KEY, AUTH_EXPIRES_KEY, AUTH_KEY, SESSION_MS, clearStored, readSession, writeSession } from "@/lib/session";
+import { SESSION_MS, announceLogout, clearStored, listenForLogout, purgeLegacySession, readSession, writeSession } from "@/lib/session";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -16,13 +16,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const isAuthenticated = current !== null;
   const expiresAt = current?.expiresAt;
 
-  // Another tab logged in or out: follow it. `key === null` is a clear() of the whole store.
+  // Old localStorage sessions are removed on load; another tab logging out signs this tab out too.
   useEffect(() => {
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === null || e.key === AUTH_KEY || e.key === AUTH_EMAIL_KEY || e.key === AUTH_EXPIRES_KEY) setSession(readSession());
-    };
-    window.addEventListener("storage", onStorage);
-    return () => window.removeEventListener("storage", onStorage);
+    purgeLegacySession();
+    return listenForLogout(() => {
+      clearStored();
+      setSession(null);
+      setMemorySession(null);
+    });
   }, []);
 
   // Sign out when the session runs out while the tab is open.
@@ -47,6 +48,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = () => {
     clearStored();
+    announceLogout();
     setSession(null);
     setMemorySession(null);
   };
