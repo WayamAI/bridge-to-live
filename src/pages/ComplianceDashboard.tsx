@@ -2,7 +2,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recha
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart, toneOf } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiGrid, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, StatusIcon } from "@/components/ui/primitives";
 import { zoneTone } from "@/lib/status";
 import { kpi } from "@/lib/icons";
 import { ChartBox } from "@/components/dashboard/chartKit";
@@ -88,7 +88,7 @@ const ComplianceDashboard = () => {
             padded={false}
             title={
               <span className="flex items-center gap-2">
-                <StatusDot tone={toneOf(zoneTone, d.status)} />
+                <StatusIcon tone={toneOf(zoneTone, d.status)} />
                 {d.domain}
               </span>
             }

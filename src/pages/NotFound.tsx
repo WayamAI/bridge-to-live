@@ -1,6 +1,8 @@
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import { locate } from "@/components/layout/nav";
+import { Icon } from "@/components/ui/Icon";
+import { iconSize, notFoundIcon } from "@/lib/icons";
 
 const NotFound = () => {
   const location = useLocation();
@@ -13,6 +15,7 @@ const NotFound = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-page px-4">
       <div className="flex flex-col items-center gap-1.5 text-center">
+        <Icon name={notFoundIcon} size={iconSize.notFound} className="mb-2" />
         <h1 className="type-display-2xl tabular text-foreground">404</h1>
         <p className="type-body-md text-tertiary">Page not found</p>
         <a

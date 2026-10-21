@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { icons } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, iconSize } from "@/lib/icons";
 import { useAuth } from "@/hooks/useAuth";
 import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
 import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
@@ -75,7 +76,7 @@ const Login = () => {
                 Email
               </label>
               <div className="relative">
-                <icons.email className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-icon-quaternary" aria-hidden />
+                <Icon name={icons.email} size={iconSize.control} className="absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   id="email"
                   type="email"
@@ -93,7 +94,7 @@ const Login = () => {
                 Password
               </label>
               <div className="relative">
-                <icons.password className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-icon-quaternary" aria-hidden />
+                <Icon name={icons.password} size={iconSize.control} className="absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -109,7 +110,7 @@ const Login = () => {
                   className="absolute right-3 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <icons.hidePassword className="size-4" aria-hidden /> : <icons.showPassword className="size-4" aria-hidden />}
+                  <Icon name={showPassword ? icons.hidePassword : icons.showPassword} size={iconSize.control} />
                 </button>
               </div>
             </div>

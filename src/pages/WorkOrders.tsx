@@ -59,7 +59,7 @@ const WorkOrders = () => {
       <KpiGrid>
         <KpiTile icon={kpi.open} label="Open" value={open} />
         <KpiTile icon={kpi.inProgress} label="In progress" value={inProgress} />
-        <KpiTile icon={kpi.done} label="Completed (month)" value={completed} />
+        <KpiTile icon={kpi.ok} label="Completed (month)" value={completed} />
         <KpiTile icon={kpi.overdue} label="Overdue" value={overdue} valueClassName={overdue > 0 ? "text-error" : ""} />
       </KpiGrid>
 

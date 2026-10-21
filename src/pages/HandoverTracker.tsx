@@ -1,5 +1,6 @@
 import type { HandoverItem, ConnectedSystem } from "@/hooks/usePlantData";
-import { icons } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, iconSize } from "@/lib/icons";
 import PageHeader from "@/components/layout/PageHeader";
 import { Panel, ToneStatus, Unit } from "@/components/ui/primitives";
 import { connectedSystemTone, handoverItemStatus, workflowTone } from "@/lib/status";
@@ -90,7 +91,7 @@ const HandoverPage = ({ view, handoverData, connectedSystems, plantInfo }: Hando
         padded={false}
         action={
           <button className="type-caption inline-flex items-center gap-1 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
-            <icons.sync className="size-[13px]" aria-hidden /> Force sync
+            <Icon name={icons.sync} size={iconSize.button} /> Force sync
           </button>
         }
       >

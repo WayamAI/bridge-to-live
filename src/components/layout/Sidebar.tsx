@@ -1,6 +1,7 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { icons } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, iconSize } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import type { Alert } from "@/hooks/usePlantData";
 import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
@@ -16,6 +17,10 @@ interface SidebarProps {
   onToggleExpanded: () => void;
   mobileOpen: boolean;
 }
+
+// Images cannot take a text colour: an inactive icon is faded and grey, hover brings the colour back, the active item is full colour.
+const navIconState = (active: boolean) =>
+  cn("transition-[opacity,filter] duration-[180ms]", active ? "opacity-100" : "opacity-60 grayscale group-hover:grayscale-0 dark:opacity-75");
 
 type Flyout = { group: string; label: string; top: number };
 
@@ -49,7 +54,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
   // From lg it is a 68px rail that expands to 240px; labels are shown only when expanded.
   const railOnly = expanded ? "" : "lg:hidden";
 
-  const renderItem = (group: string, { to, label, icon: Icon, alertBadge }: NavItem) => {
+  const renderItem = (group: string, { to, label, icon, alertBadge }: NavItem) => {
     const count = alertBadge ? unacknowledgedAlerts : 0;
     return (
       <NavLink
@@ -71,11 +76,8 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
       >
         {({ isActive }) => (
           <>
-            <span className="relative grid size-[17px] shrink-0 place-items-center">
-              <Icon
-                className={cn("size-[17px]", isActive ? "text-foreground" : "text-icon-tertiary group-hover:text-secondary-foreground")}
-                aria-hidden
-              />
+            <span className="relative grid size-5 shrink-0 place-items-center">
+              <Icon name={icon} size={iconSize.sidebar} className={cn(navIconState(isActive))} />
               {count > 0 && (
                 <span className={cn("absolute -right-1 -top-1 hidden size-2 rounded-full bg-error ring-2 ring-container", !expanded && "lg:block")} aria-hidden />
               )}
@@ -146,7 +148,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
                   <span className="truncate">{group.section}</span>
                   <span className="flex items-center gap-1.5">
                     {hiddenAlerts && <span className="size-1.5 rounded-full bg-error" aria-label={`${unacknowledgedAlerts} unacknowledged alarms`} />}
-                    <icons.chevronDown className={cn("size-3 shrink-0 transition-transform duration-[180ms]", !isOpen && "-rotate-90")} aria-hidden />
+                    <Icon name={icons.chevron} size={iconSize.chevron} className={cn("transition-transform duration-[180ms]", !isOpen && "-rotate-90")} />
                   </span>
                 </button>
                 {/* On the rail (lg and up, not expanded) every group shows its icons; elsewhere the group follows its open state. */}
@@ -174,7 +176,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
             !expanded && "lg:justify-center lg:px-0",
           )}
         >
-          {expanded ? <icons.collapse className="size-[17px] shrink-0 text-icon-tertiary" aria-hidden /> : <icons.expand className="size-[17px] shrink-0 text-icon-tertiary" aria-hidden />}
+          <Icon name={icons.collapse} size={iconSize.sidebar} className={cn(navIconState(false), !expanded && "-scale-x-100")} />
           <span className={cn("type-label-sm", railOnly)}>{expanded ? "Collapse sidebar" : "Expand sidebar"}</span>
         </button>
       </div>

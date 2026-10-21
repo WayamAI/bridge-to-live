@@ -50,7 +50,7 @@ const AlarmRationalisation = () => {
       <KpiGrid>
         {[
           { label: "Total alarm points", icon: kpi.count, value: formatNumber(total) },
-          { label: "Reviewed", icon: kpi.review, value: `${formatNumber(reviewed)} (${Math.round(reviewed / total * 100)}%)` },
+          { label: "Reviewed", icon: kpi.actions, value: `${formatNumber(reviewed)} (${Math.round(reviewed / total * 100)}%)` },
           { label: "Pending review", icon: kpi.pending, value: "453" },
           { label: "Chattering eliminated", icon: kpi.chattering, value: "82" },
         ].map(s => (

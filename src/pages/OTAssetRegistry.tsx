@@ -2,7 +2,8 @@ import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
 import { Chip, EmptyState, KpiGrid, KpiTile, Panel, SearchField, ToneStatus } from "@/components/ui/primitives";
 import { patchStatus, workflowTone } from "@/lib/status";
-import { kpi, emptyIcon } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { kpi, emptyIcon, iconSize, otTypeIcon } from "@/lib/icons";
 
 interface OTAsset {
   name: string;
@@ -120,7 +121,12 @@ const OTAssetRegistry = () => {
               {filtered.map((a, i) => (
                 <tr key={i} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 font-medium">{a.name}</td>
-                  <td className="py-2 px-3 type-body-sm">{a.type}</td>
+                  <td className="py-2 px-3 type-body-sm">
+                    <span className="flex items-center gap-2 whitespace-nowrap">
+                      {otTypeIcon[a.type] && <Icon name={otTypeIcon[a.type]} size={iconSize.row} />}
+                      {a.type}
+                    </span>
+                  </td>
                   <td className="py-2 px-3">{a.vendor}</td>
                   <td className="py-2 px-3 tabular type-body-sm whitespace-nowrap">{a.firmware}</td>
                   <td className="py-2 px-3 type-body-sm">{a.lastSeen}</td>

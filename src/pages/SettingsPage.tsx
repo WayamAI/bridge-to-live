@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { icons, settingsTabIcon } from "@/lib/icons";
-import { Chip, Panel, StatusDot } from "@/components/ui/primitives";
+import { Icon } from "@/components/ui/Icon";
+import { icons, iconSize, settingsTabIcon } from "@/lib/icons";
+import { Chip, Panel, StatusIcon } from "@/components/ui/primitives";
 import { priorityTone } from "@/lib/status";
 import { toast } from "sonner";
 import PageHeader from "@/components/layout/PageHeader";
@@ -48,10 +49,10 @@ const SettingsPage = () => {
       {/* Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
         {tabs.map(t => {
-          const TabIcon = settingsTabIcon[t.id];
+          const tabIcon = settingsTabIcon[t.id];
           return (
           <Chip key={t.id} active={activeTab === t.id} onClick={() => setActiveTab(t.id)} className="shrink-0 gap-1.5">
-            <TabIcon className="size-[13px]" aria-hidden />{t.label}
+            <Icon name={tabIcon} size={iconSize.button} />{t.label}
           </Chip>
           );
         })}
@@ -61,7 +62,7 @@ const SettingsPage = () => {
         <Panel title="Sensor Alarm Thresholds" padded={false}
           action={
             <button onClick={() => toast.success("Thresholds saved")} className="type-label-sm inline-flex h-8 items-center gap-1 rounded-full bg-action-primary px-3 text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active">
-              <icons.save className="size-[13px]" aria-hidden /> Save changes
+              <Icon name={icons.save} size={iconSize.button} /> Save changes
             </button>
           }>
           <div className="overflow-x-auto">
@@ -101,7 +102,7 @@ const SettingsPage = () => {
               { severity: "Info (P4)", route: "Log only", delay: "15 min" },
             ].map((a, i) => (
               <div key={a.severity} className="rounded-lg border border-hairline bg-raised p-3">
-                <p className="type-label-md flex items-center gap-2 text-foreground"><StatusDot tone={priorityTone(i + 1)} />{a.severity}</p>
+                <p className="type-label-md flex items-center gap-2 text-foreground"><StatusIcon tone={priorityTone(i + 1)} />{a.severity}</p>
                 <p className="type-caption mt-1 text-tertiary">Route: {a.route}</p>
                 <p className="type-caption text-tertiary">Suppression delay: {a.delay}</p>
               </div>

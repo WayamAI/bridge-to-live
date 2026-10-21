@@ -1,9 +1,10 @@
 import type { MaintenanceEvent } from "@/hooks/usePlantData";
-import { EmptyState, Panel, StatusDot } from "@/components/ui/primitives";
+import { EmptyState, Panel, StatusIcon } from "@/components/ui/primitives";
 import type { Tone } from "@/lib/status";
 import { toneOf } from "@/lib/status";
 import { formatDate } from "@/lib/format";
-import { eventIcon, emptyIcon, panelIcon } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { eventIcon, emptyIcon, iconSize, panelIcon } from "@/lib/icons";
 
 interface MaintenanceTimelineProps {
   events: MaintenanceEvent[];
@@ -34,14 +35,14 @@ const MaintenanceTimeline = ({ events }: MaintenanceTimelineProps) => {
       ) : (
         <div className="grid grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2">
           {upcoming.map((event) => {
-            const Icon = eventIcon(event.type);
+            const typeIcon = eventIcon(event.type);
             const daysUntil = Math.ceil((event.date.getTime() - now) / 86400000);
             return (
               <div key={event.id} className="min-w-0 rounded-lg border border-hairline bg-raised p-3">
                 <div className="mb-1.5 flex items-center gap-1.5">
-                  <StatusDot tone={toneOf(urgencyTone, event.urgency)} />
+                  <StatusIcon tone={toneOf(urgencyTone, event.urgency)} />
                   <span className="sr-only">{event.urgency} urgency</span>
-                  <Icon className="size-3 text-quaternary" aria-hidden />
+                  <Icon name={typeIcon} size={iconSize.row} />
                   <span className="type-eyebrow truncate text-quaternary">{event.type}</span>
                   {event.probability && (
                     <span className="type-caption tabular ml-auto text-warning">{event.probability}% prob</span>

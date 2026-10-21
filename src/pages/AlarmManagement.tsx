@@ -2,9 +2,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Alert } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
-import { EmptyState, KpiGrid, KpiTile, Panel, PillSelect, StatusDot, Checkbox } from "@/components/ui/primitives";
+import { EmptyState, KpiGrid, KpiTile, Panel, PillSelect, StatusIcon, Checkbox } from "@/components/ui/primitives";
 import { priorityTone, severityTone, toneBadgeClass, toneOf } from "@/lib/status";
-import { icons, alarmIcon, kpi, emptyIcon } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, alarmIcon, kpi, emptyIcon, iconSize } from "@/lib/icons";
 import { formatKey } from "@/lib/format";
 
 interface AlarmManagementPageProps {
@@ -75,7 +76,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
             </thead>
             <tbody>
               {filtered.map((alert) => {
-                const Icon = alarmIcon(alert.type);
+                const typeIcon = alarmIcon(alert.type);
                 return (
                   <tr
                     key={alert.id}
@@ -102,9 +103,9 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                     </td>
                     <td className="px-3 py-2">
                       <span className="flex items-center gap-1.5 text-tertiary">
-                        <StatusDot tone={toneOf(severityTone, alert.severity)} className="mr-0.5" />
+                        <StatusIcon tone={toneOf(severityTone, alert.severity)} />
                         <span className="sr-only">{alert.severity}</span>
-                        <Icon className="size-3 text-quaternary" aria-hidden />
+                        <Icon name={typeIcon} size={iconSize.row} />
                         <span className="first-letter:uppercase">{formatKey(alert.type)}</span>
                       </span>
                     </td>
@@ -118,7 +119,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                           onClick={() => onAcknowledge(alert.id)}
                           className="type-label-sm inline-flex h-8 items-center gap-1 whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                         >
-                          <icons.acknowledge className="size-[13px]" aria-hidden /> Acknowledge
+                          <Icon name={icons.acknowledge} size={iconSize.button} /> Acknowledge
                         </button>
                       )}
                     </td>

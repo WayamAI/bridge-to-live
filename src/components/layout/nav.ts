@@ -1,5 +1,5 @@
 import { navIcon } from "@/lib/icons";
-import type { LucideIcon } from "lucide-react";
+import type { IconName } from "@/components/ui/Icon";
 
 export interface NavItem {
   to: string;
@@ -7,7 +7,7 @@ export interface NavItem {
   label: string;
   /** One line under the heading. Detail that does not fit in the name (standards, scope) goes here. */
   description: string;
-  icon: LucideIcon;
+  icon: IconName;
   /** Shows the unacknowledged-alarm count (computed in the sidebar from the alerts prop). */
   alertBadge?: boolean;
 }

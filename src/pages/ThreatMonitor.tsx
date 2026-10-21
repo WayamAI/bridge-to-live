@@ -39,7 +39,7 @@ const ThreatMonitor = () => {
         {[
           { label: "Events (7 days)", icon: kpi.events, value: THREAT_EVENTS.length.toString() },
           { label: "Critical events", icon: kpi.critical, value: critical.toString(), color: critical > 0 ? "text-error" : "" },
-          { label: "Active investigations", icon: kpi.investigation, value: active.toString() },
+          { label: "Active investigations", icon: kpi.findings, value: active.toString() },
           { label: "Mean response time", icon: kpi.duration, value: "18 min" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />

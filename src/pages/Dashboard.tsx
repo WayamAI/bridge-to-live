@@ -1,6 +1,7 @@
 import { useState, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
-import { icons, iconForPath, kpi, emptyIcon, panelIcon } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, iconForPath, iconSize, kpi, emptyIcon, panelIcon } from "@/lib/icons";
 import { usePlantData } from "@/hooks/usePlantData";
 import FactoryFloor from "@/components/twin/FactoryFloor";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
@@ -10,7 +11,7 @@ import MaintenanceTimeline from "@/components/dashboard/MaintenanceTimeline";
 import PlantHealthTrend from "@/components/dashboard/PlantHealthTrend";
 import AlarmFrequencyChart from "@/components/dashboard/AlarmFrequencyChart";
 import PageHeader from "@/components/layout/PageHeader";
-import { EmptyState, KpiGrid, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
+import { EmptyState, KpiGrid, KpiTile, Panel, StatusIcon } from "@/components/ui/primitives";
 import { severityTone, toneOf } from "@/lib/status";
 import { useNavigate } from "react-router-dom";
 import { handoverReadiness, predictedFailureCounts } from "@/lib/plantStats";
@@ -56,7 +57,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
       hint: `${flaggedComponents} components flagged in 90 days`,
     },
     {
-      label: "Energy efficiency index", icon: kpi.efficiency, value: "82.1", unit: "%",
+      label: "Energy efficiency index", icon: kpi.electricity, value: "82.1", unit: "%",
       hint: "₹14.2 L annual savings opportunity",
     },
     {
@@ -78,10 +79,9 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
   return (
     <PageHeader
       actions={quickActions.map((action) => {
-        const Icon = action.icon;
         return (
           <button key={action.path} onClick={() => navigate(action.path)} className={pill}>
-            <Icon className="size-[13px]" aria-hidden />
+            {action.icon && <Icon name={action.icon} size={iconSize.button} />}
             {action.label}
           </button>
         );
@@ -115,7 +115,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
               onClick={() => navigate("/alarms")}
               className="type-caption inline-flex items-center gap-0.5 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
             >
-              View all <icons.chevronRight className="size-3" aria-hidden />
+              View all <Icon name={icons.chevron} size={iconSize.chevron} className="-rotate-90" />
             </button>
           }
         >
@@ -130,7 +130,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
                   role="button" {...activatable(() => onSelectEquipment(alert.equipmentId))}
                 >
                   <div className="flex items-start gap-2">
-                    <StatusDot tone={toneOf(severityTone, alert.severity)} className="mt-1.5" />
+                    <StatusIcon tone={toneOf(severityTone, alert.severity)} className="mt-px" />
                     <span className="sr-only">{alert.severity}</span>
                     <div className="min-w-0 flex-1">
                       <p className="type-body-sm truncate text-secondary-foreground">

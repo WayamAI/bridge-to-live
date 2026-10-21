@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { emptyIcon, kpi, panelIcon } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
 import { Checkbox, EmptyState, EquipmentStatusLabel, KpiGrid, KpiTile, Slider, Panel, PillSelect, QuietStatus, SearchField, StatusDot, Unit } from "@/components/ui/primitives";
 
 describe("Chronus primitives", () => {
@@ -27,18 +28,21 @@ describe("Chronus primitives", () => {
     expect(screen.getByRole("button")).toBeTruthy();
   });
 
-  it("Unit, StatusDot and QuietStatus render", () => {
+  it("Unit, StatusDot and QuietStatus render; QuietStatus shows a status icon unless dense", () => {
     const { container } = render(
       <>
         <Unit>%</Unit>
         <StatusDot tone="error" />
         <QuietStatus tone="success">Live</QuietStatus>
+        <QuietStatus tone="warning" dense>Busy</QuietStatus>
       </>,
     );
     expect(screen.getByText("%")).toBeTruthy();
     expect(screen.getByText("Live")).toBeTruthy();
     expect(container.querySelector(".bg-error")).toBeTruthy();
-    expect(container.querySelector(".bg-success")).toBeTruthy();
+    expect(container.querySelector(".bg-warning")).toBeTruthy(); // the dense one keeps its dot
+    expect(container.querySelector(".bg-success")).toBeNull(); // the other uses the icon
+    expect(container.querySelector('img[src*="icon-status-ok"]')).toBeTruthy();
   });
 
   it("EquipmentStatusLabel is quiet when normal and a solid badge when it needs attention", () => {
@@ -103,27 +107,38 @@ describe("PillSelect and SearchField pass-through", () => {
 });
 
 describe("icons in primitives", () => {
-  it("KpiTile shows its icon at 14px, greyscale, beside the label", () => {
+  it("KpiTile shows its icon at 20px (the 96px file beside the 48px one), decorative, beside the label", () => {
     const { container } = render(<KpiTile icon={kpi.health} label="Health" value="90" />);
-    const svg = container.querySelector("svg");
-    expect(svg).not.toBeNull();
-    expect(svg).toHaveClass("size-3.5", "text-icon-tertiary");
-    expect(svg).toHaveAttribute("aria-hidden", "true");
+    const img = container.querySelector("img");
+    expect(img).not.toBeNull();
+    expect(img).toHaveAttribute("src", expect.stringContaining("icon-kpi-health"));
+    expect(img).toHaveAttribute("src", expect.stringContaining("/48/"));
+    expect(img).toHaveAttribute("width", "20");
+    expect(img).toHaveAttribute("alt", "");
+    expect(img).toHaveAttribute("aria-hidden", "true");
+    expect(container.querySelector("svg")).toBeNull();
   });
 
-  it("EmptyState shows a 24px icon, a different one when asked", () => {
+  it("EmptyState shows a 48px icon, a different one when asked", () => {
     const { container, rerender } = render(<EmptyState title="Nothing" />);
-    expect(container.querySelector("svg")).toHaveClass("size-6", "text-icon-quaternary");
-    const first = container.querySelector("svg")?.innerHTML;
+    expect(container.querySelector("img")).toHaveAttribute("width", "48");
+    const first = container.querySelector("img")?.getAttribute("src");
     rerender(<EmptyState title="No match" icon={emptyIcon.noMatch} />);
-    expect(container.querySelector("svg")?.innerHTML).not.toBe(first);
+    expect(container.querySelector("img")?.getAttribute("src")).not.toBe(first);
   });
 
   it("Panel shows a header icon only when given one", () => {
     const { container, rerender } = render(<Panel title="Plain">x</Panel>);
-    expect(container.querySelector("header svg")).toBeNull();
+    expect(container.querySelector("header img")).toBeNull();
     rerender(<Panel title="With icon" icon={panelIcon.heatMap}>x</Panel>);
-    expect(container.querySelector("header svg")).not.toBeNull();
+    expect(container.querySelector("header img")).not.toBeNull();
+  });
+
+  it("Icon picks the 48px file up to 24px and the 96px file above", () => {
+    const { container } = render(<><Icon name="icon-nav-alarms" size={20} /><Icon name="icon-error-not-found" size={96} /></>);
+    const [small, big] = Array.from(container.querySelectorAll("img"));
+    expect(small.getAttribute("src")).toContain("/48/");
+    expect(big.getAttribute("src")).toContain("/96/");
   });
 });
 

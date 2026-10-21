@@ -38,7 +38,7 @@ const DataQuality = () => {
 
       <KpiGrid>
         {[
-          { label: "Average data freshness", icon: kpi.freshness, value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
+          { label: "Average data freshness", icon: kpi.time, value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
           { label: "Average completeness", icon: kpi.completeness, value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "" : "text-warning" },
           { label: "Healthy sources", icon: kpi.health, value: `${healthy}/${DATA_SOURCES.length}` },
           { label: "Total ingestion errors (24h)", icon: kpi.error, value: "102", color: "text-warning" },

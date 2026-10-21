@@ -2,7 +2,7 @@ import { sparklineDomain } from "@/lib/sparkline";
 import { seriesColor } from "@/components/dashboard/chartTheme";
 import type { EnergyMetric } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiGrid, KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, StatusIcon, ToneStatus } from "@/components/ui/primitives";
 import { complexityTone, toneOf } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
 import { energyKpiIcon, kpi } from "@/lib/icons";
@@ -33,7 +33,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
           return (
             <KpiTile
               key={m.label}
-              icon={energyKpiIcon[m.label] ?? kpi.efficiency}
+              icon={energyKpiIcon[m.label] ?? kpi.electricity}
               label={m.label}
               value={formatNumber(m.value)}
               unit={m.unit}
@@ -65,7 +65,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
             { msg: "Compressed air leak detected, 340 Nm³/hr above baseline", cost: "₹2.1 L/day", tag: "COMP-IA-001" },
           ].map((a, i) => (
             <div key={i} className="flex items-start gap-3 rounded-lg border border-hairline bg-raised p-3">
-              <StatusDot tone="warning" className="mt-1.5" />
+              <StatusIcon tone="warning" className="mt-px" />
               <div className="flex-1">
                 <p className="type-body-sm text-foreground">{a.msg}</p>
                 <p className="type-caption tabular mt-0.5 text-warning">{a.cost} estimated impact</p>

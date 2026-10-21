@@ -2,7 +2,8 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle } from "@/component
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiGrid, KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
 import { zoneTone, toneOf } from "@/lib/status";
-import { kpi } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { iconSize, kpi, networkZoneIcon } from "@/lib/icons";
 
 interface PurdueLevel {
   level: string;
@@ -62,6 +63,7 @@ const NetworkSegmentation = () => (
           <div key={level.level}>
             <div className="rounded-lg border border-strong border-l-[3px] p-3">
               <div className="flex items-center gap-3 mb-2">
+                <Icon name={networkZoneIcon[level.level]} size={iconSize.sidebar} />
                 <span className="type-caption tabular font-semibold text-tertiary w-16">{level.level}</span>
                 <span className="type-body-sm font-medium">{level.label}</span>
               </div>

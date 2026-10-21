@@ -1,5 +1,6 @@
 import { Fragment, useState } from "react";
-import { icons, kpi } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, iconSize, kpi } from "@/lib/icons";
 import { toast } from "sonner";
 import type { Equipment } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
@@ -65,7 +66,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
           { label: "Estimated action cost", icon: kpi.cost, value: formatRupees(totalActionCost) },
           { label: "Consequence cost (no action)", icon: kpi.cost, value: formatRupees(totalConsequence) },
           { label: "Projected savings", icon: kpi.savings, value: formatRupees(totalConsequence - totalActionCost * 10) },
-          { label: "Completed this month", icon: kpi.done, value: `${completed + 67}` },
+          { label: "Completed this month", icon: kpi.ok, value: `${completed + 67}` },
           { label: "Compliance rate", icon: kpi.compliance, value: "74%", color: "text-warning" },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
@@ -112,10 +113,10 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                     <td className="py-2 px-3 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="type-label-sm inline-flex h-8 items-center whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
-                          <icons.createWorkOrder className="mr-1 size-[13px]" aria-hidden />
+                          <Icon name={icons.createWorkOrder} size={iconSize.button} className="mr-1" />
                           Create work order
                         </button>
-                        {expandedRow === rec.id ? <icons.chevronUp className="size-3 text-icon-quaternary" aria-hidden /> : <icons.chevronDown className="size-3 text-icon-quaternary" aria-hidden />}
+                        <Icon name={icons.chevron} size={iconSize.chevron} className={expandedRow === rec.id ? "rotate-180" : ""} />
                       </div>
                     </td>
                   </tr>
@@ -155,7 +156,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                 aria-label="Close"
                 className="flex size-7 shrink-0 items-center justify-center rounded-full text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised-2 hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active"
               >
-                <icons.close className="size-4" aria-hidden />
+                <Icon name={icons.close} size={iconSize.control} />
               </button>
             </div>
             <div className="type-body-sm flex-1 space-y-3 px-5 py-4">
@@ -178,7 +179,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                 className="type-label-md h-11 w-full rounded-full bg-action-primary text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active"
               >
                 <span className="inline-flex items-center justify-center gap-2">
-                  <icons.createWorkOrder className="size-[13px]" aria-hidden />
+                  <Icon name={icons.createWorkOrder} size={iconSize.button} />
                   Confirm and create work order
                 </span>
               </button>

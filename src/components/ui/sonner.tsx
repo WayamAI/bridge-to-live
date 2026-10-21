@@ -1,5 +1,7 @@
 import { useTheme } from "@/hooks/useTheme";
 import { Toaster as Sonner, toast } from "sonner";
+import { Icon } from "./Icon";
+import { iconSize, statusIcon } from "@/lib/icons";
 
 type ToasterProps = React.ComponentProps<typeof Sonner>;
 
@@ -10,6 +12,12 @@ const Toaster = ({ ...props }: ToasterProps) => {
     <Sonner
       theme={theme}
       className="toaster group"
+      icons={{
+        success: <Icon name={statusIcon.success} size={iconSize.row} />,
+        info: <Icon name={statusIcon.info} size={iconSize.row} />,
+        warning: <Icon name={statusIcon.warning} size={iconSize.row} />,
+        error: <Icon name={statusIcon.error} size={iconSize.row} />,
+      }}
       toastOptions={{
         classNames: {
           toast:
