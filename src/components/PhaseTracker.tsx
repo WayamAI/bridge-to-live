@@ -8,7 +8,7 @@ const phases = [
     title: "Component Census & Sensor Mapping",
     icon: Settings,
     color: "engineering" as const,
-    timeline: "Weeks 1–4",
+    timeline: "Weeks 1-4",
     summary: "Map every engineering component to the sensors that will monitor it in operation.",
     details: [
       "Analyse every pump, compressor, heat exchanger, vessel, valve, motor, and transmitter",
@@ -23,7 +23,7 @@ const phases = [
     title: "IoT & Sensor Deployment",
     icon: Wifi,
     color: "operational" as const,
-    timeline: "Weeks 5–10",
+    timeline: "Weeks 5-10",
     summary: "Deploy the physical sensing infrastructure and OT protocol integration layer.",
     details: [
       "Install smart sensors and transmitters on equipment",
@@ -38,7 +38,7 @@ const phases = [
     title: "Cloud Big Data Platform",
     icon: Database,
     color: "operational" as const,
-    timeline: "Weeks 7–14",
+    timeline: "Weeks 7-14",
     summary: "Build the cloud platform for ingestion, storage, and serving of operational data at scale.",
     details: [
       "Real-time ingestion via Azure IoT Hub / AWS IoT Core / Kafka",
@@ -53,7 +53,7 @@ const phases = [
     title: "AI & Analytics Layer",
     icon: Brain,
     color: "primary" as const,
-    timeline: "Weeks 12–20",
+    timeline: "Weeks 12-20",
     summary: "Convert raw sensor data into operational intelligence with predictive capabilities.",
     details: [
       "Anomaly detection and condition monitoring against baselines",
@@ -68,7 +68,7 @@ const phases = [
     title: "IT/OT Security Hardening",
     icon: Shield,
     color: "gap" as const,
-    timeline: "Weeks 14–22",
+    timeline: "Weeks 14-22",
     summary: "Secure the expanded attack surface created by connecting OT systems to the cloud.",
     details: [
       "OT asset discovery and complete inventory",
@@ -83,7 +83,7 @@ const phases = [
     title: "Structured Data Handover & Governance",
     icon: FileText,
     color: "primary" as const,
-    timeline: "Weeks 18–32",
+    timeline: "Weeks 18-32",
     summary: "Restructure the handover from document-first to data-first using ISO 15926 / CFIHOS.",
     details: [
       "Define data handover requirements at project inception",

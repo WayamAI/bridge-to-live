@@ -17,11 +17,11 @@ interface Props {
 const RemainingUsefulLife = ({ equipment }: Props) => {
   const distribution = useMemo(() => {
     const bins = [
-      { range: "0–500 hr", min: 0, max: 500 / 24, count: 0, color: toneChart.error },
-      { range: "500–1k hr", min: 500 / 24, max: 1000 / 24, count: 0, color: toneChart.error },
-      { range: "1k–2k hr", min: 1000 / 24, max: 2000 / 24, count: 0, color: toneChart.warning },
-      { range: "2k–3k hr", min: 2000 / 24, max: 3000 / 24, count: 0, color: toneChart.warning },
-      { range: "3k–5k hr", min: 3000 / 24, max: 5000 / 24, count: 0, color: toneChart.success },
+      { range: "0-500 hr", min: 0, max: 500 / 24, count: 0, color: toneChart.error },
+      { range: "500-1k hr", min: 500 / 24, max: 1000 / 24, count: 0, color: toneChart.error },
+      { range: "1k-2k hr", min: 1000 / 24, max: 2000 / 24, count: 0, color: toneChart.warning },
+      { range: "2k-3k hr", min: 2000 / 24, max: 3000 / 24, count: 0, color: toneChart.warning },
+      { range: "3k-5k hr", min: 3000 / 24, max: 5000 / 24, count: 0, color: toneChart.success },
       { range: "5k+ hr", min: 5000 / 24, max: 99999, count: 0, color: toneChart.success },
     ];
     equipment.forEach(e => {
@@ -76,8 +76,8 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
               </BarChart>
             </ChartBox>
             <div className="flex gap-4 mt-2 type-caption text-tertiary">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-4" /> Critical (0–1k hr)</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-3" /> Watch (1k–3k hr)</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-4" /> Critical (0-1k hr)</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-3" /> Watch (1k-3k hr)</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-2" /> Healthy (3k+ hr)</span>
             </div>
         </Panel>
@@ -86,7 +86,7 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
         <Panel title="Fleet Age Profile · Monthly Trend">
             <ChartLegend items={[
               { label: "<5k hr", color: toneChart.success },
-              { label: "5k–15k hr", color: toneChart.warning },
+              { label: "5k-15k hr", color: toneChart.warning },
               { label: ">15k hr", color: toneChart.error },
               { label: "Monthly failures", color: seriesColor(0), kind: "line" },
             ]} />
@@ -96,7 +96,7 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
                 <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Area isAnimationActive={false} type="monotone" dataKey="young" stackId="1" fill={toneChart.success} fillOpacity={0.6} stroke={toneChart.success} name="<5k hr" />
-                <Area isAnimationActive={false} type="monotone" dataKey="mid" stackId="1" fill={toneChart.warning} fillOpacity={0.6} stroke={toneChart.warning} name="5k–15k hr" />
+                <Area isAnimationActive={false} type="monotone" dataKey="mid" stackId="1" fill={toneChart.warning} fillOpacity={0.6} stroke={toneChart.warning} name="5k-15k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="old" stackId="1" fill={toneChart.error} fillOpacity={0.6} stroke={toneChart.error} name=">15k hr" />
                 <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke={seriesColor(0)} strokeWidth={2} dot={{ r: 3 }} name="Monthly failures" />
               </ComposedChart>

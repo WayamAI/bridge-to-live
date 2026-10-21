@@ -5,7 +5,7 @@ const gaps = [
   {
     icon: Database,
     title: "Data Architecture Mismatch",
-    problem: "Engineering twins sit on relational databases (SQL/Oracle) designed for structured design data. A large facility generates GBs of sensor data per hour — relational databases can't handle that at scale.",
+    problem: "Engineering twins sit on relational databases (SQL/Oracle) designed for structured design data. A large facility generates GBs of sensor data per hour, relational databases can't handle that at scale.",
     solution: "Cloud-native big data platform: data lakes, streaming pipelines, time-series databases (InfluxDB, OSIsoft PI, Azure Data Explorer).",
     severity: "critical" as const,
   },
@@ -19,7 +19,7 @@ const gaps = [
   {
     icon: FileText,
     title: "Document-Driven Handover",
-    problem: "Even though engineering tools generate rich structured data internally, what gets handed over is PDFs and drawings — the structured data is flattened and lost.",
+    problem: "Even though engineering tools generate rich structured data internally, what gets handed over is PDFs and drawings, the structured data is flattened and lost.",
     solution: "Data-first handover using ISO 15926 and CFIHOS standards. Structured, machine-readable exports from SmartPlant at commissioning.",
     severity: "high" as const,
   },

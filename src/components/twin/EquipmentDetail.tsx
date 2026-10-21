@@ -102,7 +102,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
                 normalMax={s.normalMax}
               />
               <div className="type-caption tabular mt-1 flex justify-between gap-2 text-quaternary">
-                <span>Range: {s.normalMin}–{s.normalMax} {s.unit}</span>
+                <span>Range: {s.normalMin}-{s.normalMax} {s.unit}</span>
                 {isOutOfRange && (
                   <span className="flex items-center gap-0.5 text-error">
                     <icons.warning className="size-[13px]" aria-hidden /> Out of range

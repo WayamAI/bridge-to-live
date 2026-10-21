@@ -18,9 +18,9 @@ interface ComplianceDomain {
 
 const DOMAINS: ComplianceDomain[] = [
   { domain: "System Hardening", compliance: 78, target: 90, status: "amber", gaps: [
-    { finding: "3 HMIs running default admin credentials", remediation: "Enforce password policy — change all default credentials", effort: "2 days" },
+    { finding: "3 HMIs running default admin credentials", remediation: "Enforce password policy, change all default credentials", effort: "2 days" },
     { finding: "EW-003 running Windows 10 LTSC 2019 (EOL)", remediation: "Upgrade to LTSC 2021 or replace hardware", effort: "1 week" },
-    { finding: "CCTV NVR firmware EOL — known CVEs", remediation: "Replace NVR with supported model", effort: "2 weeks" },
+    { finding: "CCTV NVR firmware EOL, known CVEs", remediation: "Replace NVR with supported model", effort: "2 weeks" },
   ]},
   { domain: "User Authentication", compliance: 91, target: 90, status: "green", gaps: [
     { finding: "PI Interface Node allows single-factor auth", remediation: "Enable MFA for historian access", effort: "1 day" },

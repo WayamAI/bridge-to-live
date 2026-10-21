@@ -2,9 +2,9 @@ import { motion } from "framer-motion";
 import { TrendingDown, Zap, Wrench, Clock, Users } from "lucide-react";
 
 const metrics = [
-  { icon: TrendingDown, label: "Unplanned Downtime", value: "30–40%", suffix: "reduction", color: "text-operational" },
-  { icon: Zap, label: "Energy Costs", value: "10–12%", suffix: "savings", color: "text-primary" },
-  { icon: Wrench, label: "Maintenance Costs", value: "15–25%", suffix: "reduction", color: "text-engineering" },
+  { icon: TrendingDown, label: "Unplanned Downtime", value: "30-40%", suffix: "reduction", color: "text-operational" },
+  { icon: Zap, label: "Energy Costs", value: "10-12%", suffix: "savings", color: "text-primary" },
+  { icon: Wrench, label: "Maintenance Costs", value: "15-25%", suffix: "reduction", color: "text-engineering" },
   { icon: Clock, label: "Anomaly Detection", value: "~50%", suffix: "faster", color: "text-gap" },
   { icon: Users, label: "Manual Diagnostics", value: "~35%", suffix: "reduction", color: "text-primary" },
 ];

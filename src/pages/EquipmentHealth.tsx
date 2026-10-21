@@ -168,7 +168,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                           {eq.rulDays}d
                         </span>
                       ) : (
-                        <span className="text-tertiary">—</span>
+                        <span className="text-tertiary">n/a</span>
                       )}
                     </td>
                     <td className="px-3 py-2">

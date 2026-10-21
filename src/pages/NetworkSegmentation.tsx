@@ -45,7 +45,7 @@ const NetworkSegmentation = () => (
 
     <KpiGrid>
       {[
-        { label: "Network zones", icon: kpi.groups, value: "6 (L0–L4+DMZ)" },
+        { label: "Network zones", icon: kpi.groups, value: "6 (L0-L4+DMZ)" },
         { label: "Monitored connections", icon: kpi.connections, value: "48" },
         { label: "Policy violations", icon: kpi.risk, value: "1", color: "text-error" },
         { label: "Unmonitored flows", icon: kpi.unmonitored, value: "0" },

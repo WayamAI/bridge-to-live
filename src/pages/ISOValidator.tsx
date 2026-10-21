@@ -24,11 +24,11 @@ const VALIDATION_SUMMARY = [
 ];
 
 const SAMPLE_ERRORS: ValidationRecord[] = [
-  { id: "v1", tag: "TT-X-099", category: "Tag naming", rule: "TAG-NNN pattern required", status: "Fail", details: "Tag does not follow ISO 15926 naming convention — 'X' is not a valid class code" },
-  { id: "v2", tag: "COMP-A-001", category: "Mandatory fields", rule: "Design pressure required", status: "Fail", details: "Design pressure field is empty — required for CFIHOS compliance" },
-  { id: "v3", tag: "FT-D-018", category: "UoM compliance", rule: "Flow must be in Nm³/h", status: "Warning", details: "Flow recorded as m³/h — should be normalised to Nm³/h per project standard" },
+  { id: "v1", tag: "TT-X-099", category: "Tag naming", rule: "TAG-NNN pattern required", status: "Fail", details: "Tag does not follow ISO 15926 naming convention, 'X' is not a valid class code" },
+  { id: "v2", tag: "COMP-A-001", category: "Mandatory fields", rule: "Design pressure required", status: "Fail", details: "Design pressure field is empty, required for CFIHOS compliance" },
+  { id: "v3", tag: "FT-D-018", category: "UoM compliance", rule: "Flow must be in Nm³/h", status: "Warning", details: "Flow recorded as m³/h, should be normalised to Nm³/h per project standard" },
   { id: "v4", tag: "HEX-C-003", category: "Cross-reference", rule: "P&ID ref must exist", status: "Fail", details: "P&ID reference 'PID-CW-042' not found in SmartPlant database" },
-  { id: "v5", tag: "PUMP-B-012", category: "Mandatory fields", rule: "Manufacturer required", status: "Warning", details: "Manufacturer field contains abbreviation — full legal name required" },
+  { id: "v5", tag: "PUMP-B-012", category: "Mandatory fields", rule: "Manufacturer required", status: "Warning", details: "Manufacturer field contains abbreviation, full legal name required" },
   { id: "v6", tag: "MOT-E-018", category: "UoM compliance", rule: "Current must be in A", status: "Pass", details: "Current correctly recorded in Amperes" },
   { id: "v7", tag: "V-F-007", category: "Equipment class", rule: "CFIHOS class must match", status: "Fail", details: "Equipment class 'Vessel' should be 'Pressure Vessel' per CFIHOS R4" },
   { id: "v8", tag: "PSV-A-014", category: "Mandatory fields", rule: "Set pressure required", status: "Pass", details: "Set pressure correctly defined: 98 barg" },

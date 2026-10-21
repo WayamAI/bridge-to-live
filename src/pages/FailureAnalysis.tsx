@@ -131,7 +131,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
             <ComposedChart data={WEIBULL_DATA} margin={{ left: 6, right: 28, bottom: 4 }}>
               <XAxis tickMargin={8} height={AXIS_TITLE_HEIGHT} dataKey="hours" type="number" domain={[0, "dataMax"]} tickCount={6} tickFormatter={(v: number) => formatNumber(v)} tick={axisTick} tickLine={false} axisLine={false} label={axisTitle("Operating hours")} />
               <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={axisTick} tickLine={false} axisLine={false} label={axisTitle("Survival (%)", -90)} width={40} />
-              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} labelFormatter={(v: number) => `${formatNumber(v)} hr`} formatter={(val: number | number[], name: string) => [Array.isArray(val) ? `${val[0]}–${val[1]}%` : `${val}%`, name === "band" ? "Confidence band" : "Survival"]} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} labelFormatter={(v: number) => `${formatNumber(v)} hr`} formatter={(val: number | number[], name: string) => [Array.isArray(val) ? `${val[0]}-${val[1]}%` : `${val}%`, name === "band" ? "Confidence band" : "Survival"]} />
               <Area isAnimationActive={false} type="monotone" dataKey="band" stroke="none" fill={seriesColor(0)} fillOpacity={0.15} />
               <Line isAnimationActive={false} type="monotone" dataKey="survival" stroke={seriesColor(0)} strokeWidth={2} dot={false} />
             </ComposedChart>
@@ -171,7 +171,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
             <YAxis dataKey="t" name="Date" type="number" domain={["dataMin - 2592000000", "dataMax + 2592000000"]} tickCount={5} tickFormatter={(v: number) => formatMonthYear(v)} tick={axisTick} tickLine={false} axisLine={false} width={56} />
             <ZAxis dataKey="cost" range={[40, 400]} name="Repair cost (₹L)" />
             <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} cursor={{ strokeDasharray: "3 3" }}
-              formatter={(val: number, name: string) => [name === "Repair Cost (₹L)" ? formatRupees(val) : name === "Date" ? formatMonthYear(val) : formatNumber(val), name]} />
+              formatter={(val: number, name: string) => [name === "Repair cost (₹L)" ? formatRupees(val) : name === "Date" ? formatMonthYear(val) : formatNumber(val), name]} />
             <Scatter isAnimationActive={false} data={filteredScatter} fillOpacity={0.85}>
               {filteredScatter.map(d => <Cell key={`${d.tag}-${d.date}`} fill={MODE_COLORS[d.mode] ?? seriesColor(4)} />)}
             </Scatter>
