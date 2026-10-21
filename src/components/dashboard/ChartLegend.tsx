@@ -4,8 +4,8 @@ export interface LegendItem {
   label: string;
   /** A CSS colour or variable, normally from seriesColor() or toneChart. */
   color: string;
-  /** What the series looks like on the chart: a filled square, a solid line or a dashed line. */
-  kind?: "square" | "line" | "dashed";
+  /** What the series looks like on the chart: a filled square, a solid line, a dashed line or a dotted line. */
+  kind?: "square" | "line" | "dashed" | "dotted";
   /** Draw the swatch faded (a band or a forecast). */
   faded?: boolean;
 }
@@ -14,7 +14,7 @@ const swatch = (kind: NonNullable<LegendItem["kind"]>, color: string, faded?: bo
   const opacity = faded ? 0.35 : 1;
   if (kind === "square") return { backgroundColor: color, opacity };
   if (kind === "line") return { backgroundColor: color, opacity };
-  return { borderTop: `2px dashed ${color}`, opacity };
+  return { borderTop: `2px ${kind} ${color}`, opacity };
 };
 
 /** One legend for every chart: lists exactly the series that are drawn. */

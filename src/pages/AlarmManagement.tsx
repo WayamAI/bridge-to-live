@@ -116,7 +116,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                       ) : (
                         <button
                           onClick={() => onAcknowledge(alert.id)}
-                          className="type-label-sm inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
+                          className="type-label-sm inline-flex h-8 items-center gap-1 whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                         >
                           <icons.acknowledge className="size-[13px]" aria-hidden /> Acknowledge
                         </button>

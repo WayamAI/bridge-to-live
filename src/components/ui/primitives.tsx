@@ -252,7 +252,7 @@ export const Chip = ({
     aria-pressed={active}
     {...props}
     className={cn(
-      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 type-label-sm outline-none transition-colors duration-[150ms] focus-visible:ring-2 focus-visible:ring-active",
+      "inline-flex h-8 items-center gap-1.5 rounded-full border px-3 type-label-sm outline-none transition-colors duration-[150ms] focus-visible:ring-2 focus-visible:ring-active",
       active
         ? "border-transparent bg-action-primary text-on-color"
         : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground",

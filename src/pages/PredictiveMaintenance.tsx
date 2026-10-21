@@ -111,7 +111,7 @@ const PredictiveMaintenance = ({ equipment }: Props) => {
                     </td>
                     <td className="py-2 px-3 text-center">
                       <div className="flex items-center justify-center gap-1">
-                        <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="type-label-sm inline-flex h-7 items-center whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
+                        <button onClick={(e) => { e.stopPropagation(); setWoPanel(rec); }} className="type-label-sm inline-flex h-8 items-center whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
                           <icons.createWorkOrder className="mr-1 size-[13px]" aria-hidden />
                           Create work order
                         </button>

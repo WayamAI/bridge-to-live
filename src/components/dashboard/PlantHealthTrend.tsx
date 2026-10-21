@@ -39,7 +39,7 @@ const PlantHealthTrend = () => {
       <ChartLegend items={[
         { label: "Health score", color: seriesColor(0), kind: "line" },
         { label: "Target 90%", color: seriesColor(4), kind: "dashed" },
-        { label: "PM events", color: "var(--text-quaternary)", kind: "dashed" },
+        { label: "PM events", color: "var(--text-quaternary)", kind: "dotted" },
       ]} />
       <ChartBox height="standard" label="Plant health score, last 90 days">
         <ComposedChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>

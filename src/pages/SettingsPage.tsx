@@ -56,7 +56,7 @@ const SettingsPage = () => {
       {activeTab === "thresholds" && (
         <Panel title="Sensor Alarm Thresholds" padded={false}
           action={
-            <button onClick={() => toast.success("Thresholds saved")} className="type-label-sm inline-flex h-7 items-center gap-1 rounded-full bg-action-primary px-3 text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active">
+            <button onClick={() => toast.success("Thresholds saved")} className="type-label-sm inline-flex h-8 items-center gap-1 rounded-full bg-action-primary px-3 text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active">
               <icons.save className="size-[13px]" aria-hidden /> Save changes
             </button>
           }>
