@@ -8,7 +8,7 @@ const PlaceholderPage = ({ title }: { title: string }) => {
         <Icon name={emptyIcon.nothing} size={iconSize.empty} className="mb-4" />
         <h2 className="text-lg font-bold">{title}</h2>
         <p className="text-xs text-muted-foreground mt-2 max-w-md">
-          This screen is part of the PlantMind operational intelligence platform. Full data integration and interactive functionality are active across all connected systems.
+          This screen is part of the Drishti operational intelligence platform. Full data integration and interactive functionality are active across all connected systems.
         </p>
       </div>
     </div>

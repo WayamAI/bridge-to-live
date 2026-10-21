@@ -1,6 +1,6 @@
-# PlantMind — Wayam AI
+# Drishti by Wayam AI
 
-PlantMind is a real-time plant operations dashboard built for industrial
+Drishti is a real-time plant operations dashboard built for industrial
 sites (the demo data models an LNG plant). It brings equipment health,
 predictive maintenance, energy intelligence, alarm management, OT
 security, and digital-twin data quality into a single console, aimed at

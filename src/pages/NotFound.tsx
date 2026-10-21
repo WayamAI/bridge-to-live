@@ -8,7 +8,7 @@ const NotFound = () => {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = `${locate(location.pathname).title} · PlantMind`;
+    document.title = `${locate(location.pathname).title} · Drishti`;
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
   }, [location.pathname]);
 

@@ -13,7 +13,7 @@ interface PurdueLevel {
 
 const PURDUE_LEVELS: PurdueLevel[] = [
   { level: "Level 4", label: "Enterprise IT", devices: [
-    { name: "SAP ERP Server", status: "green" }, { name: "Maximo CMMS", status: "green" }, { name: "Email Gateway", status: "green" }, { name: "PlantMind Cloud", status: "green" },
+    { name: "SAP ERP Server", status: "green" }, { name: "Maximo CMMS", status: "green" }, { name: "Email Gateway", status: "green" }, { name: "Drishti Cloud", status: "green" },
   ]},
   { level: "Level 3.5", label: "DMZ / firewall", devices: [
     { name: "FW-DMZ-01 (Palo Alto)", status: "green" }, { name: "FW-DMZ-02 (Palo Alto)", status: "amber" }, { name: "Jump Server JS-01", status: "green" },

@@ -57,7 +57,7 @@ export const navGroups: NavGroup[] = [
   ]},
   { section: "Handover & data", items: [
     { to: "/handover", label: "Handover Tracker", description: "Handover readiness against target: project summary and requirement scorecard", icon: navIcon["/handover"] },
-    { to: "/twin-sync", label: "Engineering Twin Sync", description: "Synchronization status between Hexagon SmartPlant engineering twin and PlantMind operational twin", icon: navIcon["/twin-sync"] },
+    { to: "/twin-sync", label: "Engineering Twin Sync", description: "Synchronization status between Hexagon SmartPlant engineering twin and Drishti operational twin", icon: navIcon["/twin-sync"] },
     { to: "/data-completeness", label: "Data Completeness", description: "Tracking data completeness across all engineering and operational data categories", icon: navIcon["/data-completeness"] },
     { to: "/iso-validator", label: "ISO Validator", description: "ISO 15926 / CFIHOS validation of the engineering data package against handover standards", icon: navIcon["/iso-validator"] },
     { to: "/data-sources", label: "Connected Systems", description: "Connected engineering and operational systems: status, last sync and record volumes", icon: navIcon["/data-sources"] },

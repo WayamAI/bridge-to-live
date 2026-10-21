@@ -20,7 +20,7 @@ const AppLayout = ({ alerts, userRole, onRoleChange, breadcrumb }: AppLayoutProp
 
   // Document title: the page's name from nav.ts, then the product.
   useEffect(() => {
-    document.title = `${locate(pathname).title} · PlantMind`;
+    document.title = `${locate(pathname).title} · Drishti`;
   }, [pathname]);
 
   // The off-canvas sidebar closes after navigating.

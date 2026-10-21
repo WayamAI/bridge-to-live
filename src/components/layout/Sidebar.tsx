@@ -104,7 +104,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
       <div className={cn("flex h-14 shrink-0 items-center border-b border-hairline px-3", !expanded && "lg:px-[18px]")}>
         <Link
           to="/"
-          aria-label="Wayam AI, PlantMind"
+          aria-label="Wayam AI, Drishti"
           className="flex min-w-0 items-center gap-2.5 rounded-[10px] outline-none focus-visible:ring-2 focus-visible:ring-active"
         >
           <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0 dark:hidden" />
@@ -112,7 +112,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
           <span className={cn("flex min-w-0 flex-col gap-0.5", railOnly)}>
             <img src={wayamWordmarkLight} alt="" className="h-5 w-auto self-start dark:hidden" />
             <img src={wayamWordmarkDark} alt="" className="hidden h-5 w-auto self-start dark:block" />
-            <span className="type-eyebrow block truncate text-quaternary">PlantMind</span>
+            <span className="type-eyebrow block truncate text-quaternary">Drishti</span>
           </span>
         </Link>
       </div>

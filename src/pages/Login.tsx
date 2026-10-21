@@ -21,7 +21,7 @@ const Login = () => {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = "Sign in · PlantMind";
+    document.title = "Sign in · Drishti";
   }, []);
 
   const from = (location.state as { from?: string } | null)?.from ?? "/";
@@ -49,7 +49,7 @@ const Login = () => {
           <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0" />
           <img src={wayamWordmarkDark} alt="Wayam AI" className="h-5 w-auto self-start" />
         </div>
-        <p className="type-display-2xl relative">PlantMind</p>
+        <p className="type-display-2xl relative">Drishti</p>
       </div>
 
       {/* Form column */}
@@ -60,7 +60,7 @@ const Login = () => {
           <span className="flex flex-col gap-0.5">
             <img src={wayamWordmarkLight} alt="Wayam AI" className="h-5 w-auto self-start dark:hidden" />
             <img src={wayamWordmarkDark} alt="Wayam AI" className="hidden h-5 w-auto self-start dark:block" />
-            <span className="type-eyebrow text-quaternary">PlantMind</span>
+            <span className="type-eyebrow text-quaternary">Drishti</span>
           </span>
         </div>
 
@@ -127,7 +127,7 @@ const Login = () => {
         </div>
 
         <p className="type-caption px-8 pb-8 text-quaternary">
-          Wayam AI · PlantMind demo environment
+          Wayam AI · Drishti demo environment
         </p>
       </div>
     </div>
