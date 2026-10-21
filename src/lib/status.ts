@@ -62,7 +62,7 @@ export interface WorkflowTone { tone: Tone; solid?: boolean }
 export const recommendationStatus: Record<string, WorkflowTone> = {
   Pending: { tone: "warning" },
   Scheduled: { tone: "info" },
-  "In-Progress": { tone: "info" },
+  "In progress": { tone: "info" },
   Completed: { tone: "success" },
   Deferred: { tone: "neutral" },
 };
@@ -75,11 +75,11 @@ export const workOrderType: Record<string, WorkflowTone> = {
   Emergency: { tone: "error", solid: true },
 };
 
-/** Work-order status: Awaiting Parts means blocked, so it is the one solid badge. */
+/** Work-order status: Awaiting parts means blocked, so it is the one solid badge. */
 export const workOrderStatus: Record<string, WorkflowTone> = {
   Open: { tone: "warning" },
-  "In-Progress": { tone: "info" },
-  "Awaiting Parts": { tone: "error", solid: true },
+  "In progress": { tone: "info" },
+  "Awaiting parts": { tone: "error", solid: true },
   Completed: { tone: "success" },
   Cancelled: { tone: "neutral" },
 };
@@ -94,7 +94,7 @@ export const complexityTone: Record<string, Tone> = {
 /** Opportunity pipeline stage (Identified to Implemented). */
 export const opportunityStatus: Record<string, WorkflowTone> = {
   Identified: { tone: "neutral" },
-  "Under Review": { tone: "warning" },
+  "Under review": { tone: "warning" },
   Approved: { tone: "info" },
   Implemented: { tone: "success" },
 };
@@ -157,9 +157,9 @@ export const connectedSystemTone = (status: string): WorkflowTone =>
 /** A sync run: quiet success, or quiet warning when it finished with errors. */
 export const syncRunTone = (errors: number): Tone => (errors > 0 ? "warning" : "success");
 
-/** Data completeness state from a percentage: 100 Complete (success), 80 and above On Track (warning), below 80 At Risk (error, solid). */
+/** Data completeness state from a percentage: 100 Complete (success), 80 and above On track (warning), below 80 At risk (error, solid). */
 export const completenessState = (pct: number): { label: string } & WorkflowTone =>
-  pct === 100 ? { label: "Complete", tone: "success" } : pct >= 80 ? { label: "On Track", tone: "warning" } : { label: "At Risk", tone: "error", solid: true };
+  pct === 100 ? { label: "Complete", tone: "success" } : pct >= 80 ? { label: "On track", tone: "warning" } : { label: "At risk", tone: "error", solid: true };
 
 /** ISO / CFIHOS validation result: Fail needs attention (solid). */
 export const validationStatus: Record<string, WorkflowTone> = {

@@ -1,0 +1,544 @@
+# REVIEW_FIXES.md
+
+Audit of reviewer feedback a–h on PlantMind (`bridge-to-live`). Branch `review-fixes`, from `origin/main` at `bc9856a`. The audit below was written before any change; **Final status** (next section) records what was done.
+
+How this was checked: production build (`vite preview`, port 4180) and `npm run dev` (port 5180), Playwright/Chromium, 28 routes × light/dark × 1440/390 = 112 combos each. The login and sidebar tests used a fresh browser context (a clean profile).
+
+## Final status
+
+Branch `review-fixes` (49 commits on top of origin/main, one per fix). Final gates: `tsc -p tsconfig.app.json` passes; 140 tests pass (was 49); `npm run build` passes; `npm run lint` 0 errors, 9 warnings (was 6 errors, 9 warnings; the warnings are react-refresh in shadcn files). Final sweep: production and dev, 28 routes x light/dark x 1440/390 = 112 combinations each, 0 structural failures, no console warnings except the intentional 404 test route. Chart check (10 chart pages x 2 themes x 2 widths): 0 overlapping or clipped labels, only the two chart heights. Screenshots of all 26 routes in light/dark at 1440 and 390 are kept outside the repo in `D:/bridge-to-live-shots/final/` (104 files), with one folder per earlier batch.
+
+| Item | Status | What was done |
+|---|---|---|
+| a. Icons | Done | Every KPI tile has a 14 px greyscale icon top-right (enforced by the types), 24 px icons in all empty states, Dashboard panel-header icons, leading icons on the primary actions that lacked one; all from `src/lib/icons.ts`, one icon per meaning, tests keep them distinct. 26 of 26 page marks load. |
+| b. OEE colour | Done | The black/white static ring is a real gauge in the series blue, same size and typography as the other three, arc from the value. |
+| c. UI consistency | Done, with the exceptions below | KPI grid columns follow the tile count (`KpiGrid`); two chart heights; one rupee and month format (`format.ts`); Chronus checkbox and slider; Plant Overview keeps its right-hand column; one name per page from `nav.ts`; log timestamps and mock dates relative to now. |
+| d. Login flow | Done | The route guard already blocked every route without a session (verified in a fresh profile). Added: `/login` redirects when signed in, session shared across tabs (`localStorage`, 12 h expiry, validated, cleared on logout in every tab), visible Log out button, storage-blocked mode works. |
+| e. Functional issues / tree view | Done; tree view not found | No tree view exists in PlantMind; the reviewer's tree-view item likely refers to the BOM Sync EBOM tree; asked reviewer to confirm. The sidebar got collapsible groups. Fixed: T1 (deterministic chart data), T2 (handover 83% on both screens), T3 (Weibull, failure scatter, Sustainability target, RUL line, Plant Health legend), T4 ("Rate Of Change"), T5-T6 not touched (see below), T7 (keyboard on rows and headers), T8 (duplicate key), T9 (mock dates), T11 (lint errors), router future flags, Escape on the drawer, predicted failures and Upcoming Maintenance, sparklines, Failure Analysis timeline, What-If baseline and the extra 0.9 factor. |
+| f. Colours, icons, typography, casing, spacing, component styling | Done, with the exception below | As c; text contrast raised to WCAG AA (Chronus deviation 11); sentence case for labels and Title Case for panel titles, abbreviations written out (full list in "Casing and wording changes" below); the Equipment Detail panel scrolls inside its panel. |
+| g. Graphs and sidebar | Done | Charts: one legend style, one axis style, no overlapping or clipped ticks at 1440 or 390, % and axis titles where the unit is not obvious, accessible names, readable empty states, wrapped category labels. Sidebar: 6 collapsible groups plus Dashboard, Settings in the footer, state remembered per viewer, all open on a first visit. |
+| h. Verified on the running app | Done locally; preview not checkable | Every commit carries a before/after check on the production preview (and dev for console warnings). The Vercel preview is behind Vercel Authentication, so it could not be fetched from here; `vercel.json` adds the SPA rewrite for direct loads. |
+
+### Not done (and why)
+
+- **T5 Settings inputs reset when you leave the tab** and **T6 toasts ignore the app theme**: not in the agreed order of work; unchanged.
+- **T12-T15 housekeeping** (root tsconfig checks nothing, 1.1 MB chunk, `animate-pulse-subtle` undefined, TopBar clock re-render, Playwright config path, README template text): unchanged.
+- **One shared button component** (primary/secondary/ghost): the buttons are consistent by hand, not by a component; unchanged.
+- **Clipped last column in two half-width tables** (Dashboard heat map "Vibration", Failure Analysis Pareto "Trend"): unchanged; both scroll inside their panel as at baseline.
+- **Simulator formulas** other than the baseline failures and the stray 0.9 factor: unchanged.
+- **Production domain:** see the owner-action note below; not a code issue.
+
+### Round 3 commits (after the round 2 table below)
+
+| Commit | Before | After |
+|---|---|---|
+| What-If baseline failures from the equipment data | fixed 12 | 3, same rule as the Dashboard |
+| What-If extra 0.9 factor removed | defaults showed a saving of 98 L | defaults show 0; other rows unchanged |
+| log timestamps relative to now | newest rows 7 months old | newest rows minutes old |
+| sidebar, icons | see the earlier summary | all groups open on a first visit |
+| consistent charts | 14 chart heights, overlapping ticks | 220/280 only, 0 overlaps |
+| KPI grid | each page its own grid | by tile count |
+| one currency and month format | 7 rupee spellings | 1 pattern |
+| Chronus checkbox and slider | native, black thumbs | styled in both themes |
+| quaternary text contrast | 161 of 161 elements below 4.5:1 | 0 below (lowest 4.55 light, 4.76 dark) |
+| Plant Overview right column | blank | Select equipment panel |
+| lint errors | 5 | 0 |
+| Equipment Detail panel | sensors capped at 320 px of 1556 (Plant Overview) and the panel stuck out below the registry | from lg the panel takes the row height, sensors scroll inside it with Maintenance pinned; below lg everything fits (checked 1440 and 390, light and dark) |
+| casing and abbreviations | 109 Title Case labels, 14 abbreviations or all-caps labels | 0 and 0 (147 changes, listed below) |
+
+## Casing and wording changes
+
+Rule: panel titles Title Case; table headers, KPI and form labels, tab, legend and series names, statuses and eyebrow labels sentence case; page names as in nav.ts; non-standard abbreviations written out; domain acronyms kept (OEE, MTBF, RUL, PM, OT, MITRE, ISO, CMMS, SAP). Not touched: data (equipment, system and parameter names, tags). Also changed: alarm types use first-letter capitalisation (Rate of change); work-order assignees "Rotating Equip." and "Static Equip." are written out.
+
+| Before | After | Where |
+|---|---|---|
+| 12-Month Net Savings | 12-Month net savings | LoadOptimisation |
+| ACK | Action | AlarmManagement |
+| Action Cost (₹L) | Action cost (₹L) | PredictiveMaintenance |
+| Actions This Week | Actions this week | PredictiveMaintenance |
+| Active Critical Alarms | Active critical alarms | Dashboard |
+| Active Investigations | Active investigations | ThreatMonitor |
+| Active Users | Active users | SettingsPage |
+| After Changes (₹/day) | After changes (₹/day) | LoadOptimisation |
+| Alarm Rate | Alarm rate | AlarmManagement |
+| Alert Configuration | Alert configuration | SettingsPage |
+| Annual Saving | Annual saving | EnergyIntelligence, LoadOptimisation |
+| Annual Target | Annual target | Sustainability |
+| Asset Name | Asset name | OTAssetRegistry |
+| Assigned Team | Assigned team | PredictiveMaintenance |
+| Avg Ack Time | Average acknowledgement time | AlarmAnalytics |
+| Avg Ack Time (min) | Average acknowledgement time (min) | AlarmAnalytics |
+| Avg ack time, minutes (right) | Average acknowledgement time, minutes (right) | AlarmAnalytics |
+| Avg Alarm Rate | Average alarm rate | AlarmAnalytics |
+| Avg Completeness | Average completeness | DataQuality |
+| Avg Data Freshness | Average data freshness | DataQuality |
+| Avg Duration | Average duration | AlarmAnalytics |
+| Avg MTBF (Fleet) | Average MTBF (fleet) | FailureAnalysis |
+| Carbon Emissions | Carbon emissions | WhatIfSimulator |
+| Categories Tracked | Categories tracked | DataCompleteness |
+| Chattering Eliminated | Chattering eliminated | AlarmRationalisation |
+| Completed This Month | Completed this month | PredictiveMaintenance |
+| Compliance Rate | Compliance rate | PredictiveMaintenance |
+| Compressed Air | Compressed air | usePlantData |
+| Consequence Cost (No Action) | Consequence cost (no action) | PredictiveMaintenance |
+| Cooling Water Flow | Cooling water flow | usePlantData |
+| Critical Active | Critical active | AlarmManagement |
+| Critical Events | Critical events | ThreatMonitor |
+| Critical Gaps | Critical gaps | ComplianceDashboard |
+| Delta (Last Sync) | Delta (last sync) | TwinSync |
+| DMZ / Firewall | DMZ / firewall | NetworkSegmentation |
+| Domains Assessed | Domains assessed | ComplianceDashboard |
+| Dominant Failure Mode | Dominant failure mode | RemainingUsefulLife |
+| Electrical Load | Electrical load | usePlantData |
+| End-of-Life / High Risk | End-of-life / high risk | OTAssetRegistry |
+| Energy Cost | Energy cost | WhatIfSimulator |
+| Energy Cost Rate | Energy cost rate | usePlantData |
+| Energy Efficiency Index | Energy efficiency index | Dashboard |
+| Equipment Tag | Equipment tag | PredictiveMaintenance |
+| Est. Action Cost | Estimated action cost | PredictiveMaintenance |
+| Est. Hours | Estimated hours | PredictiveMaintenance |
+| Event Type | Event type | ThreatMonitor |
+| Events (7 Days) | Events (7 days) | ThreatMonitor |
+| Failure Mode | Failure mode | FailureAnalysis, PredictiveMaintenance |
+| Failure Prob. (90d) | Failure probability (90d) | RemainingUsefulLife |
+| Field Devices / Sensors | Field devices / sensors | NetworkSegmentation |
+| Flaring Reduction | Flaring reduction | Sustainability |
+| Handover Readiness | Handover readiness | Dashboard |
+| Healthy Sources | Healthy sources | DataQuality |
+| HIGH Alarm | HIGH alarm | SettingsPage |
+| HIGH-HIGH Alarm | HIGH-HIGH alarm | SettingsPage |
+| In Progress | In progress | WorkOrders |
+| Last Seen | Last seen | OTAssetRegistry |
+| Last Sync | Last sync | HandoverTracker, TwinSync |
+| Live Sensors | Live sensors | EquipmentDetail |
+| Maintenance Cost | Maintenance cost | WhatIfSimulator |
+| Mean Response Time | Mean response time | ThreatMonitor |
+| MITRE Tactic | MITRE tactic | ThreatMonitor |
+| Model Parameters | Model parameters | SettingsPage |
+| Monitored Connections | Monitored connections | NetworkSegmentation |
+| Monthly Failures | Monthly failures | RemainingUsefulLife |
+| Most Failure-Prone | Most failure-prone | FailureAnalysis |
+| MTBF Trend | MTBF trend | FailureAnalysis |
+| Natural Gas | Natural gas | usePlantData |
+| Net Financial Impact (Annual) | Net financial impact (Annual) | WhatIfSimulator |
+| Network Zones | Network zones | NetworkSegmentation |
+| Open Findings | Open findings | ComplianceDashboard |
+| Operating Hours | Operating hours | FailureAnalysis, RemainingUsefulLife |
+| Opportunities Identified | Opportunities identified | LoadOptimisation |
+| Overall Completeness | Overall completeness | DataCompleteness |
+| Overall Compliance | Overall compliance | ComplianceDashboard |
+| Overall Plant Health | Overall plant health | Dashboard |
+| Pass Rate | Pass rate | ISOValidator |
+| Patch Available | Patch available | OTAssetRegistry |
+| Patch Status | Patch status | OTAssetRegistry |
+| Pending Review | Pending review | AlarmRationalisation |
+| Planned:Reactive Ratio | Planned to reactive ratio | MaintenanceCost |
+| Plant Network / Historians | Plant network / historians | NetworkSegmentation |
+| PLCs / RTUs / Controllers | PLCs / RTUs / controllers | NetworkSegmentation |
+| Policy Violations | Policy violations | NetworkSegmentation |
+| Predicted Failures (30d) | Predicted failures (30d) | Dashboard |
+| Predicted Failures (90d) | Predicted failures (90d) | WhatIfSimulator |
+| Primary Focus | Primary focus | SettingsPage |
+| Prob. | Probability | PredictiveMaintenance |
+| Process Unit | Process unit | EquipmentHeatMap, RemainingUsefulLife |
+| Projected Savings | Projected savings | PredictiveMaintenance |
+| Recommended Action | Recommended action | PredictiveMaintenance, RemainingUsefulLife |
+| Records / 24hr | Records / 24 hr | HandoverTracker |
+| Records Synced | Records synced | TwinSync |
+| Repair Cost (₹L) | Repair cost (₹L) | FailureAnalysis |
+| Scale Parameter (η) | Scale parameter (η) | FailureAnalysis |
+| Scope 1 · Direct | Scope 1 · direct | Sustainability |
+| Scope 2 · Grid | Scope 2 · grid | Sustainability |
+| Screen Access | Screen access | SettingsPage |
+| Selected Scenario Savings | Selected scenario savings | LoadOptimisation |
+| Sensor Thresholds | Sensor thresholds | SettingsPage |
+| Shape Parameter (β) | Shape parameter (β) | FailureAnalysis |
+| Source System | Source system | TwinSync |
+| Source → Destination | Source → destination | NetworkSegmentation |
+| Spare Parts | Spare parts | PredictiveMaintenance |
+| Steam Consumption | Steam consumption | usePlantData |
+| Sync Errors | Sync errors | TwinSync |
+| Tag Pattern | Tag pattern | SettingsPage |
+| Time in High-Alarm State | Time in high-alarm state | AlarmAnalytics |
+| Total Alarm Points | Total alarm points | AlarmRationalisation |
+| Total Alarms | Total alarms | AlarmAnalytics |
+| Total Alarms Today | Total alarms today | AlarmAnalytics |
+| Total Checks | Total checks | ISOValidator |
+| Total Consumption | Total consumption | Sustainability |
+| Total Failures (24 mo) | Total failures (24 months) | FailureAnalysis |
+| Total Identified Savings | Total identified savings | LoadOptimisation |
+| Total Ingestion Errors (24h) | Total ingestion errors (24h) | DataQuality |
+| Total Maint. Cost | Total maintenance cost | FailureAnalysis |
+| Total OT Assets | Total OT assets | OTAssetRegistry |
+| Total Records | Total records | TwinSync |
+| Total Required | Total required | DataCompleteness |
+| Total Validation Checks | Total validation checks | ISOValidator |
+| Unmonitored Flows | Unmonitored flows | NetworkSegmentation |
+| Unplanned Downtime | Unplanned downtime | FailureAnalysis, WhatIfSimulator |
+| Up to Date | Up to date | OTAssetRegistry |
+| User Management | User management | SettingsPage |
+| Water Recycling Rate | Water recycling rate | Sustainability |
+| WO ID | Work order | WorkOrders |
+| Work Order | Work order | PredictiveMaintenance |
+| YTD Budget | Year-to-date budget | MaintenanceCost |
+| YTD CO₂e Emissions | Year-to-date CO₂e emissions | Sustainability |
+| YTD Spend | Year-to-date spend | MaintenanceCost |
+| ACK (table header) | Action | AlarmManagement |
+| ACK (acknowledged row) | Acknowledged | AlarmManagement |
+| Create WO | Create work order | PredictiveMaintenance |
+| Comp B Startup Shift | Compressor B startup shift | WhatIfSimulator |
+| PM Frequency Change | PM frequency change | WhatIfSimulator |
+| Compressed Air Setpoint | Compressed air setpoint | WhatIfSimulator |
+| Operating Throughput | Operating throughput | WhatIfSimulator |
+| Predictive-Only Maintenance | Predictive-only maintenance | WhatIfSimulator |
+| Simulate Equipment Failure | Simulate equipment failure | WhatIfSimulator |
+| Net Financial Impact (Annual) | Net financial impact (annual) | WhatIfSimulator |
+| Hexagon SmartPlant (Eng. twin) | Hexagon SmartPlant (engineering twin) | usePlantData (Connected Systems row) |
+| In-Progress (work-order status) | In progress | WorkOrders, status map |
+| Awaiting Parts (work-order status) | Awaiting parts | WorkOrders, status map |
+| Process Unit / Last Alarm (sortable headers) | Process unit / Last alarm | EquipmentHealth |
+| Completed (Month) | Completed (month) | WorkOrders |
+| 30-Day Alarm Trend + Avg Acknowledgment Time (panel title) | 30-Day Alarm Trend + Average Acknowledgement Time | AlarmAnalytics |
+
+## Baseline (before any change)
+
+| Check | Result |
+|---|---|
+| `tsc -p tsconfig.app.json --noEmit` | Pass |
+| `npm test` | Pass, 49 tests (incl. `icons.test.ts`, 6) |
+| `npm run build` | Pass (one 1.1 MB chunk warning, T13) |
+| `npm run lint` | **Fail**: 15 problems (6 errors, 9 warnings), all the known T11 items |
+| Sweep, production build | 112 combos: every route has one h1, no overflow, no blank charts, no console output. Only the intended 404 route `/nope` logs a `console.error`. |
+| Sweep, `npm run dev` | 112 combos: 0 structural failures. Console warnings below. |
+| Page marks | 26 of 26 route marks load (`naturalWidth > 0`); no broken image. `icons.test.ts` also asserts a mark for every route. |
+
+### Console warnings per route (dev build, all 112 combos)
+
+| Route | Warning |
+|---|---|
+| `/predictive-maintenance` | React: "Each child in a list should have a unique `key` prop" (T8) |
+| every route, including `/login` and `/nope` | React Router v6 future-flag warnings: `v7_startTransition` and `v7_relativeSplatPath` (two lines per route) |
+| `/nope` | intentional `console.error` "404 Error: User attempted to access non-existent route" |
+
+No act/ref/prop-type warnings anywhere.
+
+---
+
+## a. Icons are missing
+
+**What is wrong today**
+- Route icons are complete (sidebar and page headers; page marks load). Everywhere else icons are close to absent. Counted in the DOM at 1440 across the 26 app routes:
+  - **KPI tiles: 0 of 83 tiles have an icon** (`KpiTile`, `components/ui/primitives.tsx:76`). The Energy "icons" are sparklines, not icons.
+  - **Panel headers: 5 of 59** have an icon (`Panel`, `primitives.tsx:35`; only Dashboard (the "View all" chevron), Handover, Simulator, Data Sources and Settings).
+  - **Buttons with text and no icon:** Alarms 10 (the filter pill and per-row actions partly), Failure Analysis 6, Predictive Maintenance 8, Work Orders 5, OT Assets 4, ISO Validator 4 (many are filter chips, which are fine without icons; the action buttons are not).
+  - **Empty states:** `EmptyState` (`primitives.tsx:159`) has no icon (Dashboard "Select equipment…", "No maintenance in the next 60 days", Failure Event Timeline).
+  - **Table actions:** Acknowledge has an icon; sort headers have one; row "expand" in Predictive Maintenance has a chevron; Work Orders, ISO Validator and What-If "Save scenario" have none.
+- Sidebar and page icons are all lucide and greyscale already.
+
+**Proposed fix** (greyscale lucide, stroke 1.75 via `index.css`, all through `src/lib/icons.ts`)
+1. `KpiTile` gets an optional `icon` prop, rendered 16px `text-icon-quaternary` beside the eyebrow label. Add a `kpiIcon` map in `icons.ts` (one icon per metric meaning, e.g. health `HeartPulse`, alarms `Bell` (reuse `icons.alarms`), energy `Zap`, cost `Wallet`, downtime `Timer`, handover `ArrowRightLeft`). Keep one-icon-one-meaning; extend the uniqueness test.
+2. `Panel` gets an optional `icon` prop for the eyebrow header (charts, tables, lists); same map style.
+3. `EmptyState` gets an icon slot (default `Inbox`/`SearchX`, size 20, `text-icon-quaternary`).
+4. Action buttons (Save scenario, Create work order, Validate, Export-type buttons) get a 13px leading icon (`iconSize.pill`).
+5. Tabs: Settings already has them; add icons to the other tabbed view(s) where present.
+
+Files: `lib/icons.ts`, `components/ui/primitives.tsx`, ~20 pages (props only), `test/icons.test.ts`, `test/primitives.test.tsx`.
+Risk: **L–M** (many files, mechanical; no data/behaviour change). Logic change: **no**.
+
+---
+
+## b. OEE indicator is black
+
+**What is wrong today** (screenshots light and dark, `/`, bottom panel)
+- `components/twin/OEEDashboard.tsx:39`: the fourth item is not a gauge. It is a static `<div className="… rounded-full border-4 border-foreground">`. `border-foreground` is the primary text colour, so the ring is **black in light and white in dark**. It also has no progress arc (always a full ring) and its label "OEE" uses `text-foreground` while the other three use `text-quaternary`.
+- The other three use `OEEGauge` with `seriesColor(0)` = `var(--analytics-series-1)` (blue, `chartTheme.ts:5`). The black ring is the only element on the Dashboard that does not use a series or status colour.
+- Not a token bug and not `action-primary`: it is a hard-coded class on the one element that bypasses `OEEGauge`.
+
+**Proposed fix:** render the overall value with the same `OEEGauge` (same ring, `seriesColor(0)`, animated arc at `oee.overall`). Distinguish it by a heavier label (`type-label-sm text-foreground`) only, not by colour. Both themes use the same CSS variable, so light and dark match.
+Files: `components/twin/OEEDashboard.tsx`. Risk: **L**. Logic change: **no** (the ring now shows the real 79.2% arc instead of a full ring; presentation only).
+
+---
+
+## c / f. UI consistency, alignment, presentation
+
+Measured across the 26 app routes (1440 light) plus 390, and by eye on every page screenshot.
+
+What is already consistent: page header position (h2 at the same x,y on every route), page marks, one h1 per route, sidebar icons, hairline borders, no horizontal overflow.
+
+| # | Inconsistency | Where (evidence) | Fix |
+|---|---|---|---|
+| C1 | KPI grid columns differ per page: 5 (Dashboard), 6 tiles in a 3×2 grid (Failure Analysis, Energy, Predictive Maintenance), 4 elsewhere; tile heights then differ page to page | `/`, `/failure-analysis`, `/energy` | Standard KPI row: 4 columns at `lg`, 2 at `sm`; 6 tiles become 3+3 only when 6, else 4/5. Document in `PageHeader`/`KpiTile` |
+| C2 | Chart heights vary without a rule: 180, 200, 220, 240, 260, 280, 320 px | Dashboard 180, Failure 220/280/200, RUL 260/280, Maint. cost 280/200/200, Sustainability 280/180/200 | Two heights only: 220 (standard) and 280 (hero). Put in `chartTheme.ts` |
+| C3 | Panels in one row with very different content heights leave large empty areas | Dashboard right column (empty "Select equipment" panel beside a full list), Failure Analysis right column, Simulator right column | Equal-height rows (`items-stretch` + panel body fill); compact empty state |
+| C4 | Native checkbox ("Show acknowledged") and native sliders/toggle in the Simulator look unlike the rest (black thumbs, no track fill) | `/alarms` toolbar, `/simulator` | Use the existing `Chip`/switch styles; style slider with tokens |
+| C5 | Sidebar labels differ from page titles on 14 of 26 pages ("Cost Tracker" vs "Maintenance Cost Tracker", "Configuration" vs "Settings & Configuration", "Connected Systems" vs "Handover Tracker" page) | `nav.ts` | Align title and label (labels in `nav.ts`; **routes unchanged**) |
+| C6 | Date formats mix ISO `2026-07-22` (charts), `Oct '25`, `Jan`, and `Mar '26` | Dashboard, Sustainability | One short format ("22 Jul") via `lib/format.ts` for chart axes |
+| C7 | Number/currency formats differ: `₹4200L` (no separator) next to `₹976L`, `₹8.74 Cr`, `₹42L/yr`; `0k T CO₂e`; `Nm³/hr` | `/simulator`, `/failure-analysis`, `/energy` | Route all through `lib/format.ts` (thousand separators; no `0k`) |
+| C8 | Casing: tags `ACK` (all caps) vs "Acknowledge"; abbreviations "Total Maint. Cost", "Avg MTBF (Fleet)"; "Rate Of_change" (T4) | `/alarms`, `/failure-analysis` | Sentence case for labels, one wording rule; T4 |
+| C9 | KPI value colours mix neutral/orange/red/green with no rule visible to the viewer (Dashboard: 89.6% orange, 4 red, 0 black, 73% orange) | `/` | Keep (colour = status per Chronus), but add status dot/delta so the reason is visible; decision D6 |
+| C10 | Equipment detail panel is clipped at the bottom while the registry beside it is 600px; third sensor card cut off | `/equipment` after row click | Let the detail panel scroll internally with the same max height as the registry |
+| C11 | Tables clip their last column in half-width panels ("VIBRATIC", "TRE") | Dashboard heat map, Failure Analysis Pareto table | Shorter headers / `overflow-x` affordance / fixed column widths |
+| C12 | Sensor sparkline is almost flat (scale = full sensor range) and dashed lines look like an empty chart | EquipmentDetail "Live sensors" | Scale to the normal band ± margin |
+| C13 | Primary/secondary/pill button styles: three variants in use (black pill, outlined pill, text link with chevron); heights 32/36/44 | Dashboard actions, Settings "Save changes", Login | Define `Button` variants in `primitives.tsx` (primary, secondary, ghost) and use them |
+
+Files: `primitives.tsx`, `chartTheme.ts`, `format.ts`, `nav.ts`, ~15 pages. Risk: **M** (broad, visual). Logic change: **no** except C6/C7 (formatting only).
+
+---
+
+## d. Login flow before the dashboard
+
+Fresh browser profile, production build. **No route is reachable without logging in**: a guard already exists (`App.tsx:40-49`, `RequireAuth`).
+
+| Step | Result |
+|---|---|
+| Open `/` directly (no session) | Redirected to `/login` (router state `from: "/"`) |
+| Open `/alarms` directly | `/login`, `from: "/alarms"` |
+| Open `/equipment/detail` directly | `/login`, `from: "/equipment/detail"` |
+| Empty submit | "Enter any email and password to continue." |
+| Log in (from `/alarms`) | Returns to `/alarms` |
+| Refresh | Stays on `/alarms` (session is in `sessionStorage`) |
+| Open a **new tab**, same profile, `/` | **`/login`**: the session is per-tab (`sessionStorage`, `hooks/useAuth.tsx:15,24`) |
+| Open `/login` while logged in | **Stays on `/login`** and shows the sign-in form (no redirect) |
+| Log out (role menu → Log out) | `/login`, `sessionStorage` cleared |
+| Browser Back after logout | Stays on `/login` (history was replaced; no protected content shown) |
+| Forward after Back | `/login` |
+
+So the guard works. The gaps are small:
+- **d1.** `/login` while authenticated shows the form instead of redirecting (repro above). Fix: `Login` (or a `RedirectIfAuth` wrapper) returns `<Navigate to="/" replace />` when `isAuthenticated`. `Login.tsx`/`App.tsx`. Risk **L**. Logic change: **yes**, small.
+- **d2.** Logout lives inside the role menu (`TopBar.tsx:107-115`), not visible as an account control, and the signed-in email is stored (`wayam-auth-email`) but never shown. Fix (presentation): show the email in the menu header and give the Log out item the `signOut` icon (already in `icons.ts`). Risk **L**, logic **no**.
+- **d3 (decision).** Session is per-tab. A new tab asks you to log in again. Keep (safer for a demo; the code comment says it was made session-scoped on purpose) or switch to `localStorage`? Not changing without your call.
+- Not changing: demo-login behaviour (any email/password), `from` redirect after login.
+
+---
+
+## e. Functional issues, especially the tree view
+
+**Tree view:** there is **no tree component in the app**. I searched for tree/expand/collapse/`aria-expanded`/`role="tree"` across `src`. What exists:
+- Sidebar (`Sidebar.tsx`): ten always-open groups, no collapse/expand of groups. The only expand/collapse control is the width toggle.
+- `/predictive-maintenance`: expandable table rows (`PredictiveMaintenance.tsx:42,96`).
+- `/network`: the Purdue levels list is a static hierarchy (no interaction).
+- `/ot-assets`: a flat table. `components/PhaseTracker.tsx` is unused (not routed).
+
+Because of this I can't repro a "tree view bug" from the app as it stands. This needs your decision (D1): the reviewer most likely means the **sidebar navigation** (a flat list of 10 groups / 26 items that scrolls), which is covered by item g. If they mean a real hierarchy (e.g. plant → unit → equipment), that is a **new feature** and I will not build it unasked.
+
+**Interaction tests on what does exist** (browser, desktop 1440 and mobile 390):
+
+| Test | Result |
+|---|---|
+| Active item on `/equipment` and `/equipment/detail` | One active item each (correct) |
+| Sidebar nav scroll position after clicking a lower item | Kept (722 → 722) |
+| Collapse/expand | 252 ↔ 68 px; label flyout shows on hover/focus |
+| Collapse state after reload | **Resets to expanded** (not persisted; `AppLayout.tsx:16`) |
+| Tab order | Logo → Dashboard → Plant Overview … correct |
+| Alarm badge vs list | 6 and 6 (consistent) |
+| Mobile drawer opens | Yes |
+| Mobile drawer **Escape key** | **Does not close** (only the scrim click or navigation does) |
+| Equipment row click | Selects; detail panel shows; selection kept when switching Overview ↔ Detail inside the SPA; resets on full page load |
+| Equipment rows, sortable headers: keyboard | **Not focusable** (`tr[tabindex]` 0, `th[tabindex]` 0) (T7) |
+| Predictive Maintenance row | Clickable but not focusable; expands on click |
+| Dashboard heat map row click | Fills the detail panel (works) |
+
+**Functional bugs found (new)**
+- F1. Dashboard "Predicted Failures (30d)" shows **0** while its hint says "12 components flagged" (static text), and the Simulator baseline says 12 predicted failures (90d). The count uses dates that are already past (`Dashboard.tsx:31`, T9).
+- F2. Dashboard "Upcoming Maintenance · next 60 days" is **empty (0 events)** for the same reason (mock dates are in the past, T9).
+- F3. Drawer does not close on Escape (above). Fix: key handler in `AppLayout.tsx`; also move focus into the drawer. Risk L.
+- F4. `/login` does not redirect when logged in (d1).
+- F5. Sidebar collapse not remembered (low; fix = persist in `localStorage`, try/catch).
+- F6. Equipment detail panel clipped (C10) and shows negative "days" (T9).
+- F7. Sensor sparkline almost flat (C12).
+
+**Tickets T1–T15 (from `REDESIGN_REPORT.md`) triage: which count as "functional" for this round**
+
+| Ticket | Issue | Fix now? | Notes |
+|---|---|---|---|
+| T1 | `Math.random()` chart data changes on reload | **Yes (High)** | Seeded generator in `lib/`; 15 sites listed by grep: AlarmFrequencyChart, PlantHealthTrend, EquipmentHeatMap, AlarmAnalytics, FailureAnalysis, LoadOptimisation, RemainingUsefulLife (also `PredictiveMaintenance.tsx:51` builds a work-order id; keep). Sensor jitter in `usePlantData` is intentional. Test: values identical across reloads. |
+| T2 | Dashboard handover 73% vs Handover page 83% | **Yes (High)** | Compute both from the same data. Also drop static "Ratnagiri LNG Phase 2" / "42,400 tags" only if data exists (decision D4). |
+| T3 | Charts not drawing what legend/caption says | **Yes (High)** | Failure Weibull line, Failure event scatter (empty panel, confirmed), Sustainability target line (none visible), RUL fleet-age line, Plant Health legend "Forecast"/"PM events" not drawn, RUL caption "dashed line". Use `ComposedChart`; remove legend entries for series that are not drawn. |
+| T4 | "Rate Of_change" | **Yes (High)** | `replace(/_/g, " ")` at `AlarmManagement.tsx:117`. |
+| T5 | Settings inputs reset on tab change | **Yes** | Lift state; "Save changes" still only toasts (no backend) |
+| T6 | Toasts ignore app theme | **Yes (L)** | `ui/sonner.tsx` reads `hooks/useTheme` |
+| T7 | Keyboard access for rows/headers/bars | **Yes** | Buttons or `tabIndex`+Enter/Space; no visual change |
+| T8 | Duplicate-key warning | **Yes (L)** | `<Fragment key>` |
+| T9 | Mock dates in the past | **Yes** | Generate relative to today (fixes F1, F2, F6, "8 overdue") |
+| T10 | `text-quaternary` ≈ 3.4:1 | Decision D5 | Chronus token; changing it changes the design system |
+| T11 | 6 lint errors, 9 warnings | **Yes (L)** | Makes `npm run lint` pass; warnings are react-refresh (shadcn files), leave |
+| T12 | Weak types/tests | Partly | Add smoke tests for each fix; no strictness change |
+| T13 | 1.1 MB chunk | No | Perf, not asked |
+| T14 | Horizontal bars cramped at 390 | **Yes (L)** | Part of g (chart polish) |
+| T15 | Duplicate routes, undefined `animate-pulse-subtle`, TopBar clock re-render, playwright config, README | Partly | Remove the dead class; the rest not now. Duplicate routes: decision D3 |
+
+---
+
+## g. Dashboard graphs and sidebar
+
+**Dashboard graphs: what looks unprofessional** (1440 light/dark, 390)
+- **G1. Plant Health Trend** (`PlantHealthTrend.tsx`): y-axis ticks 75/82/89/100 (domain `[75,100]` gives uneven ticks; the 90 target line sits between ticks); legend lists "Forecast" and "PM Events" which are not drawn (T3); the target label is cut to "Target"; x labels are ISO dates (C6); the line is thin 1.5px with a lot of empty plot area; random data (T1).
+- **G2. Alarm Frequency**: 30 stacked daily bars at 180px height are dense; y-axis changes each load (random); last x label clipped at 390 ("2026-10-20" cut); legend OK. Suggest 7 or 14 days, or a thinner bar with fewer ticks.
+- **G3. Row/heights**: both charts 180px inside panels that are ~285px tall; unused space under the plot. Panels in the next row are unequal (C3).
+- **G4. Heat map**: table wider than panel (last column clipped, "VIBRATIC").
+- **G5. Top Active Alerts / detail panel**: the third column is an empty panel until a row is selected (large empty area).
+- **G6. OEE panel** sits alone at the bottom with an empty strip below it (b).
+- **G7. Upcoming Maintenance**: empty (F2).
+- **Other pages' charts:** Failure Weibull is a pale band with 11 cramped x ticks ("24500" clipped); Failure timeline empty; Sustainability bar charts have no legend for the two series; RUL "Fleet Age" legend missing; Energy KPI sparklines have gaps.
+
+**Proposed chart fixes** (no new dependency, Recharts only)
+1. One chart height rule (220 standard, 280 hero) and shared axis helpers in `chartTheme.ts`: 4–5 y ticks with `tickCount`, short date formatter, `minTickGap`, right margin for the last label.
+2. Dashboard: Plant Health drawn from seeded data with the 90 target line labelled ("Target 90%") and a legend that matches what is drawn; Alarm Frequency 14 days; both 220px; heat map columns sized to fit.
+3. Add legends where two or more series are drawn without one (Sustainability, RUL).
+4. Fix T3 charts (above).
+
+Risk: **M**. Logic change: **yes**, only to the chart data sources (T1/T3).
+
+**Sidebar: today**
+- 10 groups, 26 links, one 36px circular "puck" per item with a grey disc behind every icon, ~1,300 px of nav at 1440×900 (scrolls; the footer has "Collapse sidebar").
+- 5 groups contain 1–3 items; "Overview", "Simulator" and "Settings" are single-item groups, each with its own eyebrow and divider.
+- Labels differ from page titles (C5); "Plant Overview" (`/equipment`) and "Equipment Detail" (`/equipment/detail`) render the same page (T15).
+- The disc behind every icon plus the eyebrow plus dividers makes the list read as heavy, not scannable.
+
+**Proposed structure** (route paths and order of routes unchanged; only `nav.ts` grouping, labels and the sidebar's look)
+
+| Group | Items |
+|---|---|
+| (no heading) | Dashboard |
+| Asset Health | Plant Overview, Equipment Detail, Failure Analysis, Remaining Useful Life |
+| Maintenance | Predictive Maintenance, Work Orders, Cost Tracker, What-If Simulator |
+| Energy | Consumption, Load Optimisation, Sustainability |
+| Alarms | Active Alarms (badge), Alarm Analytics, Rationalisation |
+| OT Security | Asset Registry, Threat Monitor, Network Segmentation, Compliance |
+| Handover & Data | Handover Tracker, Engineering Twin Sync, Data Completeness, ISO Validator, Connected Systems, Data Quality |
+| Footer (pinned) | Settings, Collapse sidebar |
+
+That is **7 headed groups + Dashboard + a pinned footer** (from 10), no single-item groups. Visual: drop the grey discs, keep the 17px icon with a pill highlight on the active row (still greyscale, `bg-raised` active, black pill not needed), 36px rows, 240px width, group eyebrows kept. Optional (decision D1): collapsible groups with the open set remembered, which would also answer "tree view".
+Files: `nav.ts`, `Sidebar.tsx`, `AppLayout.tsx` (Esc, persist), `test/icons.test.ts` (nav order assertions if any). Risk: **M**. Logic change: **no** for the restyle and regrouping; **yes** (small) for Esc and persisted collapse.
+
+---
+
+## h. Verify on the running application
+
+Every fix gets, in its own commit message or note: repro before (route, steps, observed), result after on the production preview **and** `npm run dev`, light/dark, 1440/390. The 112-combo sweep script and the auth/sidebar scripts used in this audit are reusable and will be rerun after each commit that touches UI. Gates per commit: `tsc -p tsconfig.app.json`, `npm test`, `npm run build`, `npm run lint` (must be at or below baseline; it should reach 0 errors after T11).
+
+---
+
+## Ordered plan (one commit per fix)
+
+1. `fix: OEE overall gauge uses the series colour` (b)
+2. `fix: alarm type label replaces every underscore` (T4)
+3. `fix: stable chart data` (T1: seeded generator + tests)
+4. `fix: dashboard handover and predicted failures from data` (T2, F1; mock dates relative to today for T9, F2, F6)
+5. `fix: charts draw what their legends say` (T3)
+6. `ui: dashboard and chart polish` (G1–G7, C2, C6, C11, T14)
+7. `ui: icons for KPI tiles, panel headers, empty states and actions` (a)
+8. `ui: sidebar structure and style` (g; C5)
+9. `fix: redirect /login when signed in; show account in menu` (d1, d2)
+10. `fix: keyboard access for rows, headers and the drawer` (T7, F3, F5)
+11. `fix: settings keep values across tabs; toasts follow the app theme; duplicate key` (T5, T6, T8)
+12. `ui: consistency pass` (C1, C3, C4, C7, C8, C10, C12, C13)
+13. `chore: lint errors to zero` (T11; removes undefined `animate-pulse-subtle`)
+14. `docs: REVIEW_FIXES results`
+
+## Decisions needed from you
+
+- **D1. What is the "tree view"?** There is none in the app. Is it (a) the sidebar nav (I restyle/regroup, optionally collapsible groups), (b) the Purdue levels on `/network`, (c) a hierarchy you expect (plant → unit → equipment), which would be a new feature needing your approval?
+- **D2. Sidebar grouping:** accept the 7-group proposal above (Settings pinned to the footer, Simulator under Maintenance)? Group labels, not routes, change.
+- **D3. Duplicate routes:** `/equipment` and `/equipment/detail`, `/handover` and `/data-sources` render identical pages. Keep both (paths fixed) and just label them, or make `/equipment/detail` show a "select equipment" state?
+- **D4. Static Dashboard text** ("Ratnagiri LNG Phase 2", "42,400 tags active"): keep as text or source from `plantInfo`?
+- **D5. T10 contrast:** raise `--text-quaternary` (a design-system token) or leave?
+- **D6. KPI numeral colours:** keep status colours on the numbers, or make all numerals neutral and carry status only on the delta/dot?
+- **D7. Session scope (d3):** keep per-tab `sessionStorage`, or persist across tabs?
+- **D8. Chart ranges:** Alarm Frequency 30 → 14 days OK?
+- **D9. Scope of the icon pass:** all ~26 pages, or Dashboard/Alarms/Equipment first?
+
+## Decisions (recorded after the audit review)
+
+- **D1.** Option (a) only: the sidebar, with collapsible groups. No hierarchy is built. No tree view exists in PlantMind; the reviewer's tree-view item likely refers to the BOM Sync EBOM tree; asked reviewer to confirm.
+- **D2.** 7-group sidebar, Settings pinned in the footer, groups collapsible (open/closed state remembered per viewer in `localStorage`, wrapped in try/catch). No route path changes.
+- **D3.** `/equipment/detail` with nothing selected shows a "Select equipment" empty state linking to `/equipment`. `/handover` vs `/data-sources`: investigate why both render the same page; fix if it is a mapping mistake, show before building any new page.
+- **D4.** "Ratnagiri LNG Phase 2" and "42,400 tags active" stay as static text.
+- **D5.** Raise `--text-quaternary` to at least 4.5:1 on white and on the dark container (light and dark). Logged as a Chronus deviation.
+- **D6.** KPI numeral colours stay threshold-driven only.
+- **D7.** Session persists across tabs (`localStorage`, same keys and shape as today). Logout clears it in every tab. `/login` redirects to the dashboard when signed in. Visible Logout button in the top bar (role-menu entry stays).
+- **D8.** Alarm Frequency stays at 30 days; fix readability with `minTickGap` / `interval` / `preserveStartEnd`.
+- **D9.** Icons on all pages (Dashboard, Alarms, Equipment first). Rule: one 14px `text-icon-tertiary` icon top-right of every KPI tile; leading 13px icon on primary action buttons; 24px icon in empty states; panel-header icons only on the Dashboard. All via `icons.ts`, one icon = one meaning.
+- **Order:** login flow, OEE, functional fixes, sidebar, icons, graphs, consistency, QA. Stop after the login flow and OEE commits for review.
+
+## Round 2 progress (commits on `review-fixes`)
+
+Each commit has its gates (`tsc -p tsconfig.app.json`, `npm test`, `npm run build`, lint at or below baseline) and a before/after check on the running app (production preview on 4180; dev on 5180 for console warnings). Final sweeps after the last commit: production and dev, 112 combinations each, 0 structural failures, no console warnings except the intentional 404 on `/nope`.
+
+| Commit | Before | After |
+|---|---|---|
+| keep the session across tabs, sign out every tab | new tab asked for a login | new tab signed in; logout in one tab signs out the others |
+| redirect `/login` when signed in | form shown | goes to the page the user was headed for, else `/` |
+| visible Log out button | only in the role menu | top-bar button, menu entry kept |
+| overall OEE is a real gauge | black/white static ring | series blue, same size and typography, arc from the value |
+| guard theme storage access | blank page with storage blocked | renders, login and theme toggle work |
+| validate stored session | any stored `true` accepted | shape and 12 h expiry checked; expired/malformed/old-format cleared |
+| Escape closes the drawer | did not close | closes |
+| mock dates relative to today | Upcoming Maintenance 0 events, 8 overdue work orders, equipment detail -127 / -171 days | 8 events, 0 overdue, +76 / +36 days |
+| Dashboard predicted failures | 0, hint "12 components flagged" (fixed text) | 2 in 30 days, "3 components flagged in 90 days", from the equipment list |
+| Dashboard handover readiness | 73% vs 83% on `/handover` | both 83% (one function, `lib/plantStats.ts`) |
+| alarm type label | "Rate Of_change" | "Rate Of Change" |
+| duplicate key | dev warning on `/predictive-maintenance` | none |
+| React Router future flags | two warnings on every route | none |
+| keyboard activation | rows and sort headers not focusable | Tab reaches them; Enter/Space act; a button inside a row keeps its own Enter |
+| deterministic chart data | numbers changed on every load (4 of 5 pages) | identical across loads |
+| sensor sparklines | line 0.2-1.1 px of 32 | 9-21 px |
+| Failure Analysis charts | timeline empty, Weibull no line | 12 coloured points; line plus confidence band |
+| Sustainability target line | not drawn, no legends | drawn, legends |
+| RUL fleet-age line | not drawn, caption for a missing line | drawn, caption removed |
+| Plant Health legend | listed Forecast and PM events, neither drawn | lists what is drawn; 3 PM event lines |
+| Upcoming Maintenance cards widened the page (a regression exposed by the date fix) | page scrolled sideways (scrollX up to 374 / 600) | 0 |
+
+### Name table and handover finding (decided and applied in round 3)
+
+**One name per page** (sidebar label, top-bar title and page heading all the same; the long forms move into the subtitle):
+
+| Route | Sidebar label now | Page title now | Proposed single name |
+|---|---|---|---|
+| `/` | Dashboard | Dashboard | Dashboard |
+| `/equipment` | Plant Overview | Plant Overview | Plant Overview |
+| `/equipment/detail` | Equipment Detail | Equipment Detail | Equipment Detail |
+| `/failure-analysis` | Failure Analysis | Failure Analysis | Failure Analysis |
+| `/rul` | Remaining Useful Life | Remaining Useful Life (RUL) | Remaining Useful Life |
+| `/predictive-maintenance` | Predictive Maintenance | Predictive Maintenance | Predictive Maintenance |
+| `/work-orders` | Work Orders | Work Order Integration | Work Orders |
+| `/maintenance-cost` | Cost Tracker | Maintenance Cost Tracker | Maintenance Cost |
+| `/energy` | Consumption | Energy Consumption | Energy Consumption |
+| `/load-optimisation` | Load Optimisation | Load Optimisation | Load Optimisation |
+| `/sustainability` | Sustainability | Sustainability & Emissions | Sustainability |
+| `/alarms` | Active Alarms | Active Alarms | Active Alarms |
+| `/alarm-analytics` | Alarm Analytics | Alarm History & Analytics | Alarm Analytics |
+| `/alarm-rationalisation` | Rationalisation | Alarm Rationalisation | Alarm Rationalisation |
+| `/ot-assets` | Asset Registry | OT Asset Registry | OT Asset Registry |
+| `/threat-monitor` | Threat Monitor | Threat Monitor | Threat Monitor |
+| `/network` | Network Segmentation | Network Segmentation Status | Network Segmentation |
+| `/compliance` | Compliance | Compliance Dashboard | Compliance |
+| `/handover` | Handover Tracker | Handover Tracker | Handover Tracker |
+| `/twin-sync` | Engineering Twin Sync | Engineering Twin Sync | Engineering Twin Sync |
+| `/data-completeness` | Data Completeness | Data Completeness Monitor | Data Completeness |
+| `/iso-validator` | ISO Validator | ISO 15926 / CFIHOS Validator | ISO Validator |
+| `/simulator` | What-If Simulator | What-If Simulator | What-If Simulator |
+| `/data-sources` | Connected Systems | Connected Systems | Connected Systems |
+| `/data-quality` | Data Quality | Data Quality Monitor | Data Quality |
+| `/settings` | Configuration | Settings & Configuration | Settings |
+
+14 of 26 change. The words dropped from titles ("(RUL)", "ISO 15926 / CFIHOS", "Integration", "Status", "Monitor", "& Emissions") go into each page's subtitle so nothing is lost.
+
+**`/handover` vs `/data-sources`.** Both routes render the same `HandoverPage` (`App.tsx:71` and `:89`) with the same props. This is not a redesign mistake: the baseline commit `aeabd3f` already mapped both routes to `HandoverPage`, and its sidebar had "Connected Systems" pointing at `/data-sources`. The page has three panels (project summary, readiness scorecard, connected-systems table), so "Connected Systems" opens a page that starts with handover readiness and is headed "Connected Systems" with a handover subtitle. Options:
+- **A (recommended, no new page file):** `HandoverPage` gets a `view` prop. `/handover` shows the project and the scorecard; `/data-sources` shows the connected-systems table (with Force sync) and its own subtitle. Same component, same data, no route change. Risk L; logic change yes (what each route shows).
+- **B:** a separate `ConnectedSystems.tsx` page with the same content. Needs your approval as a new page.
+- **C:** leave both as they are.
+
+### Other findings in this round
+
+- Dashboard tile and Simulator baseline now disagree again by design of the data: the Simulator baseline has 12 predicted failures (90 days) as a fixed number in `WhatIfSimulator.tsx:35`, while the equipment data has 3. It drives the scenario maths, so I have not changed it.
+- Log-style timestamps on Data Quality, Threat Monitor and Twin Sync are fixed to 24 to 30 March 2026 and read as seven months old. They are history, not due dates, so they were left alone.
+- The Vercel preview is protected by Vercel Authentication (HTTP 302 to a login), so it cannot be fetched without a Vercel session. The repo has no `vercel.json`; deep links such as `/alarms` on a Vite single-page app normally need a rewrite to `index.html` on Vercel. Unverified until someone opens the preview.
+
+### Production domain (owner action, not a code issue)
+
+`bridge-to-live-mu.vercel.app` returns `DEPLOYMENT_NOT_FOUND` for every path, including `/`: the production domain is not attached to a deployment. The Vercel project owner needs to attach the domain to the production deployment. Nothing in the repository causes or can fix this. Whether direct loads of client-side routes work on production could not be checked; `vercel.json` now rewrites them to `index.html`.
+
+## Environment note
+
+Servers started for this work: preview on port **4180**, dev on port **5180**. A stale server from an earlier session was found on **4173** and stopped. All of them are stopped now.

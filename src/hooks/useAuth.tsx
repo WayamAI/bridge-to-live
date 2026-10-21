@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { SESSION_MS, announceLogout, clearStored, listenForLogout, purgeLegacySession, readSession, writeSession } from "@/lib/session";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
@@ -6,31 +7,50 @@ interface AuthContextValue {
   logout: () => void;
 }
 
-const STORAGE_KEY = "wayam-auth";
-
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
-function getInitialAuth(): boolean {
-  if (typeof window === "undefined") return false;
-  // Clear out any stale persisted login from before auth was session-scoped.
-  window.localStorage.removeItem(STORAGE_KEY);
-  window.localStorage.removeItem("wayam-auth-email");
-  return window.sessionStorage.getItem(STORAGE_KEY) === "true";
-}
-
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(getInitialAuth);
+  const [session, setSession] = useState(() => readSession());
+  const [memorySession, setMemorySession] = useState<{ email: string; expiresAt: number } | null>(null);
+  const current = session ?? memorySession;
+  const isAuthenticated = current !== null;
+  const expiresAt = current?.expiresAt;
+
+  // Old localStorage sessions are removed on load; another tab logging out signs this tab out too.
+  useEffect(() => {
+    purgeLegacySession();
+    return listenForLogout(() => {
+      clearStored();
+      setSession(null);
+      setMemorySession(null);
+    });
+  }, []);
+
+  // Sign out when the session runs out while the tab is open.
+  useEffect(() => {
+    if (expiresAt === undefined) return;
+    const id = window.setTimeout(() => {
+      clearStored();
+      setSession(null);
+      setMemorySession(null);
+    }, Math.max(0, expiresAt - Date.now()));
+    return () => window.clearTimeout(id);
+  }, [expiresAt]);
 
   const login = (email: string) => {
-    window.sessionStorage.setItem(STORAGE_KEY, "true");
-    window.sessionStorage.setItem("wayam-auth-email", email);
-    setIsAuthenticated(true);
+    const next = { email, expiresAt: Date.now() + SESSION_MS };
+    writeSession(next.email, next.expiresAt);
+    const stored = readSession();
+    setSession(stored);
+    // Storage unavailable: readSession finds nothing, so keep the login in memory for this page load only.
+    setMemorySession(stored ? null : next);
   };
 
   const logout = () => {
-    window.sessionStorage.removeItem(STORAGE_KEY);
-    window.sessionStorage.removeItem("wayam-auth-email");
-    setIsAuthenticated(false);
+    clearStored();
+    announceLogout();
+    setSession(null);
+    setMemorySession(null);
   };
 
   return (

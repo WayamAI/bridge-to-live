@@ -1,7 +1,10 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart, Line, PieChart, Pie, Cell } from "recharts";
+import ChartLegend from "@/components/dashboard/ChartLegend";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
-import { Panel , KpiTile } from "@/components/ui/primitives";
+import { Panel , KpiGrid, KpiTile } from "@/components/ui/primitives";
+import { kpi } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
 
 const MONTHLY_EMISSIONS = [
   { month: "Oct '25", scope1: 4200, scope2: 2800, flaring: 840 },
@@ -13,21 +16,21 @@ const MONTHLY_EMISSIONS = [
 ];
 
 const BY_SOURCE = [
-  { name: "Gas Turbine", value: 42, color: seriesColor(0) },
+  { name: "Gas turbine", value: 42, color: seriesColor(0) },
   { name: "Flaring", value: 18, color: seriesColor(1) },
-  { name: "Grid Electricity", value: 24, color: seriesColor(5) },
-  { name: "Process Venting", value: 8, color: seriesColor(4) },
+  { name: "Grid electricity", value: 24, color: seriesColor(5) },
+  { name: "Process venting", value: 8, color: seriesColor(4) },
   { name: "Fugitive", value: 5, color: seriesColor(2) },
   { name: "Other", value: 3, color: seriesColor(3) },
 ];
 
 const WATER_DATA = [
-  { month: "Oct", consumption: 4800, recycled: 1200, target: 4500 },
-  { month: "Nov", consumption: 4600, recycled: 1300, target: 4500 },
-  { month: "Dec", consumption: 5100, recycled: 1100, target: 4500 },
-  { month: "Jan", consumption: 4400, recycled: 1400, target: 4500 },
-  { month: "Feb", consumption: 4200, recycled: 1500, target: 4500 },
-  { month: "Mar", consumption: 4100, recycled: 1600, target: 4500 },
+  { month: "Oct '25", consumption: 4800, recycled: 1200, target: 4500 },
+  { month: "Nov '25", consumption: 4600, recycled: 1300, target: 4500 },
+  { month: "Dec '25", consumption: 5100, recycled: 1100, target: 4500 },
+  { month: "Jan '26", consumption: 4400, recycled: 1400, target: 4500 },
+  { month: "Feb '26", consumption: 4200, recycled: 1500, target: 4500 },
+  { month: "Mar '26", consumption: 4100, recycled: 1600, target: 4500 },
 ];
 
 const Sustainability = () => {
@@ -36,44 +39,49 @@ const Sustainability = () => {
   const onTrack = ytdEmissions < target;
 
   return (
-    <PageHeader title="Sustainability & Emissions" subtitle="Environmental performance tracking: carbon emissions, water usage and waste management">
+    <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
-          { label: "YTD CO₂e Emissions", value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "" : "text-warning" },
-          { label: "Annual Target", value: `${(target / 1000).toFixed(0)}k T` },
-          { label: "Flaring Reduction", value: "−24%" },
-          { label: "Water Recycling Rate", value: "32%" },
+          { label: "Year-to-date CO₂e emissions", icon: kpi.emissions, value: `${(ytdEmissions / 1000).toFixed(1)}k T`, color: onTrack ? "" : "text-warning" },
+          { label: "Annual target", icon: kpi.target, value: `${(target / 1000).toFixed(0)}k T` },
+          { label: "Flaring reduction", icon: kpi.gas, value: "−24%" },
+          { label: "Water recycling rate", icon: kpi.water, value: "32%" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         {/* Monthly Emissions */}
         <Panel title="Monthly GHG Emissions (T CO₂e)" className="lg:col-span-2">
-            <ResponsiveContainer width="100%" height={280}>
+            <ChartLegend items={[
+              { label: "Scope 1 · direct", color: seriesColor(0) },
+              { label: "Scope 2 · grid", color: seriesColor(1) },
+              { label: "Flaring", color: seriesColor(5) },
+            ]} />
+            <ChartBox height="tall" label="Monthly greenhouse gas emissions by source">
               <BarChart data={MONTHLY_EMISSIONS}>
-                <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
-                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-                <Bar isAnimationActive={false} dataKey="scope1" stackId="a" fill={seriesColor(0)} name="Scope 1 · Direct" />
-                <Bar isAnimationActive={false} dataKey="scope2" stackId="a" fill={seriesColor(1)} name="Scope 2 · Grid" />
+                <Bar isAnimationActive={false} dataKey="scope1" stackId="a" fill={seriesColor(0)} name="Scope 1 · direct" />
+                <Bar isAnimationActive={false} dataKey="scope2" stackId="a" fill={seriesColor(1)} name="Scope 2 · grid" />
                 <Bar isAnimationActive={false} dataKey="flaring" stackId="a" fill={seriesColor(5)} name="Flaring" radius={[4, 4, 0, 0]} />
               </BarChart>
-            </ResponsiveContainer>
+            </ChartBox>
         </Panel>
 
         {/* By Source */}
         <Panel title="Emissions by Source (%)">
-            <ResponsiveContainer width="100%" height={180}>
+            <ChartBox height="standard" label="Emissions by source, percent">
               <PieChart>
                 <Pie isAnimationActive={false} data={BY_SOURCE} cx="50%" cy="50%" outerRadius={70} innerRadius={40} dataKey="value" paddingAngle={2}>
                   {BY_SOURCE.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Pie>
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
               </PieChart>
-            </ResponsiveContainer>
+            </ChartBox>
             <div className="space-y-1 mt-2">
               {BY_SOURCE.map(d => (
                 <div key={d.name} className="flex items-center justify-between type-caption">
@@ -87,16 +95,21 @@ const Sustainability = () => {
 
       {/* Water Usage */}
       <Panel title="Water Consumption & Recycling (m³/month)">
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={WATER_DATA}>
-              <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
-              <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+          <ChartLegend items={[
+            { label: "Total consumption", color: seriesColor(0) },
+            { label: "Recycled", color: seriesColor(1) },
+            { label: "Target", color: seriesColor(4), kind: "dashed" },
+          ]} />
+          <ChartBox height="standard" label="Water consumption, recycling and target by month">
+            <ComposedChart data={WATER_DATA}>
+              <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
               <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-              <Bar isAnimationActive={false} dataKey="consumption" fill={seriesColor(0)} name="Total Consumption" />
+              <Bar isAnimationActive={false} dataKey="consumption" fill={seriesColor(0)} name="Total consumption" />
               <Bar isAnimationActive={false} dataKey="recycled" fill={seriesColor(1)} name="Recycled" radius={[4, 4, 0, 0]} />
-              <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(4)} strokeDasharray="5 5" name="Target" />
-            </BarChart>
-          </ResponsiveContainer>
+              <Line isAnimationActive={false} type="monotone" dataKey="target" stroke={seriesColor(4)} strokeDasharray="5 5" name="Target" dot={false} />
+            </ComposedChart>
+          </ChartBox>
       </Panel>
     </PageHeader>
   );

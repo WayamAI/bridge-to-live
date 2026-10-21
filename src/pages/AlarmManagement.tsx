@@ -2,9 +2,10 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Alert } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
-import { EmptyState, KpiTile, Panel, PillSelect, StatusDot } from "@/components/ui/primitives";
+import { EmptyState, KpiGrid, KpiTile, Panel, PillSelect, StatusDot, Checkbox } from "@/components/ui/primitives";
 import { priorityTone, severityTone, toneBadgeClass, toneOf } from "@/lib/status";
-import { icons, alarmIcon } from "@/lib/icons";
+import { icons, alarmIcon, kpi, emptyIcon } from "@/lib/icons";
+import { formatKey } from "@/lib/format";
 
 interface AlarmManagementPageProps {
   alerts: Alert[];
@@ -37,8 +38,6 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
 
   return (
     <PageHeader
-      title="Active Alarms"
-      subtitle="Review, filter and acknowledge plant alarms"
       actions={
         <>
           <PillSelect value={filterSeverity} onChange={(e) => setFilterSeverity(e.target.value)} aria-label="Filter by severity">
@@ -47,25 +46,17 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
             <option value="warning">Warning</option>
             <option value="info">Info</option>
           </PillSelect>
-          <label className="type-label-sm flex h-8 items-center gap-1.5 text-tertiary">
-            <input
-              type="checkbox"
-              checked={showAcknowledged}
-              onChange={(e) => setShowAcknowledged(e.target.checked)}
-              className="size-4 rounded-[4px] accent-action-primary outline-none focus-visible:ring-2 focus-visible:ring-active"
-            />
-            Show acknowledged
-          </label>
+          <Checkbox label="Show acknowledged" checked={showAcknowledged} onChange={(e) => setShowAcknowledged(e.target.checked)} />
         </>
       }
     >
       {/* KPI row */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-        <KpiTile label="Unacknowledged" value={unacknowledged} valueClassName={unacknowledged > 0 ? "text-error" : ""} />
-        <KpiTile label="Critical Active" value={critical} valueClassName={critical > 0 ? "text-error" : ""} />
-        <KpiTile label="Alarm Rate" value={avgRate} unit="/hr" />
-        <KpiTile label="Total (24h)" value={alerts.length} />
-      </div>
+      <KpiGrid>
+        <KpiTile icon={kpi.alarmsPending} label="Unacknowledged" value={unacknowledged} valueClassName={unacknowledged > 0 ? "text-error" : ""} />
+        <KpiTile icon={kpi.critical} label="Critical active" value={critical} valueClassName={critical > 0 ? "text-error" : ""} />
+        <KpiTile icon={kpi.alarmRate} label="Alarm rate" value={avgRate} unit="/hr" />
+        <KpiTile icon={kpi.count} label="Total (24h)" value={alerts.length} />
+      </KpiGrid>
 
       {/* Alarm console table */}
       <Panel title="Alarm Console" padded={false}>
@@ -79,7 +70,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Type</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Message</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Duration</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">ACK</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -114,18 +105,18 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
                         <StatusDot tone={toneOf(severityTone, alert.severity)} className="mr-0.5" />
                         <span className="sr-only">{alert.severity}</span>
                         <Icon className="size-3 text-quaternary" aria-hidden />
-                        <span className="capitalize">{alert.type.replace("_", " ")}</span>
+                        <span className="first-letter:uppercase">{formatKey(alert.type)}</span>
                       </span>
                     </td>
                     <td className="max-w-[400px] truncate px-3 py-2" title={alert.message}>{alert.message}</td>
                     <td className="px-3 py-2 tabular text-tertiary whitespace-nowrap">{alert.duration}</td>
                     <td className="px-3 py-2">
                       {alert.acknowledged ? (
-                        <span className="type-body-sm tabular text-quaternary">ACK</span>
+                        <span className="type-body-sm tabular text-quaternary">Acknowledged</span>
                       ) : (
                         <button
                           onClick={() => onAcknowledge(alert.id)}
-                          className="type-label-sm inline-flex h-7 items-center gap-1 whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
+                          className="type-label-sm inline-flex h-8 items-center gap-1 whitespace-nowrap rounded-full border border-hairline bg-action px-2.5 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                         >
                           <icons.acknowledge className="size-[13px]" aria-hidden /> Acknowledge
                         </button>
@@ -136,7 +127,7 @@ const AlarmManagementPage = ({ alerts, onAcknowledge, onSelectEquipment }: Alarm
               })}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={7}><EmptyState title="No alarms match this filter" className="min-h-[96px]" /></td>
+                  <td colSpan={7}><EmptyState icon={emptyIcon.noMatch} title="No alarms match this filter" className="min-h-[96px]" /></td>
                 </tr>
               )}
             </tbody>

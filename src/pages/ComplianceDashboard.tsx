@@ -1,9 +1,12 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Cell } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart, toneOf } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
 import { zoneTone } from "@/lib/status";
+import { kpi } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
+import { useCategoryAxis } from "@/hooks/useCategoryAxis";
 
 interface ComplianceDomain {
   domain: string;
@@ -15,9 +18,9 @@ interface ComplianceDomain {
 
 const DOMAINS: ComplianceDomain[] = [
   { domain: "System Hardening", compliance: 78, target: 90, status: "amber", gaps: [
-    { finding: "3 HMIs running default admin credentials", remediation: "Enforce password policy — change all default credentials", effort: "2 days" },
+    { finding: "3 HMIs running default admin credentials", remediation: "Enforce password policy, change all default credentials", effort: "2 days" },
     { finding: "EW-003 running Windows 10 LTSC 2019 (EOL)", remediation: "Upgrade to LTSC 2021 or replace hardware", effort: "1 week" },
-    { finding: "CCTV NVR firmware EOL — known CVEs", remediation: "Replace NVR with supported model", effort: "2 weeks" },
+    { finding: "CCTV NVR firmware EOL, known CVEs", remediation: "Replace NVR with supported model", effort: "2 weeks" },
   ]},
   { domain: "User Authentication", compliance: 91, target: 90, status: "green", gaps: [
     { finding: "PI Interface Node allows single-factor auth", remediation: "Enable MFA for historian access", effort: "1 day" },
@@ -45,35 +48,36 @@ const CHART_DATA = DOMAINS.map(d => ({
 }));
 
 const ComplianceDashboard = () => {
+  const categoryAxis = useCategoryAxis();
   const avgCompliance = Math.round(DOMAINS.reduce((s, d) => s + d.compliance, 0) / DOMAINS.length);
   const totalGaps = DOMAINS.reduce((s, d) => s + d.gaps.length, 0);
 
   return (
-    <PageHeader title="Compliance Dashboard" subtitle="IEC 62443 Industrial Cybersecurity Standard: compliance assessment">
+    <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
-          { label: "Overall Compliance", value: `${avgCompliance}%`, color: avgCompliance >= 85 ? "" : "text-warning" },
-          { label: "Domains Assessed", value: DOMAINS.length.toString() },
-          { label: "Open Findings", value: totalGaps.toString()},
-          { label: "Critical Gaps", value: DOMAINS.filter(d => d.status === "red").length.toString(), color: "text-error" },
+          { label: "Overall compliance", icon: kpi.compliance, value: `${avgCompliance}%`, color: avgCompliance >= 85 ? "" : "text-warning" },
+          { label: "Domains assessed", icon: kpi.groups, value: DOMAINS.length.toString() },
+          { label: "Open findings", icon: kpi.findings, value: totalGaps.toString()},
+          { label: "Critical gaps", icon: kpi.gap, value: DOMAINS.filter(d => d.status === "red").length.toString(), color: "text-error" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Compliance Chart */}
       <Panel title="Compliance by Domain (%)">
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={CHART_DATA} layout="vertical" margin={{ left: 140 }}>
-              <XAxis type="number" domain={[0, 100]} tick={axisTick} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="domain" tick={axisTick} tickLine={false} axisLine={false} width={130} />
-              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+          <ChartBox height="standard" label="Compliance by domain, percent">
+            <BarChart data={CHART_DATA} layout="vertical" margin={{ left: 0, right: 16 }}>
+              <XAxis type="number" domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tickFormatter={(v: number) => `${v}%`} tick={axisTick} tickLine={false} axisLine={false} />
+              <YAxis type="category" dataKey="domain" tickLine={false} axisLine={false} interval={0} {...categoryAxis} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} formatter={(v: number) => [`${v}%`, "Compliance"]} />
               <Bar isAnimationActive={false} dataKey="compliance" radius={[0, 4, 4, 0]}>
                 {CHART_DATA.map((d, i) => <Cell key={i} fill={d.fill} />)}
               </Bar>
             </BarChart>
-          </ResponsiveContainer>
+          </ChartBox>
       </Panel>
 
       {/* Gaps Table */}
@@ -91,11 +95,11 @@ const ComplianceDashboard = () => {
             action={<span className={`type-body-sm tabular font-medium ${d.compliance >= d.target ? "text-foreground" : "text-warning"}`}>{d.compliance}% / {d.target}%</span>}
           >
             {d.gaps.length > 0 && (
-              <table className="w-full type-body-sm">
+              <table className="w-full table-fixed type-body-sm">
                 <thead>
                   <tr className="border-b border-hairline">
-                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Finding</th>
-                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Remediation</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-[45%]">Finding</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-[42%]">Remediation</th>
                     <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Effort</th>
                   </tr>
                 </thead>

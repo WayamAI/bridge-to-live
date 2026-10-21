@@ -1,17 +1,23 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line } from "recharts";
 import type { Alert } from "@/hooks/usePlantData";
-import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor, timeAxisProps } from "@/components/dashboard/chartTheme";
 import { toneChart, workflowTone } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { chatteringStatus } from "@/lib/status";
-import { formatDate } from "@/lib/format";
+import { formatDate, formatIsoDayMonth } from "@/lib/format";
+import { createRng } from "@/lib/seeded";
+import { kpi } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
+import ChartLegend from "@/components/dashboard/ChartLegend";
+
+const rnd = createRng(2402);
 
 const HOURLY_ALARMS = Array.from({ length: 24 }, (_, i) => ({
   hour: `${i.toString().padStart(2, "0")}:00`,
-  critical: Math.floor(Math.random() * 4),
-  warning: Math.floor(Math.random() * 8 + 2),
-  info: Math.floor(Math.random() * 6 + 1),
+  critical: Math.floor(rnd() * 4),
+  warning: Math.floor(rnd() * 8 + 2),
+  info: Math.floor(rnd() * 6 + 1),
 }));
 
 const DAILY_TREND = Array.from({ length: 30 }, (_, i) => {
@@ -19,20 +25,20 @@ const DAILY_TREND = Array.from({ length: 30 }, (_, i) => {
   d.setDate(d.getDate() - 29 + i);
   return {
     date: formatDate(d),
-    total: Math.floor(Math.random() * 40 + 60),
-    ackTime: Math.round((Math.random() * 20 + 5) * 10) / 10,
+    total: Math.floor(rnd() * 40 + 60),
+    ackTime: Math.round((rnd() * 20 + 5) * 10) / 10,
   };
 });
 
 const CHATTERING = [
   { tag: "TT-A-041", parameter: "Temperature", count: 48, avgDuration: "12 sec", status: "Chattering" },
   { tag: "PT-A-042", parameter: "Pressure", count: 34, avgDuration: "8 sec", status: "Chattering" },
-  { tag: "FT-D-018", parameter: "Flow Rate", count: 22, avgDuration: "28 sec", status: "Fleeting" },
-  { tag: "COMP-A-001", parameter: "Discharge Temp", count: 18, avgDuration: "47 min", status: "Stale" },
-  { tag: "HEX-C-003", parameter: "Fouling Factor", count: 14, avgDuration: "1 hr 20 min", status: "Stale" },
+  { tag: "FT-D-018", parameter: "Flow rate", count: 22, avgDuration: "28 sec", status: "Fleeting" },
+  { tag: "COMP-A-001", parameter: "Discharge temperature", count: 18, avgDuration: "47 min", status: "Stale" },
+  { tag: "HEX-C-003", parameter: "Fouling factor", count: 14, avgDuration: "1 hr 20 min", status: "Stale" },
   { tag: "MOT-E-018", parameter: "Current", count: 12, avgDuration: "6 hr", status: "Standing" },
-  { tag: "SUB-E-001", parameter: "Power Factor", count: 10, avgDuration: "3.2 hr", status: "Standing" },
-  { tag: "AGC-B-004", parameter: "Fan Vibration", count: 8, avgDuration: "1 day", status: "Standing" },
+  { tag: "SUB-E-001", parameter: "Power factor", count: 10, avgDuration: "3.2 hr", status: "Standing" },
+  { tag: "AGC-B-004", parameter: "Fan vibration", count: 8, avgDuration: "1 day", status: "Standing" },
   { tag: "FCV-D-022", parameter: "Positioner", count: 6, avgDuration: "2 hr", status: "Repeating" },
   { tag: "PUMP-CW-003", parameter: "Efficiency", count: 4, avgDuration: "4 hr", status: "Repeating" },
 ];
@@ -48,46 +54,55 @@ const AlarmAnalytics = ({ alerts }: Props) => {
   const highAlarmPct = "12.4%";
 
   return (
-    <PageHeader title="Alarm History & Analytics" subtitle="Historical alarm performance analysis and chattering alarm identification">
+    <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
-          { label: "Total Alarms Today", value: totalToday.toString() },
-          { label: "Avg Alarm Rate", value: `${avgRate}/hr` },
-          { label: "Avg Ack Time", value: avgAckTime },
-          { label: "Time in High-Alarm State", value: highAlarmPct },
+          { label: "Total alarms today", icon: kpi.count, value: totalToday.toString() },
+          { label: "Average alarm rate", icon: kpi.alarmRate, value: `${avgRate}/hr` },
+          { label: "Average acknowledgement time", icon: kpi.duration, value: avgAckTime },
+          { label: "Time in high-alarm state", icon: kpi.alarmState, value: highAlarmPct },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
-      </div>
+      </KpiGrid>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* Alarms by Hour */}
         <Panel title="Alarms by Hour · Today">
-            <ResponsiveContainer width="100%" height={240}>
+            <ChartLegend items={[
+              { label: "Critical", color: toneChart.error },
+              { label: "Warning", color: toneChart.warning },
+              { label: "Info", color: toneChart.info },
+            ]} />
+            <ChartBox height="standard" label="Alarms per hour today by severity">
               <BarChart data={HOURLY_ALARMS}>
-                <XAxis dataKey="hour" tick={axisTick} tickLine={false} axisLine={false} interval={2} />
-                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <XAxis tickMargin={8} dataKey="hour" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={24} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Bar isAnimationActive={false} dataKey="critical" stackId="a" fill={toneChart.error} name="Critical" />
                 <Bar isAnimationActive={false} dataKey="warning" stackId="a" fill={toneChart.warning} name="Warning" />
                 <Bar isAnimationActive={false} dataKey="info" stackId="a" fill={toneChart.info} name="Info" radius={[4, 4, 0, 0]} />
               </BarChart>
-            </ResponsiveContainer>
+            </ChartBox>
         </Panel>
 
         {/* 30-Day Trend */}
-        <Panel title="30-Day Alarm Trend + Avg Acknowledgment Time">
-            <ResponsiveContainer width="100%" height={240}>
-              <LineChart data={DAILY_TREND}>
-                <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
-                <YAxis yAxisId="left" tick={axisTick} tickLine={false} axisLine={false} />
-                <YAxis yAxisId="right" orientation="right" tick={axisTick} tickLine={false} axisLine={false} />
+        <Panel title="30-Day Alarm Trend + Average Acknowledgement Time">
+            <ChartLegend items={[
+              { label: "Total alarms (left)", color: seriesColor(0), kind: "line" },
+              { label: "Average acknowledgement time, minutes (right)", color: seriesColor(1), kind: "line" },
+            ]} />
+            <ChartBox height="standard" label="Alarms per day and average acknowledgement time, last 30 days">
+              <LineChart data={DAILY_TREND} margin={{ right: 20, left: 0 }}>
+                <XAxis tickMargin={8} dataKey="date" tick={axisTick} tickLine={false} axisLine={false} tickFormatter={formatIsoDayMonth} {...timeAxisProps} />
+                <YAxis yAxisId="left" tick={axisTick} tickLine={false} axisLine={false} width={40} />
+                <YAxis yAxisId="right" orientation="right" tick={axisTick} tickLine={false} axisLine={false} tickFormatter={(v: number) => `${v}m`} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-                <Line isAnimationActive={false} yAxisId="left" type="monotone" dataKey="total" stroke={seriesColor(0)} strokeWidth={2} dot={false} name="Total Alarms" />
-                <Line isAnimationActive={false} yAxisId="right" type="monotone" dataKey="ackTime" stroke={seriesColor(1)} strokeWidth={2} dot={false} name="Avg Ack Time (min)" />
+                <Line isAnimationActive={false} yAxisId="left" type="monotone" dataKey="total" stroke={seriesColor(0)} strokeWidth={2} dot={false} name="Total alarms" />
+                <Line isAnimationActive={false} yAxisId="right" type="monotone" dataKey="ackTime" stroke={seriesColor(1)} strokeWidth={2} dot={false} name="Average acknowledgement time (min)" />
               </LineChart>
-            </ResponsiveContainer>
+            </ChartBox>
         </Panel>
       </div>
 
@@ -102,7 +117,7 @@ const AlarmAnalytics = ({ alerts }: Props) => {
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Activations (7d)</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Avg Duration</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Average duration</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Classification</th>
               </tr>
             </thead>

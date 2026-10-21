@@ -3,7 +3,7 @@ import { EmptyState, Panel, StatusDot } from "@/components/ui/primitives";
 import type { Tone } from "@/lib/status";
 import { toneOf } from "@/lib/status";
 import { formatDate } from "@/lib/format";
-import { eventIcon } from "@/lib/icons";
+import { eventIcon, emptyIcon, panelIcon } from "@/lib/icons";
 
 interface MaintenanceTimelineProps {
   events: MaintenanceEvent[];
@@ -26,17 +26,18 @@ const MaintenanceTimeline = ({ events }: MaintenanceTimelineProps) => {
   return (
     <Panel
       title="Upcoming Maintenance · Next 60 Days"
+      icon={panelIcon.upcoming}
       action={<span className="type-caption tabular text-quaternary">{upcoming.length} events</span>}
     >
       {upcoming.length === 0 ? (
-        <EmptyState title="No maintenance in the next 60 days" className="min-h-[96px]" />
+        <EmptyState icon={emptyIcon.noEvents} title="No maintenance in the next 60 days" className="min-h-[96px]" />
       ) : (
-        <div className="flex gap-2 overflow-x-auto pb-2">
+        <div className="grid grid-cols-[repeat(auto-fill,minmax(13rem,1fr))] gap-2">
           {upcoming.map((event) => {
             const Icon = eventIcon(event.type);
             const daysUntil = Math.ceil((event.date.getTime() - now) / 86400000);
             return (
-              <div key={event.id} className="w-52 shrink-0 rounded-lg border border-hairline bg-raised p-3">
+              <div key={event.id} className="min-w-0 rounded-lg border border-hairline bg-raised p-3">
                 <div className="mb-1.5 flex items-center gap-1.5">
                   <StatusDot tone={toneOf(urgencyTone, event.urgency)} />
                   <span className="sr-only">{event.urgency} urgency</span>

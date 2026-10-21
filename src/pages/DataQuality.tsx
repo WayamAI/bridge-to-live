@@ -1,7 +1,8 @@
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from "recharts";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { sourceHealth, workflowTone } from "@/lib/status";
+import { shiftTimestamp } from "@/lib/mockDates";
+import { kpi } from "@/lib/icons";
 
 const DATA_SOURCES = [
   { source: "Honeywell Experion DCS", freshness: 100, completeness: 99.8, accuracy: 99.9, status: "Healthy" },
@@ -17,14 +18,14 @@ const DATA_SOURCES = [
 ];
 
 const INGESTION_LOG = [
-  { timestamp: "2026-03-30 14:28:00", source: "DCS", records: "82.4M", latency: "<1 sec", errors: 0 },
-  { timestamp: "2026-03-30 14:27:30", source: "PLC", records: "14.2M", latency: "<1 sec", errors: 0 },
-  { timestamp: "2026-03-30 14:27:00", source: "PI Historian", records: "6.8M", latency: "30 sec", errors: 12 },
-  { timestamp: "2026-03-30 14:15:00", source: "Maximo CMMS", records: "1,240", latency: "15 min", errors: 0 },
-  { timestamp: "2026-03-30 10:00:00", source: "SAP PM", records: "8,420", latency: "4 hr batch", errors: 4 },
-  { timestamp: "2026-03-30 08:14:22", source: "SmartPlant", records: "240K", latency: "6 days", errors: 2 },
-  { timestamp: "2026-03-30 12:28:00", source: "Fluke", records: "42K", latency: "2 hr lag", errors: 84 },
-  { timestamp: "2026-03-30 14:25:00", source: "Schneider", records: "1.2M", latency: "5 min", errors: 0 },
+  { timestamp: shiftTimestamp("2026-03-30 14:28:00"), source: "DCS", records: "82.4M", latency: "<1 sec", errors: 0 },
+  { timestamp: shiftTimestamp("2026-03-30 14:27:30"), source: "PLC", records: "14.2M", latency: "<1 sec", errors: 0 },
+  { timestamp: shiftTimestamp("2026-03-30 14:27:00"), source: "PI Historian", records: "6.8M", latency: "30 sec", errors: 12 },
+  { timestamp: shiftTimestamp("2026-03-30 14:15:00"), source: "Maximo CMMS", records: "1,240", latency: "15 min", errors: 0 },
+  { timestamp: shiftTimestamp("2026-03-30 10:00:00"), source: "SAP PM", records: "8,420", latency: "4 hr batch", errors: 4 },
+  { timestamp: shiftTimestamp("2026-03-30 08:14:22"), source: "SmartPlant", records: "240K", latency: "6 days", errors: 2 },
+  { timestamp: shiftTimestamp("2026-03-30 12:28:00"), source: "Fluke", records: "42K", latency: "2 hr lag", errors: 84 },
+  { timestamp: shiftTimestamp("2026-03-30 14:25:00"), source: "Schneider", records: "1.2M", latency: "5 min", errors: 0 },
 ];
 
 const DataQuality = () => {
@@ -33,18 +34,18 @@ const DataQuality = () => {
   const healthy = DATA_SOURCES.filter(d => d.status === "Healthy").length;
 
   return (
-    <PageHeader title="Data Quality Monitor" subtitle="Real-time monitoring of data source health, freshness and ingestion quality">
+    <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
-          { label: "Avg Data Freshness", value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
-          { label: "Avg Completeness", value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "" : "text-warning" },
-          { label: "Healthy Sources", value: `${healthy}/${DATA_SOURCES.length}` },
-          { label: "Total Ingestion Errors (24h)", value: "102", color: "text-warning" },
+          { label: "Average data freshness", icon: kpi.freshness, value: `${avgFreshness}%`, color: avgFreshness >= 90 ? "" : "text-warning" },
+          { label: "Average completeness", icon: kpi.completeness, value: `${avgCompleteness}%`, color: avgCompleteness >= 95 ? "" : "text-warning" },
+          { label: "Healthy sources", icon: kpi.health, value: `${healthy}/${DATA_SOURCES.length}` },
+          { label: "Total ingestion errors (24h)", icon: kpi.error, value: "102", color: "text-warning" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Source Quality Table */}
       <Panel title="Data Source Quality Scores" padded={false}>

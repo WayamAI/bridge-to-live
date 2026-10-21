@@ -24,3 +24,39 @@ export const formatMonthName = (date: Date): string => date.toLocaleDateString(L
  */
 export const formatTime = (date: Date): string =>
   new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", hourCycle: "h23", timeZone: "Asia/Kolkata" }).format(date);
+
+/** "rate_of_change" -> "rate of change": every underscore becomes a space (CSS capitalises where it is shown). */
+export const formatKey = (key: string): string => key.replace(/_/g, " ");
+
+/** "2024-04" -> the time of the first of that month (UTC), for a numeric chart axis. NaN for anything else. */
+export const yearMonthToTime = (ym: string): number => {
+  const m = /^(\d{4})-(0[1-9]|1[0-2])$/.exec(ym);
+  return m ? Date.UTC(Number(m[1]), Number(m[2]) - 1, 1) : NaN;
+};
+
+/** Month and two-digit year (Apr 24), pinned to en-IN and UTC to match yearMonthToTime. */
+export const formatMonthYear = (time: number): string =>
+  new Date(time).toLocaleDateString(LOCALE, { month: "short", year: "2-digit", timeZone: "UTC" });
+
+/** "2026-07-22" -> "22 Jul", for chart axis ticks (the tooltip keeps the full date). Anything else is returned unchanged. */
+export const formatIsoDayMonth = (iso: string): string => {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso);
+  if (!m) return iso;
+  return new Date(Number(m[1]), Number(m[2]) - 1, Number(m[3])).toLocaleDateString(LOCALE, { day: "numeric", month: "short" });
+};
+
+/**
+ * Rupee amounts held in lakh, written one way everywhere: under 100 L as "₹42 L", from 100 L as "₹1.18 Cr".
+ * Negative amounts get a real minus before the sign ("−₹98 L"); `signed` adds "+" to positive ones; `per` adds "/yr".
+ */
+export const formatRupees = (lakh: number, opts: { signed?: boolean; per?: string } = {}): string => {
+  const abs = Math.abs(lakh);
+  const body = abs >= 100 ? `₹${(abs / 100).toFixed(2)} Cr` : `₹${formatNumber(Math.round(abs * 100) / 100)} L`;
+  const zero = abs < 0.005;
+  const sign = zero ? "" : lakh < 0 ? "−" : opts.signed ? "+" : "";
+  return `${sign}${body}${opts.per ? `/${opts.per}` : ""}`;
+};
+
+/** "Oct '25": short month and two-digit year, for month axes and labels. */
+export const formatShortMonth = (date: Date): string =>
+  `${date.toLocaleDateString(LOCALE, { month: "short" })} '${String(date.getFullYear()).slice(-2)}`;

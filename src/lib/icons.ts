@@ -6,6 +6,7 @@ import {
   Gauge, HardHat, Hourglass, LayoutDashboard, Leaf, ListChecks, Lock, LogOut, Mail, MapPin, Menu, Moon, MonitorSpeaker, Network, PanelLeftClose,
   PanelLeftOpen, Radar, RefreshCw, RotateCcw, Save, Scale, Search, Settings, Shield, Sigma, Sliders, Sun, Target, TrendingDown,
   TrendingUp, User, Users, Wallet, Wrench, X, Zap, type LucideIcon,
+Archive, ArrowDownToLine, AudioWaveform, Ban, BellRing, Boxes, CalendarClock, CalendarDays, CalendarRange, ChartColumn, ChartSpline, CheckCheck, CircleAlert, CircleCheckBig, CircleDashed, CircleGauge, CircleX, ClipboardList, ClipboardPlus, Cloud, CloudDownload, CloudFog, Crosshair, Diff, Droplets, Flag, Flame, FileSearch, Grid3x3, HeartPulse, History, Inbox, IndianRupee, Landmark, Layers, Lightbulb, LineChart, ListTodo, Loader, MousePointerClick, OctagonAlert, PackageCheck, PackageOpen, PiggyBank, Plug, PlugZap, PowerOff, Receipt, Repeat, Rows3, ScanEye, ScanSearch, SearchX, ShieldAlert, ShieldCheck, Siren, Split, Tags, Timer, Vibrate, Waypoints, Wind, Percent, Hash, PieChart as PieChartIcon, BellOff, CalendarCheck,
 } from "lucide-react";
 
 /** Sidebar icon per route. The page header shows the same icon as its sidebar item. */
@@ -102,6 +103,101 @@ export const icons = {
   chevronRight: ChevronRight,
   chevronDown: ChevronDown,
   chevronUp: ChevronUp,
+  createWorkOrder: ClipboardPlus, // start a work order from a recommendation
+} as const;
+
+/**
+ * KPI tile icons, one per meaning (not per page): the same thing gets the same icon wherever it is counted.
+ * Greyscale, 14px, top-right of the tile. Alarms keep the bell they have in the sidebar.
+ */
+export const kpi = {
+  health: HeartPulse, // plant or source health
+  alarms: Bell, // alarms and alerts as a count
+  alarmsPending: BellRing, // alarms waiting for someone
+  alarmRate: AudioWaveform, // how often alarms fire
+  alarmState: Siren, // time spent in a high-alarm state
+  critical: OctagonAlert, // critical events and alarms
+  failures: Ban, // failures, predicted or past
+  mostFailing: Flag, // the worst offender
+  downtime: PowerOff,
+  duration: Timer, // response, acknowledgement and other elapsed times
+  mtbf: Repeat, // mean time between failures
+  trend: LineChart, // direction over time
+  time: Clock, // a point in time (last sync)
+  cost: IndianRupee, // any cost or price
+  savings: PiggyBank,
+  spend: Receipt,
+  budget: Landmark,
+  variance: Diff,
+  ratio: Split,
+  count: Hash, // a plain total
+  percent: Percent, // a rate or coverage
+  groups: Layers, // zones, domains, levels
+  categories: Tags,
+  assets: Boxes,
+  completeness: PieChartIcon,
+  freshness: History,
+  review: ClipboardList, // reviewed items
+  pending: CircleDashed,
+  chattering: Vibrate,
+  ok: CircleCheckBig, // passing, complete, up to date
+  done: CheckCheck, // finished work
+  error: CircleX, // errors and failing checks
+  gap: CircleAlert, // a gap or open issue
+  below: ArrowDownToLine, // under a threshold
+  findings: FileSearch,
+  investigation: ScanSearch,
+  events: CalendarDays,
+  compliance: ShieldCheck,
+  risk: ShieldAlert,
+  unmonitored: ScanEye,
+  connections: Waypoints,
+  patch: CloudDownload,
+  endOfLife: Archive,
+  records: Rows3,
+  actions: ListTodo,
+  opportunity: Lightbulb,
+  open: PackageOpen,
+  inProgress: Loader,
+  overdue: CalendarClock,
+  handover: PackageCheck,
+  efficiency: Plug,
+  electricity: PlugZap,
+  steam: CloudFog,
+  water: Droplets,
+  air: Wind,
+  gas: Flame,
+  emissions: Cloud,
+  target: Crosshair,
+} as const;
+
+/** Energy page tiles are named by the data, so their icons are looked up by label. */
+export const energyKpiIcon: Record<string, LucideIcon> = {
+  "Electrical load": kpi.electricity,
+  "Steam consumption": kpi.steam,
+  "Cooling water flow": kpi.water,
+  "Compressed air": kpi.air,
+  "Natural gas": kpi.gas,
+  "Energy cost rate": kpi.cost,
+};
+
+/** Empty-state icons (24px). One per kind of emptiness. */
+export const emptyIcon = {
+  nothing: Inbox, // there is simply nothing here
+  noMatch: SearchX, // a search or filter matched nothing
+  select: MousePointerClick, // pick something to see it
+  noAlerts: BellOff,
+  noEvents: CalendarCheck,
+} as const;
+
+/** Panel-header icons: used on the Dashboard only. */
+export const panelIcon = {
+  healthTrend: ChartSpline,
+  alarmFrequency: ChartColumn,
+  heatMap: Grid3x3,
+  upcoming: CalendarRange,
+  oee: CircleGauge,
+  alerts: Bell,
 } as const;
 
 /** Icon sizes by context (tailwind classes). */
@@ -111,6 +207,8 @@ export const iconSize = {
   row: "size-3.5", // tree rows, table rows, meta lines
   pill: "size-[13px]", // inline in pills and buttons
   chevron: "size-3", // chevrons
+  kpi: "size-3.5", // KPI tiles (14px)
+  empty: "size-6", // empty states (24px)
 } as const;
 
 // Page marks: generated 3D illustrations (src/assets/marks), shown only in the page header, decorative.

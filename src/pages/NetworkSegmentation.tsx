@@ -1,7 +1,8 @@
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
 import { zoneTone, toneOf } from "@/lib/status";
+import { kpi } from "@/lib/icons";
 
 interface PurdueLevel {
   level: string;
@@ -13,19 +14,19 @@ const PURDUE_LEVELS: PurdueLevel[] = [
   { level: "Level 4", label: "Enterprise IT", devices: [
     { name: "SAP ERP Server", status: "green" }, { name: "Maximo CMMS", status: "green" }, { name: "Email Gateway", status: "green" }, { name: "PlantMind Cloud", status: "green" },
   ]},
-  { level: "Level 3.5", label: "DMZ / Firewall", devices: [
+  { level: "Level 3.5", label: "DMZ / firewall", devices: [
     { name: "FW-DMZ-01 (Palo Alto)", status: "green" }, { name: "FW-DMZ-02 (Palo Alto)", status: "amber" }, { name: "Jump Server JS-01", status: "green" },
   ]},
-  { level: "Level 3", label: "Plant Network / Historians", devices: [
+  { level: "Level 3", label: "Plant network / historians", devices: [
     { name: "PI Historian Server", status: "green" }, { name: "PI Interface Node 01", status: "amber" }, { name: "EW-001", status: "amber" }, { name: "EW-002", status: "amber" }, { name: "EW-003", status: "red" },
   ]},
   { level: "Level 2", label: "SCADA / DCS / HMI", devices: [
     { name: "DCS DC-01", status: "green" }, { name: "DCS DC-02", status: "green" }, { name: "HMI-A-001", status: "green" }, { name: "HMI-A-002", status: "amber" }, { name: "HMI-B-001", status: "green" }, { name: "HMI-B-002", status: "red" }, { name: "SW-L2-01", status: "amber" },
   ]},
-  { level: "Level 1", label: "PLCs / RTUs / Controllers", devices: [
+  { level: "Level 1", label: "PLCs / RTUs / controllers", devices: [
     { name: "PLC-A-01", status: "green" }, { name: "PLC-A-02", status: "green" }, { name: "PLC-B-01", status: "amber" }, { name: "PLC-B-02", status: "amber" }, { name: "PLC-CW-01", status: "green" }, { name: "PLC-F-01", status: "green" }, { name: "RTU-ML-01", status: "green" }, { name: "RTU-FW-01", status: "green" }, { name: "SIS-01", status: "green" }, { name: "SIS-02", status: "green" },
   ]},
-  { level: "Level 0", label: "Field Devices / Sensors", devices: [
+  { level: "Level 0", label: "Field devices / sensors", devices: [
     { name: "Gas Detectors (GD-01/02)", status: "green" }, { name: "Weather Station WS-01", status: "green" }, { name: "LDAR Detector", status: "green" }, { name: "Smart Transmitters (42,400 tags)", status: "green" },
   ]},
 ];
@@ -36,22 +37,22 @@ const CONNECTIONS = [
   { from: "Level 3", to: "Level 2", protocol: "OPC-DA / PI-SDK", status: "amber" as const },
   { from: "Level 2", to: "Level 1", protocol: "Profinet / Modbus", status: "green" as const },
   { from: "Level 1", to: "Level 0", protocol: "HART / 4-20mA", status: "green" as const },
-  { from: "192.168.3.44 → DC-02", to: "Level 2", protocol: "OPC-UA (UNAUTHORIZED)", status: "red" as const },
+  { from: "192.168.3.44 → DC-02", to: "Level 2", protocol: "OPC-UA (unauthorised)", status: "red" as const },
 ];
 
 const NetworkSegmentation = () => (
-  <PageHeader title="Network Segmentation Status" subtitle="Purdue model: OT network zone visualization and inter-zone connection monitoring">
+  <PageHeader>
 
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+    <KpiGrid>
       {[
-        { label: "Network Zones", value: "6 (L0–L4+DMZ)" },
-        { label: "Monitored Connections", value: "48" },
-        { label: "Policy Violations", value: "1", color: "text-error" },
-        { label: "Unmonitored Flows", value: "0" },
+        { label: "Network zones", icon: kpi.groups, value: "6 (L0-L4+DMZ)" },
+        { label: "Monitored connections", icon: kpi.connections, value: "48" },
+        { label: "Policy violations", icon: kpi.risk, value: "1", color: "text-error" },
+        { label: "Unmonitored flows", icon: kpi.unmonitored, value: "0" },
       ].map(s => (
-        <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+        <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
       ))}
-    </div>
+    </KpiGrid>
 
     {/* Purdue Model */}
     <Panel title="Purdue Model · Network Zone Map" padded={false}>
@@ -74,10 +75,10 @@ const NetworkSegmentation = () => (
               </div>
             </div>
             {li < PURDUE_LEVELS.length - 1 && (
-              <div className="flex items-center gap-2 py-1 pl-8">
-                <div className="h-4 border-l border-dashed border-hairline" />
-                <span className="type-caption text-tertiary tabular">{CONNECTIONS[li]?.protocol}</span>
-                <StatusDot tone={toneOf(zoneTone, CONNECTIONS[li]?.status || "green")} />
+              <div className="flex h-9 items-stretch gap-2 pl-8">
+                <div className="-mb-2 border-l border-strong" />
+                <span className="type-caption self-center text-tertiary tabular">{CONNECTIONS[li]?.protocol}</span>
+                <StatusDot className="self-center" tone={toneOf(zoneTone, CONNECTIONS[li]?.status || "green")} />
               </div>
             )}
           </div>
@@ -91,7 +92,7 @@ const NetworkSegmentation = () => (
         <table className="w-full type-body-sm">
           <thead>
             <tr className="border-b border-hairline">
-              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source → Destination</th>
+              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source → destination</th>
               <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Protocol</th>
               <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
             </tr>

@@ -1,5 +1,7 @@
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
-import { icons } from "@/lib/icons";
+import { Children } from "react";
+import type { CSSProperties, ButtonHTMLAttributes, InputHTMLAttributes, ReactNode, SelectHTMLAttributes } from "react";
+import type { LucideIcon } from "lucide-react";
+import { emptyIcon, icons, iconSize } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { Badge } from "./badge";
 import type { EquipmentStatus } from "@/hooks/usePlantData";
@@ -34,6 +36,7 @@ export const Unit = ({ children, className }: { children: ReactNode; className?:
 /** Content card: 8px radius, hairline border, no shadow, optional eyebrow header. Titles are Title Case in source. */
 export const Panel = ({
   title,
+  icon: Icon,
   action,
   padded = true,
   className,
@@ -41,6 +44,8 @@ export const Panel = ({
   children,
 }: {
   title?: ReactNode;
+  /** Header icon. Only the Dashboard panels use one; leave it off everywhere else. */
+  icon?: LucideIcon;
   action?: ReactNode;
   padded?: boolean;
   className?: string;
@@ -50,7 +55,10 @@ export const Panel = ({
   <section className={cn("flex flex-col overflow-hidden rounded-lg border border-hairline bg-container", className)}>
     {title && (
       <header className="flex h-11 shrink-0 items-center justify-between gap-3 border-b border-hairline px-4">
-        <h3 className="type-eyebrow truncate text-quaternary">{title}</h3>
+        <h3 className="type-eyebrow flex min-w-0 items-center gap-2 text-quaternary">
+          {Icon && <Icon className={cn(iconSize.kpi, "shrink-0 text-icon-tertiary")} aria-hidden />}
+          <span className="truncate">{title}</span>
+        </h3>
         {action && <div className="shrink-0">{action}</div>}
       </header>
     )}
@@ -61,10 +69,10 @@ export const Panel = ({
 /** Words and brackets after a value ("days ago", "(L0–L4+DMZ)") keep a word space; short units (%, hr, kW) sit tight. */
 const unitGap = (u?: string) => (u && (/[\s(]/.test(u) || u.length > 4) ? "ml-1.5" : undefined);
 
-/** Splits "₹1.2 Cr", "82%", "14,200 hr" into prefix, number and unit so the sign and unit render in Geist. */
+/** Splits "₹1.2 Cr", "−₹98 L", "82%", "14,200 hr" into prefix, number and unit so the sign and unit render in Geist. */
 const splitValue = (v: ReactNode) => {
   if (typeof v !== "string") return null;
-  const m = v.match(/^([₹$€]?)\s*([+\-−]?[\d,]+(?:\.\d+)?)\s*(.*)$/);
+  const m = v.match(/^([+\-−]?[₹$€]|)\s*([+\-−]?[\d,]+(?:\.\d+)?)\s*(.*)$/);
   return m && (m[1] || m[3]) ? { prefix: m[1], num: m[2], unit: m[3] } : null;
 };
 
@@ -75,6 +83,7 @@ const splitValue = (v: ReactNode) => {
  */
 export const KpiTile = ({
   label,
+  icon: Icon,
   value,
   prefix,
   unit,
@@ -87,6 +96,8 @@ export const KpiTile = ({
   children,
 }: {
   label: string;
+  /** What the figure is, as a 14px greyscale icon top-right (see `kpi` in lib/icons.ts). */
+  icon: LucideIcon;
   value: ReactNode;
   prefix?: string;
   unit?: string;
@@ -101,7 +112,10 @@ export const KpiTile = ({
   const parts = prefix === undefined && unit === undefined ? splitValue(value) : null;
   const body = (
     <>
-      <span className="type-eyebrow text-quaternary">{label}</span>
+      <span className="flex items-start justify-between gap-2">
+        <span className="type-eyebrow text-quaternary">{label}</span>
+        <Icon className={cn(iconSize.kpi, "mt-px shrink-0 text-icon-tertiary")} aria-hidden />
+      </span>
       <span className={cn("type-display-xl sm:type-display-2xl tabular text-foreground", valueClassName)}>
         {(parts ? parts.prefix : prefix) && <Unit className="ml-0 mr-0.5">{parts ? parts.prefix : prefix}</Unit>}
         {parts ? parts.num : value}
@@ -130,6 +144,16 @@ export const KpiTile = ({
   );
 };
 
+/**
+ * The row of KPI tiles on a page. Columns follow the tile count so every page lines up the same way:
+ * 4 tiles: 2 columns, then 4 from lg; 5 tiles: 2, 3 from md, 5 from xl; 6 tiles: 2, 3 from md, 6 from 2xl.
+ */
+export const KpiGrid = ({ children, className }: { children: ReactNode; className?: string }) => {
+  const n = Children.count(children);
+  const cols = n >= 6 ? "grid-cols-2 md:grid-cols-3 2xl:grid-cols-6" : n === 5 ? "grid-cols-2 md:grid-cols-3 xl:grid-cols-5" : n === 3 ? "grid-cols-1 sm:grid-cols-3" : "grid-cols-2 lg:grid-cols-4";
+  return <div className={cn("grid gap-3", cols, className)}>{children}</div>;
+};
+
 export const StatusDot = ({ tone = "neutral", className }: { tone?: Tone; className?: string }) => (
   <span aria-hidden className={cn("inline-block size-1.5 shrink-0 rounded-full", toneDot[tone], className)} />
 );
@@ -148,18 +172,20 @@ export const QuietStatus = ({ tone = "success", children, className }: { tone?: 
  * old UI showed). Warning and Critical need attention, so they get a solid badge.
  */
 export const EquipmentStatusLabel = ({ status }: { status?: EquipmentStatus | null }) => {
-  if (!status) return <span className="type-body-sm text-quaternary">—</span>;
+  if (!status) return <span className="type-body-sm text-quaternary">n/a</span>;
   const label = labelOf(equipmentLabel, status);
   if (status === "warning") return <Badge variant="warning">{label}</Badge>;
   if (status === "critical") return <Badge variant="error">{label}</Badge>;
   return <QuietStatus tone={toneOf(equipmentTone, status)}>{label}</QuietStatus>;
 };
 
-/** Plain statement, no illustration, no call to action. */
-export const EmptyState = ({ title = "Nothing to show", detail, className }: { title?: string; detail?: string; className?: string }) => (
+/** A 24px greyscale icon and a plain statement. `action` is for a single way out (a link back), not a call to action. */
+export const EmptyState = ({ title = "Nothing to show", detail, action, icon: Icon = emptyIcon.nothing, className }: { title?: string; detail?: string; action?: ReactNode; icon?: LucideIcon; className?: string }) => (
   <div className={cn("flex min-h-[160px] flex-col items-center justify-center gap-1.5 px-6 text-center", className)}>
+    <Icon className={cn(iconSize.empty, "mb-1 text-icon-quaternary")} aria-hidden />
     <p className="type-body-md text-tertiary">{title}</p>
     {detail && <p className="type-body-sm text-quaternary">{detail}</p>}
+    {action && <div className="mt-2">{action}</div>}
   </div>
 );
 
@@ -194,6 +220,27 @@ export const SearchField = ({ className, ...props }: InputHTMLAttributes<HTMLInp
 );
 
 /** Toggle chip (filters and segmented controls): outline when idle, near-black fill when active. */
+/** Checkbox with a label: a native input (so state, keyboard and forms are unchanged) drawn in the Chronus style. */
+export const Checkbox = ({ label, className, ...props }: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & { label: ReactNode }) => (
+  <label className={cn("type-label-sm inline-flex h-8 cursor-pointer items-center gap-2 text-tertiary transition-colors duration-[180ms] hover:text-secondary-foreground", className)}>
+    <span className="relative inline-flex size-4 shrink-0">
+      <input
+        type="checkbox"
+        {...props}
+        className="peer absolute inset-0 size-4 cursor-pointer appearance-none rounded-[4px] border border-strong bg-container outline-none transition-colors duration-[180ms] checked:border-transparent checked:bg-action-primary focus-visible:ring-2 focus-visible:ring-active"
+      />
+      <icons.selected className="pointer-events-none absolute inset-0 m-auto size-3 text-on-color opacity-0 peer-checked:opacity-100" aria-hidden />
+    </span>
+    {label}
+  </label>
+);
+
+/** Range slider: a native range input drawn in the Chronus style (filled track, ringed thumb); see .slider in index.css. */
+export const Slider = ({ className, style, ...props }: Omit<InputHTMLAttributes<HTMLInputElement>, "type"> & { min: number; max: number; value: number }) => {
+  const fill = ((props.value - props.min) / (props.max - props.min || 1)) * 100;
+  return <input type="range" {...props} style={{ ...style, "--fill": `${fill}%` } as CSSProperties} className={cn("slider", className)} />;
+};
+
 export const Chip = ({
   active,
   className,
@@ -205,7 +252,7 @@ export const Chip = ({
     aria-pressed={active}
     {...props}
     className={cn(
-      "inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 type-label-sm outline-none transition-colors duration-[150ms] focus-visible:ring-2 focus-visible:ring-active",
+      "inline-flex h-8 items-center gap-1.5 rounded-full border px-3 type-label-sm outline-none transition-colors duration-[150ms] focus-visible:ring-2 focus-visible:ring-active",
       active
         ? "border-transparent bg-action-primary text-on-color"
         : "border-hairline bg-action text-tertiary hover:border-strong hover:bg-raised-2 hover:text-secondary-foreground",

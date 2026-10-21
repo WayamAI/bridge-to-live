@@ -1,22 +1,27 @@
 import { useMemo } from "react";
 import { Panel } from "@/components/ui/primitives";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, ComposedChart } from "recharts";
-import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { Line, XAxis, YAxis, Tooltip, ReferenceLine, ComposedChart } from "recharts";
+import ChartLegend from "@/components/dashboard/ChartLegend";
+import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor, timeAxisProps } from "@/components/dashboard/chartTheme";
 import { formatDate } from "@/lib/format";
+import { createRng } from "@/lib/seeded";
+import { panelIcon } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
+import { formatIsoDayMonth } from "@/lib/format";
 
 const PlantHealthTrend = () => {
   const data = useMemo(() => {
     const points = [];
+    const rnd = createRng(9001);
     let health = 91;
     const now = Date.now();
     for (let i = 90; i >= 0; i--) {
-      health += (Math.random() - 0.52) * 1.2;
+      health += (rnd() - 0.52) * 1.2;
       health = Math.max(78, Math.min(96, health));
       const date = new Date(now - i * 86400000);
       points.push({
         date: formatDate(date),
         health: Math.round(health * 10) / 10,
-        isForecast: i < 30,
       });
     }
     // Add maintenance markers
@@ -29,24 +34,29 @@ const PlantHealthTrend = () => {
   return (
     <Panel
       title="Plant Health Trend · 90 Days"
+      icon={panelIcon.healthTrend}
     >
-      <div className="type-caption mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-quaternary">
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 inline-block" /> Health Score</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 bg-series-1 opacity-30 inline-block" /> Forecast</span>
-          <span className="flex items-center gap-1"><span className="w-3 h-0.5 border-t border-dashed border-quaternary inline-block" /> PM Events</span>
-      </div>
-      <ResponsiveContainer width="100%" height={180}>
-        <ComposedChart data={data} margin={{ top: 5, right: 30, left: -15, bottom: 0 }}>
-          <XAxis dataKey="date" tick={axisTick} tickLine={false} axisLine={false} interval="preserveStartEnd" minTickGap={28} />
-          <YAxis domain={[75, 100]} tick={axisTick} tickLine={false} axisLine={false} />
+      <ChartLegend items={[
+        { label: "Health score", color: seriesColor(0), kind: "line" },
+        { label: "Target 90%", color: seriesColor(4), kind: "dashed" },
+        { label: "PM events", color: "var(--text-quaternary)", kind: "dotted" },
+      ]} />
+      <ChartBox height="standard" label="Plant health score, last 90 days">
+        <ComposedChart data={data} margin={{ top: 5, right: 20, left: 0, bottom: 0 }}>
+          <XAxis tickMargin={8} dataKey="date" tick={axisTick} tickLine={false} axisLine={false} tickFormatter={formatIsoDayMonth} {...timeAxisProps} />
+          <YAxis domain={[75, 100]} ticks={[75, 80, 85, 90, 95, 100]} tickFormatter={(v: number) => `${v}%`} tick={axisTick} tickLine={false} axisLine={false} width={40} />
           <Tooltip
             contentStyle={chartTooltipStyle}
             labelStyle={chartTooltipLabelStyle}
+            formatter={(v: number) => [`${v}%`, "Health score"]}
           />
-          <ReferenceLine y={90} stroke={seriesColor(4)} strokeDasharray="5 5" strokeWidth={1} label={{ value: "Target 90%", position: "right", fontSize: 9, fill: "var(--text-quaternary)" }} />
+          <ReferenceLine y={90} stroke={seriesColor(4)} strokeDasharray="5 5" strokeWidth={1} />
+          {data.filter(d => d.maintenance).map(d => (
+            <ReferenceLine key={d.date} x={d.date} stroke="var(--text-quaternary)" strokeDasharray="2 3" strokeWidth={1} />
+          ))}
           <Line isAnimationActive={false} type="monotone" dataKey="health" stroke={seriesColor(0)} strokeWidth={1.5} dot={false} />
         </ComposedChart>
-      </ResponsiveContainer>
+      </ChartBox>
     </Panel>
   );
 };

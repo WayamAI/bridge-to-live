@@ -1,17 +1,18 @@
 import { useState } from "react";
-import { icons } from "@/lib/icons";
+import { icons, kpi } from "@/lib/icons";
 import { toast } from "sonner";
 import PageHeader from "@/components/layout/PageHeader";
-import { KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { syncRunTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
+import { shiftTimestamp } from "@/lib/mockDates";
 
 const SYNC_LOG = [
-  { timestamp: "2026-03-24 08:14:22", records: "240,412", newTags: 24, modified: 148, deleted: 0, errors: 2, status: "Completed" },
-  { timestamp: "2026-03-17 08:12:04", records: "240,388", newTags: 42, modified: 94, deleted: 8, errors: 0, status: "Completed" },
-  { timestamp: "2026-03-10 08:15:38", records: "240,354", newTags: 18, modified: 210, deleted: 0, errors: 0, status: "Completed" },
-  { timestamp: "2026-03-03 08:10:55", records: "240,126", newTags: 86, modified: 320, deleted: 12, errors: 4, status: "Completed with errors" },
-  { timestamp: "2026-02-24 08:14:11", records: "240,064", newTags: 14, modified: 62, deleted: 0, errors: 0, status: "Completed" },
+  { timestamp: shiftTimestamp("2026-03-24 08:14:22"), records: "240,412", newTags: 24, modified: 148, deleted: 0, errors: 2, status: "Completed" },
+  { timestamp: shiftTimestamp("2026-03-17 08:12:04"), records: "240,388", newTags: 42, modified: 94, deleted: 8, errors: 0, status: "Completed" },
+  { timestamp: shiftTimestamp("2026-03-10 08:15:38"), records: "240,354", newTags: 18, modified: 210, deleted: 0, errors: 0, status: "Completed" },
+  { timestamp: shiftTimestamp("2026-03-03 08:10:55"), records: "240,126", newTags: 86, modified: 320, deleted: 12, errors: 4, status: "Completed with errors" },
+  { timestamp: shiftTimestamp("2026-02-24 08:14:11"), records: "240,064", newTags: 14, modified: 62, deleted: 0, errors: 0, status: "Completed" },
 ];
 
 const DELTA_DETAILS = [
@@ -35,8 +36,6 @@ const TwinSync = () => {
 
   return (
     <PageHeader
-      title="Engineering Twin Sync"
-      subtitle="Synchronization status between Hexagon SmartPlant engineering twin and PlantMind operational twin"
       actions={
         <button
           onClick={handleSync}
@@ -49,16 +48,16 @@ const TwinSync = () => {
       }
     >
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
-          { label: "Last Sync", value: "6 days ago" },
-          { label: "Records Synced", value: "240,412" },
-          { label: "Sync Errors", value: "2", color: "text-warning" },
-          { label: "Coverage", value: "99.99%" },
+          { label: "Last sync", icon: kpi.time, value: "6 days ago" },
+          { label: "Records synced", icon: kpi.records, value: "240,412" },
+          { label: "Sync errors", icon: kpi.error, value: "2", color: "text-warning" },
+          { label: "Coverage", icon: kpi.percent, value: "99.99%" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Data Source Mapping */}
       <Panel title="Data Source Mapping · Current Sync State" padded={false}>
@@ -67,10 +66,10 @@ const TwinSync = () => {
             <thead>
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source System</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total Records</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Source system</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total records</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Synced</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Delta (Last Sync)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Delta (last sync)</th>
               </tr>
             </thead>
             <tbody>

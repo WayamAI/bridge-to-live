@@ -1,9 +1,9 @@
 import { motion } from "framer-motion";
 
 const stages = [
-  { stage: "Discovery & Blueprint", timeline: "Weeks 1–6", desc: "Engineering twin audit, sensor census, cloud architecture design, OT security requirements, handover schema definition." },
-  { stage: "Pilot Deployment", timeline: "Weeks 7–20", desc: "IoT layer and cloud platform for pilot project. 3–5 predictive maintenance models. OEE dashboard and energy intelligence." },
-  { stage: "Blueprint Productisation", timeline: "Weeks 21–32", desc: "Convert pilot into reusable IaC templates, connector library, sensor mapping library, governance model and playbooks." },
+  { stage: "Discovery & Blueprint", timeline: "Weeks 1-6", desc: "Engineering twin audit, sensor census, cloud architecture design, OT security requirements, handover schema definition." },
+  { stage: "Pilot Deployment", timeline: "Weeks 7-20", desc: "IoT layer and cloud platform for pilot project. 3-5 predictive maintenance models. OEE dashboard and energy intelligence." },
+  { stage: "Blueprint Productisation", timeline: "Weeks 21-32", desc: "Convert pilot into reusable IaC templates, connector library, sensor mapping library, governance model and playbooks." },
   { stage: "Scaled Rollout", timeline: "Ongoing", desc: "Apply blueprint across projects using distributed execution teams. Platform governance, AI model updates, OT security monitoring." },
 ];
 

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import { Chip, EmptyState, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
+import { Chip, EmptyState, KpiGrid, KpiTile, Panel, ToneStatus } from "@/components/ui/primitives";
 import { validationStatus, workflowTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
+import { kpi, icons, emptyIcon } from "@/lib/icons";
 
 interface ValidationRecord {
   id: string;
@@ -23,11 +24,11 @@ const VALIDATION_SUMMARY = [
 ];
 
 const SAMPLE_ERRORS: ValidationRecord[] = [
-  { id: "v1", tag: "TT-X-099", category: "Tag naming", rule: "TAG-NNN pattern required", status: "Fail", details: "Tag does not follow ISO 15926 naming convention — 'X' is not a valid class code" },
-  { id: "v2", tag: "COMP-A-001", category: "Mandatory fields", rule: "Design pressure required", status: "Fail", details: "Design pressure field is empty — required for CFIHOS compliance" },
-  { id: "v3", tag: "FT-D-018", category: "UoM compliance", rule: "Flow must be in Nm³/h", status: "Warning", details: "Flow recorded as m³/h — should be normalised to Nm³/h per project standard" },
+  { id: "v1", tag: "TT-X-099", category: "Tag naming", rule: "TAG-NNN pattern required", status: "Fail", details: "Tag does not follow ISO 15926 naming convention, 'X' is not a valid class code" },
+  { id: "v2", tag: "COMP-A-001", category: "Mandatory fields", rule: "Design pressure required", status: "Fail", details: "Design pressure field is empty, required for CFIHOS compliance" },
+  { id: "v3", tag: "FT-D-018", category: "UoM compliance", rule: "Flow must be in Nm³/h", status: "Warning", details: "Flow recorded as m³/h, should be normalised to Nm³/h per project standard" },
   { id: "v4", tag: "HEX-C-003", category: "Cross-reference", rule: "P&ID ref must exist", status: "Fail", details: "P&ID reference 'PID-CW-042' not found in SmartPlant database" },
-  { id: "v5", tag: "PUMP-B-012", category: "Mandatory fields", rule: "Manufacturer required", status: "Warning", details: "Manufacturer field contains abbreviation — full legal name required" },
+  { id: "v5", tag: "PUMP-B-012", category: "Mandatory fields", rule: "Manufacturer required", status: "Warning", details: "Manufacturer field contains abbreviation, full legal name required" },
   { id: "v6", tag: "MOT-E-018", category: "UoM compliance", rule: "Current must be in A", status: "Pass", details: "Current correctly recorded in Amperes" },
   { id: "v7", tag: "V-F-007", category: "Equipment class", rule: "CFIHOS class must match", status: "Fail", details: "Equipment class 'Vessel' should be 'Pressure Vessel' per CFIHOS R4" },
   { id: "v8", tag: "PSV-A-014", category: "Mandatory fields", rule: "Set pressure required", status: "Pass", details: "Set pressure correctly defined: 98 barg" },
@@ -44,18 +45,18 @@ const ISOValidator = () => {
   const filtered = filterStatus === "all" ? SAMPLE_ERRORS : SAMPLE_ERRORS.filter(e => e.status === filterStatus);
 
   return (
-    <PageHeader title="ISO 15926 / CFIHOS Validator" subtitle="Automated validation of engineering data package against handover standards">
+    <PageHeader>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
-          { label: "Total Validation Checks", value: formatNumber(totalChecks) },
-          { label: "Passing", value: formatNumber(totalPass) },
-          { label: "Failures", value: formatNumber(totalFail), color: "text-error" },
-          { label: "Warnings", value: formatNumber(totalWarn), color: "text-warning" },
+          { label: "Total validation checks", icon: kpi.count, value: formatNumber(totalChecks) },
+          { label: "Passing", icon: kpi.ok, value: formatNumber(totalPass) },
+          { label: "Failures", icon: kpi.error, value: formatNumber(totalFail), color: "text-error" },
+          { label: "Warnings", icon: icons.warning, value: formatNumber(totalWarn), color: "text-warning" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Summary by Category */}
       <Panel title="Validation Summary by Category" padded={false}>
@@ -64,11 +65,11 @@ const ISOValidator = () => {
             <thead>
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Category</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total Checks</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Total checks</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Pass</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Fail</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Warning</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Pass Rate</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Pass rate</th>
               </tr>
             </thead>
             <tbody>
@@ -124,7 +125,7 @@ const ISOValidator = () => {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={5}><EmptyState title="No records match this filter" className="min-h-[96px]" /></td>
+                  <td colSpan={5}><EmptyState icon={emptyIcon.noMatch} title="No records match this filter" className="min-h-[96px]" /></td>
                 </tr>
               )}
             </tbody>

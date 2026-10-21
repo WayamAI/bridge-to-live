@@ -1,7 +1,8 @@
 import { useState } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import { Chip, EmptyState, KpiTile, Panel, SearchField, ToneStatus } from "@/components/ui/primitives";
+import { Chip, EmptyState, KpiGrid, KpiTile, Panel, SearchField, ToneStatus } from "@/components/ui/primitives";
 import { patchStatus, workflowTone } from "@/lib/status";
+import { kpi, emptyIcon } from "@/lib/icons";
 
 interface OTAsset {
   name: string;
@@ -75,8 +76,6 @@ const OTAssetRegistry = () => {
 
   return (
     <PageHeader
-      title="OT Asset Registry"
-      subtitle="Comprehensive inventory of all OT assets: IEC 62443 asset management"
       actions={
         <>
           <SearchField value={search} onChange={e => setSearch(e.target.value)} placeholder="Search assets…" aria-label="Search assets" />
@@ -89,16 +88,16 @@ const OTAssetRegistry = () => {
       }
     >
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <KpiGrid>
         {[
-          { label: "Total OT Assets", value: OT_ASSETS.length.toString() },
-          { label: "Up to Date", value: upToDate.toString() },
-          { label: "Patch Available", value: patchAvail.toString() },
-          { label: "End-of-Life / High Risk", value: `${eol} EOL · ${highRisk} high risk`, color: "text-error" },
+          { label: "Total OT assets", icon: kpi.assets, value: OT_ASSETS.length.toString() },
+          { label: "Up to date", icon: kpi.ok, value: upToDate.toString() },
+          { label: "Patch available", icon: kpi.patch, value: patchAvail.toString() },
+          { label: "End-of-life / high risk", icon: kpi.endOfLife, value: `${eol} EOL · ${highRisk} high risk`, color: "text-error" },
         ].map(s => (
-          <KpiTile key={s.label} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
+          <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} valueClassName={s.color ?? ""} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Table */}
       <Panel title="OT Assets" padded={false}>
@@ -106,14 +105,14 @@ const OTAssetRegistry = () => {
           <table className="w-full type-body-sm">
             <thead>
               <tr className="border-b border-hairline">
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Asset Name</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Asset name</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Type</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Vendor</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Firmware</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Last Seen</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Last seen</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Purdue</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Protocols</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Patch Status</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Patch status</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Risk</th>
               </tr>
             </thead>
@@ -135,7 +134,7 @@ const OTAssetRegistry = () => {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={9}><EmptyState title="No assets match this filter" className="min-h-[96px]" /></td>
+                  <td colSpan={9}><EmptyState icon={emptyIcon.noMatch} title="No assets match this filter" className="min-h-[96px]" /></td>
                 </tr>
               )}
             </tbody>

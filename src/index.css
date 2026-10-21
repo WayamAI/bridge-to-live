@@ -176,7 +176,7 @@
      cn() reads unknown text-* names as colours and would drop them. Compose with
      a colour class, e.g. "type-body-sm text-tertiary". */
   .type-caption    { font-size: 12px; line-height: 16px; font-weight: 500; }
-  .type-eyebrow    { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; }
+  .type-eyebrow    { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0.02em; }
   .type-label-sm   { font-size: 12px; line-height: 16px; font-weight: 500; letter-spacing: 0; }
   .type-label-md   { font-size: 14px; line-height: 20px; font-weight: 500; letter-spacing: 0; }
   .type-body-sm    { font-size: 12px; line-height: 16px; letter-spacing: -0.01em; }
@@ -210,4 +210,43 @@
     background-clip: padding-box;
   }
   .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+}
+
+/* Range slider (Slider in components/ui/primitives): filled track, ringed thumb, focus ring. */
+@layer components {
+  .slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 16px;
+    background: transparent;
+    cursor: pointer;
+    outline: none;
+  }
+  .slider::-webkit-slider-runnable-track {
+    height: 4px;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--action-primary-default) var(--fill, 0%), var(--stroke-default) var(--fill, 0%));
+  }
+  .slider::-moz-range-track { height: 4px; border-radius: 999px; background: var(--stroke-default); }
+  .slider::-moz-range-progress { height: 4px; border-radius: 999px; background: var(--action-primary-default); }
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    margin-top: -6px;
+    border-radius: 50%;
+    background: var(--surface-container);
+    border: 2px solid var(--action-primary-default);
+  }
+  .slider::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: var(--surface-container);
+    border: 2px solid var(--action-primary-default);
+  }
+  .slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px var(--stroke-active); }
+  .slider:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 3px var(--stroke-active); }
 }

@@ -1,11 +1,14 @@
 import { useMemo } from "react";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area, Line, Cell } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart, Area, Line, Cell } from "recharts";
+import ChartLegend from "@/components/dashboard/ChartLegend";
 import type { Equipment } from "@/hooks/usePlantData";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import { toneChart } from "@/lib/status";
 import PageHeader from "@/components/layout/PageHeader";
 import { EmptyState, Panel } from "@/components/ui/primitives";
-import { formatNumber, formatYearMonth } from "@/lib/format";
+import { formatNumber, formatShortMonth } from "@/lib/format";
+import { createRng } from "@/lib/seeded";
+import { ChartBox } from "@/components/dashboard/chartKit";
 
 interface Props {
   equipment: Equipment[];
@@ -14,11 +17,11 @@ interface Props {
 const RemainingUsefulLife = ({ equipment }: Props) => {
   const distribution = useMemo(() => {
     const bins = [
-      { range: "0–500 hr", min: 0, max: 500 / 24, count: 0, color: toneChart.error },
-      { range: "500–1k hr", min: 500 / 24, max: 1000 / 24, count: 0, color: toneChart.error },
-      { range: "1k–2k hr", min: 1000 / 24, max: 2000 / 24, count: 0, color: toneChart.warning },
-      { range: "2k–3k hr", min: 2000 / 24, max: 3000 / 24, count: 0, color: toneChart.warning },
-      { range: "3k–5k hr", min: 3000 / 24, max: 5000 / 24, count: 0, color: toneChart.success },
+      { range: "0-500 hr", min: 0, max: 500 / 24, count: 0, color: toneChart.error },
+      { range: "500-1k hr", min: 500 / 24, max: 1000 / 24, count: 0, color: toneChart.error },
+      { range: "1k-2k hr", min: 1000 / 24, max: 2000 / 24, count: 0, color: toneChart.warning },
+      { range: "2k-3k hr", min: 2000 / 24, max: 3000 / 24, count: 0, color: toneChart.warning },
+      { range: "3k-5k hr", min: 3000 / 24, max: 5000 / 24, count: 0, color: toneChart.success },
       { range: "5k+ hr", min: 5000 / 24, max: 99999, count: 0, color: toneChart.success },
     ];
     equipment.forEach(e => {
@@ -36,18 +39,19 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
     [equipment]
   );
 
-  const fleetAge = useMemo(() =>
-    Array.from({ length: 12 }, (_, i) => {
+  const fleetAge = useMemo(() => {
+    const rnd = createRng(1203);
+    return Array.from({ length: 12 }, (_, i) => {
       const month = new Date(2025, 4 + i, 1);
       return {
-        month: formatYearMonth(month),
-        young: Math.round(18 - i * 0.3 + Math.random() * 2),
-        mid: Math.round(14 + i * 0.2 + Math.random()),
-        old: Math.round(8 + i * 0.4 + Math.random()),
-        failures: Math.round(2 + i * 0.3 + Math.random() * 2),
+        month: formatShortMonth(month),
+        young: Math.round(18 - i * 0.3 + rnd() * 2),
+        mid: Math.round(14 + i * 0.2 + rnd()),
+        old: Math.round(8 + i * 0.4 + rnd()),
+        failures: Math.round(2 + i * 0.3 + rnd() * 2),
       };
-    }), []
-  );
+    });
+  }, []);
 
   const getFailureProb = (rul: number) => rul < 15 ? 92 : rul < 30 ? 74 : rul < 60 ? 48 : 22;
   const getDominantMode = (cls: string) => {
@@ -56,42 +60,47 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
   };
 
   return (
-    <PageHeader title="Remaining Useful Life (RUL)" subtitle="Predicted remaining operating life across the equipment fleet">
+    <PageHeader>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         {/* RUL Distribution */}
         <Panel title="RUL Distribution · Equipment Fleet">
-          <p className="type-caption mb-3 text-quaternary">Dashed line = standard PM interval (3,000 hr)</p>
-            <ResponsiveContainer width="100%" height={260}>
+            <ChartBox height="tall" label="Equipment count by remaining useful life">
               <BarChart data={distribution}>
-                <XAxis dataKey="range" tick={axisTick} tickLine={false} axisLine={false} />
-                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+                <XAxis tickMargin={8} dataKey="range" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Bar isAnimationActive={false} dataKey="count" radius={[4, 4, 0, 0]}>
                   {distribution.map((d, i) => <Cell key={i} fill={d.color} />)}
                 </Bar>
               </BarChart>
-            </ResponsiveContainer>
+            </ChartBox>
             <div className="flex gap-4 mt-2 type-caption text-tertiary">
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-4" /> Critical (0–1k hr)</span>
-              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-3" /> Watch (1k–3k hr)</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-4" /> Critical (0-1k hr)</span>
+              <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-3" /> Watch (1k-3k hr)</span>
               <span className="flex items-center gap-1"><span className="w-2 h-2 rounded-full bg-series-2" /> Healthy (3k+ hr)</span>
             </div>
         </Panel>
 
         {/* Fleet Age Profile */}
         <Panel title="Fleet Age Profile · Monthly Trend">
-            <ResponsiveContainer width="100%" height={280}>
-              <AreaChart data={fleetAge}>
-                <XAxis dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
-                <YAxis tick={axisTick} tickLine={false} axisLine={false} />
+            <ChartLegend items={[
+              { label: "<5k hr", color: toneChart.success },
+              { label: "5k-15k hr", color: toneChart.warning },
+              { label: ">15k hr", color: toneChart.error },
+              { label: "Monthly failures", color: seriesColor(0), kind: "line" },
+            ]} />
+            <ChartBox height="tall" label="Fleet age profile and monthly failures">
+              <ComposedChart data={fleetAge}>
+                <XAxis tickMargin={8} dataKey="month" tick={axisTick} tickLine={false} axisLine={false} />
+                <YAxis tick={axisTick} tickLine={false} axisLine={false} width={40} />
                 <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
                 <Area isAnimationActive={false} type="monotone" dataKey="young" stackId="1" fill={toneChart.success} fillOpacity={0.6} stroke={toneChart.success} name="<5k hr" />
-                <Area isAnimationActive={false} type="monotone" dataKey="mid" stackId="1" fill={toneChart.warning} fillOpacity={0.6} stroke={toneChart.warning} name="5k–15k hr" />
+                <Area isAnimationActive={false} type="monotone" dataKey="mid" stackId="1" fill={toneChart.warning} fillOpacity={0.6} stroke={toneChart.warning} name="5k-15k hr" />
                 <Area isAnimationActive={false} type="monotone" dataKey="old" stackId="1" fill={toneChart.error} fillOpacity={0.6} stroke={toneChart.error} name=">15k hr" />
-                <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke="var(--text-foreground)" strokeWidth={2} dot={{ r: 3 }} name="Monthly Failures" />
-              </AreaChart>
-            </ResponsiveContainer>
+                <Line isAnimationActive={false} type="monotone" dataKey="failures" stroke={seriesColor(0)} strokeWidth={2} dot={{ r: 3 }} name="Monthly failures" />
+              </ComposedChart>
+            </ChartBox>
         </Panel>
       </div>
 
@@ -104,12 +113,12 @@ const RemainingUsefulLife = ({ equipment }: Props) => {
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Class</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Process Unit</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Operating Hours</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Process unit</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Operating hours</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">RUL (days)</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Failure Prob. (90d)</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Dominant Failure Mode</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Recommended Action</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Failure probability (90d)</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Dominant failure mode</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Recommended action</th>
               </tr>
             </thead>
             <tbody>

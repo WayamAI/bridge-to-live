@@ -18,8 +18,8 @@
   /* text and icon */
   --text-primary: #101010;
   --text-secondary: #464646;
-  --text-tertiary: #737373;
-  --text-quaternary: #8a8a8a;
+  --text-tertiary: #5c5c5c; /* was #737373: kept darker than quaternary after it moved to AA */
+  --text-quaternary: #6e6e6e; /* was #8a8a8a (3.45:1 on white); now 5.10:1 on white, 4.55:1 on the page background */
   --text-on-color: #ffffff;
 
   /* stroke */
@@ -66,8 +66,8 @@
 
   --text-primary: #fafafa;
   --text-secondary: #d4d4d4;
-  --text-tertiary: #8a8a8a;
-  --text-quaternary: #626262;
+  --text-tertiary: #a3a3a3; /* was #8a8a8a: kept lighter than quaternary after it moved to AA */
+  --text-quaternary: #858585; /* was #626262 (3.12:1 on the container); now 5.16:1 on the container, 4.76:1 on raised */
   --text-on-color: #000000;
 
   --stroke-muted: rgba(255, 255, 255, 0.08);

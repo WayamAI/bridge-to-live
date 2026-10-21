@@ -1,10 +1,15 @@
 import { useState, useMemo } from "react";
 import PageHeader from "@/components/layout/PageHeader";
-import { Chip, KpiTile, Panel, Unit } from "@/components/ui/primitives";
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Area, AreaChart, ScatterChart, Scatter, ZAxis } from "recharts";
+import { Chip, KpiGrid, KpiTile, Panel, Unit } from "@/components/ui/primitives";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, Area, ComposedChart, ScatterChart, Scatter, ZAxis, Cell } from "recharts";
 import type { Equipment } from "@/hooks/usePlantData";
-import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
-import { formatNumber } from "@/lib/format";
+import { AXIS_TITLE_HEIGHT, axisTick, axisTitle, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
+import { formatMonthYear, formatNumber, yearMonthToTime, formatRupees } from "@/lib/format";
+import { activatable, activatableFocus } from "@/lib/a11y";
+import { createRng } from "@/lib/seeded";
+import { kpi } from "@/lib/icons";
+import { ChartBox } from "@/components/dashboard/chartKit";
+import { useCategoryAxis } from "@/hooks/useCategoryAxis";
 
 const FAILURE_MODES = [
   { mode: "Bearing failure", count: 84, pct: 34, downtime: 624, cost: 312, mtbf: 11200, trend: "↑" },
@@ -15,13 +20,15 @@ const FAILURE_MODES = [
   { mode: "Other", count: 15, pct: 6, downtime: 120, cost: 48, mtbf: 28000, trend: "→" },
 ];
 
+const bandRnd = createRng(1500);
+
 const WEIBULL_DATA = Array.from({ length: 50 }, (_, i) => {
   const hours = i * 500;
   const beta = 2.1, eta = 18000;
   const survival = Math.exp(-Math.pow(hours / eta, beta)) * 100;
-  const upper = Math.min(100, survival + 5 + Math.random() * 3);
-  const lower = Math.max(0, survival - 5 - Math.random() * 3);
-  return { hours, survival: Math.round(survival * 10) / 10, upper: Math.round(upper * 10) / 10, lower: Math.round(lower * 10) / 10 };
+  const upper = Math.min(100, survival + 5 + bandRnd() * 3);
+  const lower = Math.max(0, survival - 5 - bandRnd() * 3);
+  return { hours, survival: Math.round(survival * 10) / 10, band: [Math.round(lower * 10) / 10, Math.round(upper * 10) / 10] as [number, number] };
 });
 
 const SCATTER_DATA = [
@@ -39,6 +46,8 @@ const SCATTER_DATA = [
   { hours: 13800, date: "2026-03", mode: "Seal degradation", cost: 3.6, tag: "FCV-D-022" },
 ];
 
+const SCATTER_POINTS = SCATTER_DATA.map(d => ({ ...d, t: yearMonthToTime(d.date) }));
+
 const MODE_COLORS: Record<string, string> = {
   "Bearing failure": seriesColor(0),
   "Seal degradation": seriesColor(1),
@@ -47,47 +56,57 @@ const MODE_COLORS: Record<string, string> = {
   "Coupling misalignment": seriesColor(2),
   "Other": seriesColor(4),
 };
+/** Y axis ticks for the failure timeline: the 1st of January and July inside the data range, so the labels are 6 months apart. */
+const SCATTER_TICKS = (() => {
+  const times = SCATTER_POINTS.map(d => d.t);
+  const lo = Math.min(...times) - 2592000000, hi = Math.max(...times) + 2592000000;
+  const ticks: number[] = [];
+  for (let y = new Date(lo).getUTCFullYear(); y <= new Date(hi).getUTCFullYear(); y++) for (const m of [0, 6]) { const t = Date.UTC(y, m, 1); if (t >= lo && t <= hi) ticks.push(t); }
+  return ticks;
+})();
+
 interface Props {
   equipment: Equipment[];
 }
 
 const FailureAnalysis = ({ equipment }: Props) => {
+  const categoryAxis = useCategoryAxis();
   const [selectedMode, setSelectedMode] = useState<string | null>(null);
 
   const filteredScatter = selectedMode
-    ? SCATTER_DATA.filter(d => d.mode === selectedMode)
-    : SCATTER_DATA;
+    ? SCATTER_POINTS.filter(d => d.mode === selectedMode)
+    : SCATTER_POINTS;
 
   return (
-    <PageHeader title="Failure Analysis" subtitle="Statistical failure analysis across equipment classes and systemic issue identification">
+    <PageHeader>
       {/* Quick stats */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 2xl:grid-cols-6">
-        <KpiTile label="Total Failures (24 mo)" value="247" />
-        <KpiTile label="Unplanned Downtime" value="1,842" unit="hr" />
-        <KpiTile label="Total Maint. Cost" prefix="₹" value="8.74" unit="Cr" />
-        <KpiTile label="Avg MTBF (Fleet)" value="14,200" unit="hr" />
-        <KpiTile label="MTBF Trend" value="−8.3" unit="%" valueClassName="text-warning" />
-        <KpiTile label="Most Failure-Prone" value="FCV-D-022" hint="14 failures · 5.7% of fleet" valueClassName="type-display-lg" />
-      </div>
+      <KpiGrid>
+        <KpiTile icon={kpi.failures} label="Total failures (24 months)" value="247" />
+        <KpiTile icon={kpi.downtime} label="Unplanned downtime" value="1,842" unit="hr" />
+        <KpiTile icon={kpi.cost} label="Total maintenance cost" value={formatRupees(874)} />
+        <KpiTile icon={kpi.mtbf} label="Average MTBF (fleet)" value="14,200" unit="hr" />
+        <KpiTile icon={kpi.trend} label="MTBF trend" value="−8.3" unit="%" valueClassName="text-warning" />
+        <KpiTile icon={kpi.mostFailing} label="Most failure-prone" value="FCV-D-022" hint="14 failures · 5.7% of fleet" valueClassName="type-display-lg" />
+      </KpiGrid>
 
       {/* Charts row */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <Panel title="Failure Mode Pareto · All Equipment Classes">
-          <ResponsiveContainer width="100%" height={220}>
-            <BarChart data={FAILURE_MODES} layout="vertical" margin={{ left: 120 }}>
-              <XAxis type="number" tick={axisTick} tickLine={false} axisLine={false} />
-              <YAxis type="category" dataKey="mode" tick={axisTick} tickLine={false} axisLine={false} width={110} />
-              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
+          <ChartBox height="tall" label="Failure count by failure mode">
+            <BarChart data={FAILURE_MODES} layout="vertical" margin={{ left: 0, right: 16, bottom: 4 }}>
+              <XAxis type="number" tick={axisTick} tickLine={false} axisLine={false} tickMargin={8} height={AXIS_TITLE_HEIGHT} label={axisTitle("Failures (24 months)")} />
+              <YAxis type="category" dataKey="mode" tickLine={false} axisLine={false} interval={0} {...categoryAxis} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} formatter={(v: number) => [v, "Failures"]} />
               <Bar isAnimationActive={false} dataKey="count" fill={seriesColor(0)} radius={[0, 4, 4, 0]} cursor="pointer"
-                onClick={(d: any) => setSelectedMode(selectedMode === d.mode ? null : d.mode)} />
+                onClick={(d: { mode: string }) => setSelectedMode(selectedMode === d.mode ? null : d.mode)} />
             </BarChart>
-          </ResponsiveContainer>
+          </ChartBox>
           {/* Pareto table */}
           <div className="mt-3 overflow-auto">
             <table className="w-full type-body-sm">
               <thead>
                 <tr className="border-b border-hairline">
-                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Failure Mode</th>
+                  <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Failure mode</th>
                   <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Count</th>
                   <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Downtime (hr)</th>
                   <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">Cost (₹L)</th>
@@ -97,8 +116,8 @@ const FailureAnalysis = ({ equipment }: Props) => {
               </thead>
               <tbody>
                 {FAILURE_MODES.map(f => (
-                  <tr key={f.mode} className={`cursor-pointer border-b border-hairline hover:bg-raised ${selectedMode === f.mode ? "bg-raised" : ""}`}
-                    onClick={() => setSelectedMode(selectedMode === f.mode ? null : f.mode)}>
+                  <tr key={f.mode} className={`cursor-pointer border-b border-hairline hover:bg-raised ${activatableFocus} ${selectedMode === f.mode ? "bg-raised" : ""}`}
+                    {...activatable(() => setSelectedMode(selectedMode === f.mode ? null : f.mode))}>
                     <td className={`py-2 px-3 font-medium ${selectedMode === f.mode ? "text-foreground" : ""}`}>{f.mode}</td>
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.count}</td>
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.downtime}</td>
@@ -113,24 +132,27 @@ const FailureAnalysis = ({ equipment }: Props) => {
         </Panel>
 
         <Panel title="Weibull Survival Analysis · Compressor Fleet">
-          <ResponsiveContainer width="100%" height={280}>
-            <AreaChart data={WEIBULL_DATA}>
-              <XAxis dataKey="hours" tick={axisTick} tickLine={false} axisLine={false} minTickGap={16} label={{ value: "Operating Hours", position: "insideBottom", offset: -5, fill: "var(--text-quaternary)", fontSize: 11 }} />
-              <YAxis tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Survival %", angle: -90, position: "insideLeft", fill: "var(--text-quaternary)", fontSize: 11 }} />
-              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} />
-              <Area isAnimationActive={false} type="monotone" dataKey="upper" stroke="none" fill={seriesColor(0)} fillOpacity={0.1} />
-              <Area isAnimationActive={false} type="monotone" dataKey="lower" stroke="none" fill="var(--surface-container)" fillOpacity={1} />
+          <div className="type-caption mb-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-quaternary">
+            <span className="flex items-center gap-1"><span className="inline-block h-0.5 w-3 bg-series-1" /> Survival</span>
+            <span className="flex items-center gap-1"><span className="inline-block size-2 rounded-sm bg-series-1 opacity-20" /> Confidence band</span>
+          </div>
+          <ChartBox height="tall" label="Weibull survival curve with confidence band">
+            <ComposedChart data={WEIBULL_DATA} margin={{ left: 6, right: 28, bottom: 4 }}>
+              <XAxis tickMargin={8} height={AXIS_TITLE_HEIGHT} dataKey="hours" type="number" domain={[0, "dataMax"]} tickCount={6} tickFormatter={(v: number) => formatNumber(v)} tick={axisTick} tickLine={false} axisLine={false} label={axisTitle("Operating hours")} />
+              <YAxis domain={[0, 100]} ticks={[0, 25, 50, 75, 100]} tick={axisTick} tickLine={false} axisLine={false} label={axisTitle("Survival (%)", -90)} width={40} />
+              <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} labelFormatter={(v: number) => `${formatNumber(v)} hr`} formatter={(val: number | number[], name: string) => [Array.isArray(val) ? `${val[0]}-${val[1]}%` : `${val}%`, name === "band" ? "Confidence band" : "Survival"]} />
+              <Area isAnimationActive={false} type="monotone" dataKey="band" stroke="none" fill={seriesColor(0)} fillOpacity={0.15} />
               <Line isAnimationActive={false} type="monotone" dataKey="survival" stroke={seriesColor(0)} strokeWidth={2} dot={false} />
-            </AreaChart>
-          </ResponsiveContainer>
+            </ComposedChart>
+          </ChartBox>
           <div className="mt-3 grid grid-cols-2 gap-3">
             <div className="rounded-lg border border-hairline bg-raised p-3">
-              <p className="type-eyebrow text-quaternary">Shape Parameter (β)</p>
+              <p className="type-eyebrow text-quaternary">Shape parameter (β)</p>
               <p className="type-display-lg tabular mt-1 text-foreground">2.1</p>
               <p className="type-caption mt-0.5 text-quaternary">Wear-out failure pattern: failures accelerate with age</p>
             </div>
             <div className="rounded-lg border border-hairline bg-raised p-3">
-              <p className="type-eyebrow text-quaternary">Scale Parameter (η)</p>
+              <p className="type-eyebrow text-quaternary">Scale parameter (η)</p>
               <p className="type-display-lg tabular mt-1 text-foreground">18,000<Unit>hr</Unit></p>
               <p className="type-caption mt-0.5 text-quaternary">63.2% of units fail by this point</p>
             </div>
@@ -152,16 +174,18 @@ const FailureAnalysis = ({ equipment }: Props) => {
           )
         }
       >
-        <ResponsiveContainer width="100%" height={200}>
-          <ScatterChart margin={{ left: 20 }}>
-            <XAxis dataKey="hours" name="Operating Hours" tick={axisTick} tickLine={false} axisLine={false} label={{ value: "Operating Hours at Failure", position: "insideBottom", offset: -5, fill: "var(--text-quaternary)", fontSize: 11 }} />
-            <YAxis dataKey="date" name="Date" tick={axisTick} tickLine={false} axisLine={false} />
-            <ZAxis dataKey="cost" range={[40, 400]} name="Repair Cost (₹L)" />
-            <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle}
-              formatter={(val: any, name: string) => [name === "Repair Cost (₹L)" ? `₹${val}L` : val, name]} />
-            <Scatter isAnimationActive={false} data={filteredScatter} fill={seriesColor(0)} />
+        <ChartBox height="standard" label="Operating hours at failure over time">
+          <ScatterChart margin={{ top: 12, left: 8, right: 24, bottom: 4 }}>
+            <XAxis tickMargin={8} height={AXIS_TITLE_HEIGHT} dataKey="hours" name="Operating hours" type="number" domain={[0, "dataMax"]} tickCount={7} tickFormatter={(v: number) => formatNumber(v)} tick={axisTick} tickLine={false} axisLine={false} label={axisTitle("Operating hours at failure")} />
+            <YAxis dataKey="t" name="Date" type="number" domain={["dataMin - 2592000000", "dataMax + 2592000000"]} ticks={SCATTER_TICKS} tickFormatter={(v: number) => formatMonthYear(v)} tick={axisTick} tickLine={false} axisLine={false} width={56} />
+            <ZAxis dataKey="cost" range={[40, 400]} name="Repair cost (₹L)" />
+            <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} cursor={{ strokeDasharray: "3 3" }}
+              formatter={(val: number, name: string) => [name === "Repair cost (₹L)" ? formatRupees(val) : name === "Date" ? formatMonthYear(val) : formatNumber(val), name]} />
+            <Scatter isAnimationActive={false} data={filteredScatter} fillOpacity={0.85}>
+              {filteredScatter.map(d => <Cell key={`${d.tag}-${d.date}`} fill={MODE_COLORS[d.mode] ?? seriesColor(4)} />)}
+            </Scatter>
           </ScatterChart>
-        </ResponsiveContainer>
+        </ChartBox>
         <div className="mt-3 flex flex-wrap gap-2">
           {Object.entries(MODE_COLORS).map(([mode, color]) => (
             <Chip key={mode} active={selectedMode === mode} onClick={() => setSelectedMode(selectedMode === mode ? null : mode)}>

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 // Chronus status badge: solid pill, white label. Tone variants map to the
 // feedback tokens (critical -> error, high -> warning, medium -> info, low -> neutral).
 const badgeVariants = cva(
-  "inline-flex items-center truncate rounded-full border px-2.5 py-0.5 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-active",
+  "-my-[3px] inline-flex items-center truncate rounded-full border px-2.5 py-0.5 text-xs font-medium outline-none focus-visible:ring-2 focus-visible:ring-active",
   {
     variants: {
       variant: {

@@ -7,13 +7,13 @@ import PageHeader from "@/components/layout/PageHeader";
 
 const THRESHOLD_PRESETS = [
   { tag: "COMP-*", parameter: "Vibration (DE)", high: 4.5, highHigh: 7.5, unit: "mm/s" },
-  { tag: "COMP-*", parameter: "Discharge Temp", high: 135, highHigh: 150, unit: "°C" },
+  { tag: "COMP-*", parameter: "Discharge temperature", high: 135, highHigh: 150, unit: "°C" },
   { tag: "PUMP-*", parameter: "Vibration", high: 4.5, highHigh: 7.5, unit: "mm/s" },
-  { tag: "PUMP-*", parameter: "Bearing Temp", high: 80, highHigh: 95, unit: "°C" },
-  { tag: "HEX-*", parameter: "Fouling Factor", high: 0.0005, highHigh: 0.001, unit: "m²K/W" },
-  { tag: "MOT-*", parameter: "Winding Temp", high: 100, highHigh: 130, unit: "°C" },
-  { tag: "TURB-*", parameter: "Exhaust Gas Temp", high: 600, highHigh: 650, unit: "°C" },
-  { tag: "FCV-*", parameter: "Positioner Error", high: 5, highHigh: 10, unit: "%" },
+  { tag: "PUMP-*", parameter: "Bearing temperature", high: 80, highHigh: 95, unit: "°C" },
+  { tag: "HEX-*", parameter: "Fouling factor", high: 0.0005, highHigh: 0.001, unit: "m²K/W" },
+  { tag: "MOT-*", parameter: "Winding temperature", high: 100, highHigh: 130, unit: "°C" },
+  { tag: "TURB-*", parameter: "Exhaust gas temperature", high: 600, highHigh: 650, unit: "°C" },
+  { tag: "FCV-*", parameter: "Positioner error", high: 5, highHigh: 10, unit: "%" },
 ];
 
 const MODEL_PARAMS = [
@@ -30,16 +30,20 @@ const thresholdInput =
 
 const SettingsPage = () => {
   const [activeTab, setActiveTab] = useState("thresholds");
+  // Threshold edits live here, not in the tab, so they survive switching tabs (they are not saved anywhere: a reload resets them).
+  const [thresholds, setThresholds] = useState(() => THRESHOLD_PRESETS.map((t) => ({ high: String(t.high), highHigh: String(t.highHigh) })));
+  const editThreshold = (i: number, field: "high" | "highHigh", value: string) =>
+    setThresholds((all) => all.map((row, j) => (j === i ? { ...row, [field]: value } : row)));
 
   const tabs = [
-    { id: "thresholds", label: "Sensor Thresholds" },
-    { id: "alerts", label: "Alert Configuration" },
-    { id: "models", label: "Model Parameters" },
-    { id: "users", label: "User Management" },
+    { id: "thresholds", label: "Sensor thresholds" },
+    { id: "alerts", label: "Alert configuration" },
+    { id: "models", label: "Model parameters" },
+    { id: "users", label: "User management" },
   ];
 
   return (
-    <PageHeader title="Settings & Configuration" subtitle="System configuration, thresholds, alert rules and model parameters">
+    <PageHeader>
 
       {/* Tabs */}
       <div className="flex gap-2 overflow-x-auto pb-1">
@@ -56,7 +60,7 @@ const SettingsPage = () => {
       {activeTab === "thresholds" && (
         <Panel title="Sensor Alarm Thresholds" padded={false}
           action={
-            <button onClick={() => toast.success("Thresholds saved")} className="type-label-sm inline-flex h-7 items-center gap-1 rounded-full bg-action-primary px-3 text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active">
+            <button onClick={() => toast.success("Thresholds saved")} className="type-label-sm inline-flex h-8 items-center gap-1 rounded-full bg-action-primary px-3 text-on-color outline-none transition-colors duration-[180ms] hover:bg-action-primary-hover focus-visible:ring-2 focus-visible:ring-active">
               <icons.save className="size-[13px]" aria-hidden /> Save changes
             </button>
           }>
@@ -64,10 +68,10 @@ const SettingsPage = () => {
           <table className="w-full type-body-sm">
             <thead>
               <tr className="border-b border-hairline">
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag Pattern</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag pattern</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH Alarm</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH-HIGH Alarm</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">High alarm</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">High-high alarm</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Unit</th>
               </tr>
             </thead>
@@ -76,8 +80,8 @@ const SettingsPage = () => {
                 <tr key={i} className="border-b border-hairline hover:bg-raised">
                   <td className="py-2 px-3 tabular text-foreground whitespace-nowrap">{t.tag}</td>
                   <td className="py-2 px-3">{t.parameter}</td>
-                  <td className="py-2 px-3 text-right"><input defaultValue={t.high} aria-label={`${t.tag} ${t.parameter} high alarm`} className={thresholdInput} /></td>
-                  <td className="py-2 px-3 text-right"><input defaultValue={t.highHigh} aria-label={`${t.tag} ${t.parameter} high-high alarm`} className={thresholdInput} /></td>
+                  <td className="py-2 px-3 text-right"><input value={thresholds[i].high} onChange={(e) => editThreshold(i, "high", e.target.value)} aria-label={`${t.tag} ${t.parameter} high alarm`} className={thresholdInput} /></td>
+                  <td className="py-2 px-3 text-right"><input value={thresholds[i].highHigh} onChange={(e) => editThreshold(i, "highHigh", e.target.value)} aria-label={`${t.tag} ${t.parameter} high-high alarm`} className={thresholdInput} /></td>
                   <td className="py-2 px-3 text-tertiary">{t.unit}</td>
                 </tr>
               ))}
@@ -140,9 +144,9 @@ const SettingsPage = () => {
             <thead>
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Role</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Primary Focus</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Screen Access</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Active Users</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Primary focus</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Screen access</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-center text-quaternary">Active users</th>
               </tr>
             </thead>
             <tbody>

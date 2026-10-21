@@ -23,7 +23,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="flex flex-col overflow-hidden rounded-lg border border-hairline bg-container"
+      className="flex flex-col overflow-hidden rounded-lg border border-hairline bg-container lg:h-0 lg:min-h-full"
     >
       {/* Header */}
       <div className="flex items-start justify-between gap-3 border-b border-hairline p-4">
@@ -75,8 +75,9 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
       </div>
 
       {/* Sensors */}
-      <div className="max-h-[320px] space-y-3 overflow-y-auto p-4">
-        <h4 className="type-eyebrow text-quaternary">Live Sensors</h4>
+      {/* Beside the list (lg and up) the panel takes the row's height and the sensors scroll inside it, header and maintenance stay in view; stacked, everything fits. */}
+      <div className="scrollbar-thin space-y-3 p-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto">
+        <h4 className="type-eyebrow text-quaternary">Live sensors</h4>
         {equipment.sensors.map((s) => {
           const isOutOfRange = s.value < s.normalMin || s.value > s.normalMax;
           const deviation = s.setpoint !== 0 ? ((s.value - s.setpoint) / s.setpoint * 100).toFixed(1) : "0";
@@ -101,7 +102,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
                 normalMax={s.normalMax}
               />
               <div className="type-caption tabular mt-1 flex justify-between gap-2 text-quaternary">
-                <span>Range: {s.normalMin}–{s.normalMax} {s.unit}</span>
+                <span>Range: {s.normalMin}-{s.normalMax} {s.unit}</span>
                 {isOutOfRange && (
                   <span className="flex items-center gap-0.5 text-error">
                     <icons.warning className="size-[13px]" aria-hidden /> Out of range
@@ -114,7 +115,7 @@ const EquipmentDetail = ({ equipment, onClose }: EquipmentDetailProps) => {
       </div>
 
       {/* Maintenance info */}
-      <div className="space-y-2 border-t border-hairline p-4">
+      <div className="shrink-0 space-y-2 border-t border-hairline p-4">
         <h4 className="type-eyebrow text-quaternary">Maintenance</h4>
         <div className="type-body-sm flex items-center gap-2">
           <icons.maintenance className="size-3.5 text-quaternary" aria-hidden />

@@ -1,6 +1,9 @@
 import { useMemo } from "react";
 import { Panel } from "@/components/ui/primitives";
 import type { Equipment } from "@/hooks/usePlantData";
+import { activatable, activatableFocus } from "@/lib/a11y";
+import { createRng } from "@/lib/seeded";
+import { panelIcon } from "@/lib/icons";
 
 interface EquipmentHeatMapProps {
   equipment: Equipment[];
@@ -37,6 +40,7 @@ function getHealthTextColor(score: number): string {
 
 const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
   const heatData = useMemo(() => {
+    const rnd = createRng(4711); // fixed seed: the sub-scores are the same on every load and every sensor tick
     return PROCESS_UNITS_MAP.map(pu => {
       const puEquip = equipment.filter(e => e.processUnit === pu);
       if (puEquip.length === 0) return null;
@@ -45,7 +49,7 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
       // Generate dimensional scores based on sensors
       const dimensions = HEALTH_DIMENSIONS.map(dim => {
         if (dim === "Overall") return avgHealth;
-        const base = avgHealth + (Math.random() - 0.5) * 20;
+        const base = avgHealth + (rnd() - 0.5) * 20;
         return Math.max(30, Math.min(100, Math.round(base)));
       });
 
@@ -59,14 +63,14 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
   }, [equipment]);
 
   return (
-    <Panel title="Equipment Health Heat Map" padded={false}>
+    <Panel title="Equipment Health Heat Map" icon={panelIcon.heatMap} padded={false}>
       <div className="overflow-x-auto">
         <table className="w-full type-body-sm">
           <thead>
             <tr className="border-b border-hairline">
-              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-40">Process Unit</th>
+              <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-40">Process unit</th>
               {HEALTH_DIMENSIONS.map(d => (
-                <th key={d} className="type-eyebrow whitespace-nowrap px-2 py-2 text-center text-quaternary">{d}</th>
+                <th key={d} className="type-eyebrow whitespace-nowrap px-1.5 py-2 text-center text-quaternary">{d}</th>
               ))}
             </tr>
           </thead>
@@ -74,8 +78,8 @@ const EquipmentHeatMap = ({ equipment, onSelect }: EquipmentHeatMapProps) => {
             {heatData.map((row) => row && (
               <tr
                 key={row.processUnit}
-                className="border-b border-hairline last:border-0 cursor-pointer hover:bg-raised"
-                onClick={() => onSelect(row.firstId)}
+                className={`border-b border-hairline last:border-0 cursor-pointer hover:bg-raised ${activatableFocus}`}
+                {...activatable(() => onSelect(row.firstId))}
               >
                 <td className="px-3 py-2 font-medium text-foreground">{row.processUnit}</td>
                 {row.dimensions.map((score, i) => (

@@ -1,26 +1,25 @@
 import type { HandoverItem, ConnectedSystem } from "@/hooks/usePlantData";
 import { icons } from "@/lib/icons";
-import { useLocation } from "react-router-dom";
 import PageHeader from "@/components/layout/PageHeader";
-import { locate } from "@/components/layout/nav";
 import { Panel, ToneStatus, Unit } from "@/components/ui/primitives";
 import { connectedSystemTone, handoverItemStatus, workflowTone } from "@/lib/status";
 import { formatNumber } from "@/lib/format";
+import { handoverReadiness } from "@/lib/plantStats";
 
 interface HandoverPageProps {
+  /** "handover": project summary and readiness scorecard (/handover). "systems": connected-systems table (/data-sources). */
+  view: "handover" | "systems";
   handoverData: HandoverItem[];
   connectedSystems: ConnectedSystem[];
   plantInfo: { name: string; operator: string; handoverTarget: string; daysRemaining: number };
 }
 
-const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPageProps) => {
-  const { pathname } = useLocation();
-  const completedPct = Math.round(
-    handoverData.reduce((a, h) => a + h.completed, 0) / handoverData.reduce((a, h) => a + h.target, 0) * 100
-  );
+const HandoverPage = ({ view, handoverData, connectedSystems, plantInfo }: HandoverPageProps) => {
+  const completedPct = handoverReadiness(handoverData);
 
   return (
-    <PageHeader title={locate(pathname).title} subtitle="Handover readiness against target and the status of connected systems">
+    <PageHeader>
+      {view === "handover" && (<>
       {/* Project summary */}
       <Panel title="Active Handover Project">
         <div className="flex flex-wrap items-center justify-between gap-4">
@@ -82,9 +81,12 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
         </div>
       </Panel>
 
-      {/* Connected systems */}
+      </>)}
+
+      {view === "systems" && (
+      /* Connected systems */
       <Panel
-        title="Connected Systems"
+        title="System Status"
         padded={false}
         action={
           <button className="type-caption inline-flex items-center gap-1 rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active">
@@ -99,8 +101,8 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">System</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Type</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Status</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Last Sync</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Records / 24hr</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Last sync</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Records / 24 hr</th>
               </tr>
             </thead>
             <tbody>
@@ -119,6 +121,7 @@ const HandoverPage = ({ handoverData, connectedSystems, plantInfo }: HandoverPag
           </table>
         </div>
       </Panel>
+      )}
     </PageHeader>
   );
 };

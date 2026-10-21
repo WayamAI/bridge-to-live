@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet, useLocation } from "react-router-dom";
 import Sidebar from "./Sidebar";
 import TopBar from "./TopBar";
+import { locate } from "./nav";
 import type { Alert, UserRole } from "@/hooks/usePlantData";
 
 interface AppLayoutProps {
@@ -17,8 +18,23 @@ const AppLayout = ({ alerts, userRole, onRoleChange, breadcrumb }: AppLayoutProp
   const [mobileOpen, setMobileOpen] = useState(false);
   const { pathname } = useLocation();
 
+  // Document title: the page's name from nav.ts, then the product.
+  useEffect(() => {
+    document.title = `${locate(pathname).title} · PlantMind`;
+  }, [pathname]);
+
   // The off-canvas sidebar closes after navigating.
   useEffect(() => setMobileOpen(false), [pathname]);
+
+  // Escape closes the drawer.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMobileOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [mobileOpen]);
 
   return (
     // Fixed-viewport shell: the document never scrolls, <main> does.

@@ -81,6 +81,10 @@ const TopBar = ({ userRole, onRoleChange, onOpenNav }: TopBarProps) => {
           {theme === "dark" ? <icons.themeLight className="size-4" aria-hidden /> : <icons.themeDark className="size-4" aria-hidden />}
         </button>
 
+        <button onClick={handleLogout} aria-label="Log out" title="Log out" className={iconBtn}>
+          <icons.signOut className="size-4" aria-hidden />
+        </button>
+
         {/* Role selector */}
         <div className="relative">
           <button

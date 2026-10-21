@@ -1,6 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
-import { EmptyState, EquipmentStatusLabel, KpiTile, Panel, PillSelect, QuietStatus, SearchField, StatusDot, Unit } from "@/components/ui/primitives";
+import { emptyIcon, kpi, panelIcon } from "@/lib/icons";
+import { Checkbox, EmptyState, EquipmentStatusLabel, KpiGrid, KpiTile, Slider, Panel, PillSelect, QuietStatus, SearchField, StatusDot, Unit } from "@/components/ui/primitives";
 
 describe("Chronus primitives", () => {
   it("Panel renders an eyebrow title, an action and its body", () => {
@@ -11,7 +12,7 @@ describe("Chronus primitives", () => {
   });
 
   it("KpiTile renders label, value, currency prefix, unit, delta and hint", () => {
-    render(<KpiTile label="Annual Savings" prefix="₹" value="14.2L" unit="/yr" delta="+3.1%" tone="success" hint="vs last month" />);
+    render(<KpiTile icon={kpi.savings} label="Annual Savings" prefix="₹" value="14.2L" unit="/yr" delta="+3.1%" tone="success" hint="vs last month" />);
     expect(screen.getByText("Annual Savings")).toBeTruthy();
     expect(screen.getByText("₹")).toBeTruthy();
     expect(screen.getByText("/yr")).toBeTruthy();
@@ -20,9 +21,9 @@ describe("Chronus primitives", () => {
   });
 
   it("KpiTile is a button only when it has an onClick", () => {
-    const { rerender } = render(<KpiTile label="Plain" value="1" />);
+    const { rerender } = render(<KpiTile icon={kpi.count} label="Plain" value="1" />);
     expect(screen.queryByRole("button")).toBeNull();
-    rerender(<KpiTile label="Clickable" value="1" onClick={() => {}} />);
+    rerender(<KpiTile icon={kpi.count} label="Clickable" value="1" onClick={() => {}} />);
     expect(screen.getByRole("button")).toBeTruthy();
   });
 
@@ -53,7 +54,7 @@ describe("Chronus primitives", () => {
     rerender(<EquipmentStatusLabel status="critical" />);
     expect(container.querySelector(".bg-error-badge")).toBeTruthy();
     rerender(<EquipmentStatusLabel status={null} />);
-    expect(screen.getByText("—")).toBeTruthy();
+    expect(screen.getByText("n/a")).toBeTruthy();
   });
 
   it("EmptyState has a default title and optional detail", () => {
@@ -98,5 +99,61 @@ describe("PillSelect and SearchField pass-through", () => {
     expect(input.getAttribute("data-testid")).toBe("q-input");
     fireEvent.change(input, { target: { value: "COMP" } });
     expect(typed).toBe("COMP");
+  });
+});
+
+describe("icons in primitives", () => {
+  it("KpiTile shows its icon at 14px, greyscale, beside the label", () => {
+    const { container } = render(<KpiTile icon={kpi.health} label="Health" value="90" />);
+    const svg = container.querySelector("svg");
+    expect(svg).not.toBeNull();
+    expect(svg).toHaveClass("size-3.5", "text-icon-tertiary");
+    expect(svg).toHaveAttribute("aria-hidden", "true");
+  });
+
+  it("EmptyState shows a 24px icon, a different one when asked", () => {
+    const { container, rerender } = render(<EmptyState title="Nothing" />);
+    expect(container.querySelector("svg")).toHaveClass("size-6", "text-icon-quaternary");
+    const first = container.querySelector("svg")?.innerHTML;
+    rerender(<EmptyState title="No match" icon={emptyIcon.noMatch} />);
+    expect(container.querySelector("svg")?.innerHTML).not.toBe(first);
+  });
+
+  it("Panel shows a header icon only when given one", () => {
+    const { container, rerender } = render(<Panel title="Plain">x</Panel>);
+    expect(container.querySelector("header svg")).toBeNull();
+    rerender(<Panel title="With icon" icon={panelIcon.heatMap}>x</Panel>);
+    expect(container.querySelector("header svg")).not.toBeNull();
+  });
+});
+
+describe("KpiGrid", () => {
+  const tiles = (n: number) => Array.from({ length: n }, (_, i) => <KpiTile key={i} icon={kpi.count} label={`T${i}`} value="1" />);
+  it.each([
+    [4, "lg:grid-cols-4"],
+    [5, "xl:grid-cols-5"],
+    [6, "2xl:grid-cols-6"],
+  ])("sets the columns for %i tiles", (n, cls) => {
+    const { container } = render(<KpiGrid>{tiles(n)}</KpiGrid>);
+    expect(container.firstElementChild).toHaveClass("grid", "gap-3", cls);
+  });
+});
+
+describe("Checkbox and Slider", () => {
+  it("Checkbox is a native checkbox with its label and reports changes", () => {
+    let checked = false;
+    render(<Checkbox label="Show acknowledged" checked={checked} onChange={(e) => (checked = e.target.checked)} />);
+    const box = screen.getByLabelText("Show acknowledged") as HTMLInputElement;
+    expect(box.type).toBe("checkbox");
+    fireEvent.click(box);
+    expect(checked).toBe(true);
+  });
+
+  it("Slider is a native range input with the filled share of its track as --fill", () => {
+    const { container } = render(<Slider id="s" min={-50} max={100} value={25} onChange={() => {}} />);
+    const input = container.querySelector("input") as HTMLInputElement;
+    expect(input.type).toBe("range");
+    expect(input).toHaveClass("slider");
+    expect(input.style.getPropertyValue("--fill")).toBe("50%");
   });
 });

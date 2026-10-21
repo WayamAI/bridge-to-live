@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { AnimatePresence } from "framer-motion";
-import { icons, iconForPath } from "@/lib/icons";
+import { icons, iconForPath, kpi, emptyIcon, panelIcon } from "@/lib/icons";
 import { usePlantData } from "@/hooks/usePlantData";
 import FactoryFloor from "@/components/twin/FactoryFloor";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
@@ -10,9 +10,11 @@ import MaintenanceTimeline from "@/components/dashboard/MaintenanceTimeline";
 import PlantHealthTrend from "@/components/dashboard/PlantHealthTrend";
 import AlarmFrequencyChart from "@/components/dashboard/AlarmFrequencyChart";
 import PageHeader from "@/components/layout/PageHeader";
-import { EmptyState, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
+import { EmptyState, KpiGrid, KpiTile, Panel, StatusDot } from "@/components/ui/primitives";
 import { severityTone, toneOf } from "@/lib/status";
 import { useNavigate } from "react-router-dom";
+import { handoverReadiness, predictedFailureCounts } from "@/lib/plantStats";
+import { activatable, activatableFocus } from "@/lib/a11y";
 
 interface DashboardProps {
   data: ReturnType<typeof usePlantData>;
@@ -34,31 +36,31 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
   );
 
   const criticalAlarms = alerts.filter(a => a.severity === "critical" && !a.acknowledged).length;
-  const predictedFailures = equipment.filter(e => e.predictedFailure && e.predictedFailure > new Date() && e.predictedFailure < new Date(Date.now() + 30 * 86400000)).length;
-  const handoverPct = 73;
+  const { within30: predictedFailures, within90: flaggedComponents } = predictedFailureCounts(equipment);
+  const handoverPct = handoverReadiness(data.handoverData);
 
   // Values keep a status colour only when the old card did and the state needs attention.
   const kpis = [
     {
-      label: "Overall Plant Health", value: avgHealth.toString(), unit: "%",
+      label: "Overall plant health", icon: kpi.health, value: avgHealth.toString(), unit: "%",
       delta: "-2.1%", hint: "vs last month", tone: "error" as const,
       valueClassName: avgHealth >= 90 ? "" : "text-warning",
     },
     {
-      label: "Active Critical Alarms", value: criticalAlarms.toString(),
+      label: "Active critical alarms", icon: kpi.critical, value: criticalAlarms.toString(),
       delta: "+3", hint: "vs yesterday", tone: "error" as const,
       valueClassName: criticalAlarms > 0 ? "text-error" : "",
     },
     {
-      label: "Predicted Failures (30d)", value: predictedFailures.toString(),
-      hint: "12 components flagged",
+      label: "Predicted failures (30d)", icon: kpi.failures, value: predictedFailures.toString(),
+      hint: `${flaggedComponents} components flagged in 90 days`,
     },
     {
-      label: "Energy Efficiency Index", value: "82.1", unit: "%",
-      hint: "₹14.2L annual savings opportunity",
+      label: "Energy efficiency index", icon: kpi.efficiency, value: "82.1", unit: "%",
+      hint: "₹14.2 L annual savings opportunity",
     },
     {
-      label: "Handover Readiness", value: handoverPct.toString(), unit: "%",
+      label: "Handover readiness", icon: kpi.handover, value: handoverPct.toString(), unit: "%",
       hint: "Ratnagiri LNG Phase 2",
       valueClassName: handoverPct >= 90 ? "" : "text-warning",
     },
@@ -75,8 +77,6 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
 
   return (
     <PageHeader
-      title="Dashboard"
-      subtitle="Plant health, alarms and equipment status at a glance"
       actions={quickActions.map((action) => {
         const Icon = action.icon;
         return (
@@ -88,11 +88,11 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
       })}
     >
       {/* KPI row */}
-      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+      <KpiGrid>
         {kpis.map((kpi) => (
           <KpiTile key={kpi.label} {...kpi} />
         ))}
-      </div>
+      </KpiGrid>
 
       {/* Charts row */}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -101,11 +101,14 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
       </div>
 
       {/* Main content row */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1fr_340px]">
-        <EquipmentHeatMap equipment={equipment} onSelect={onSelectEquipment} />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 min-[1400px]:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_300px]">
+        <div className="min-w-0 lg:col-span-2 min-[1400px]:col-span-1 [&>section]:h-full">
+          <EquipmentHeatMap equipment={equipment} onSelect={onSelectEquipment} />
+        </div>
 
         <Panel
           title="Top Active Alerts"
+          icon={panelIcon.alerts}
           padded={false}
           action={
             <button
@@ -117,14 +120,14 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
           }
         >
           {topAlerts.length === 0 ? (
-            <EmptyState title="No active alerts" />
+            <EmptyState icon={emptyIcon.noAlerts} title="No active alerts" />
           ) : (
             <div>
               {topAlerts.map((alert) => (
                 <div
                   key={alert.id}
-                  className="cursor-pointer border-b border-hairline px-4 py-2.5 transition-colors duration-150 last:border-0 hover:bg-raised"
-                  onClick={() => onSelectEquipment(alert.equipmentId)}
+                  className={`cursor-pointer border-b border-hairline px-4 py-2.5 transition-colors duration-150 last:border-0 hover:bg-raised ${activatableFocus}`}
+                  role="button" {...activatable(() => onSelectEquipment(alert.equipmentId))}
                 >
                   <div className="flex items-start gap-2">
                     <StatusDot tone={toneOf(severityTone, alert.severity)} className="mt-1.5" />
@@ -151,7 +154,7 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
             />
           ) : (
             <Panel>
-              <EmptyState title="Select equipment from the heat map or alerts to view details" />
+              <EmptyState icon={emptyIcon.select} title="Select equipment from the heat map or alerts to view details" />
             </Panel>
           )}
         </AnimatePresence>

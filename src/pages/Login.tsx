@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate, useLocation } from "react-router-dom";
 import { icons } from "@/lib/icons";
 import { useAuth } from "@/hooks/useAuth";
 import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
@@ -16,9 +16,12 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const { login } = useAuth();
-  const navigate = useNavigate();
+  const { isAuthenticated, login } = useAuth();
   const location = useLocation();
+
+  useEffect(() => {
+    document.title = "Sign in · PlantMind";
+  }, []);
 
   const from = (location.state as { from?: string } | null)?.from ?? "/";
 
@@ -29,8 +32,10 @@ const Login = () => {
       return;
     }
     login(email.trim());
-    navigate(from, { replace: true });
   };
+
+  // Signed in (a fresh login, another tab, or a direct visit to /login): go where the user was headed, else the dashboard.
+  if (isAuthenticated) return <Navigate to={from} replace />;
 
   return (
     <div className="flex min-h-screen bg-page">

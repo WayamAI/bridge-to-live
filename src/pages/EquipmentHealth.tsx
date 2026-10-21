@@ -1,13 +1,13 @@
 import { useState, useMemo } from "react";
 import { EmptyState, EquipmentStatusLabel, Panel, PillSelect, SearchField } from "@/components/ui/primitives";
 import PageHeader from "@/components/layout/PageHeader";
-import { locate } from "@/components/layout/nav";
-import { useLocation } from "react-router-dom";
 import { AnimatePresence } from "framer-motion";
 import type { Equipment } from "@/hooks/usePlantData";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
 import FactoryFloor from "@/components/twin/FactoryFloor";
-import { icons } from "@/lib/icons";
+import { icons, emptyIcon } from "@/lib/icons";
+import { activatable, activatableFocus } from "@/lib/a11y";
+import { Link, useLocation } from "react-router-dom";
 
 interface EquipmentHealthPageProps {
   equipment: Equipment[];
@@ -23,9 +23,10 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
   const [filterUnit, setFilterUnit] = useState<string>("All");
   const [filterStatus, setFilterStatus] = useState<string>("All");
   const [search, setSearch] = useState("");
-  const { pathname } = useLocation();
 
   const selectedEquipment = equipment.find(e => e.id === selectedEquipmentId);
+  const { pathname } = useLocation();
+  const detailOnly = pathname === "/equipment/detail";
 
   const processUnits = useMemo(() => {
     const units = new Set(equipment.map(e => e.processUnit));
@@ -53,11 +54,14 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
     else { setSortKey(key); setSortAsc(true); }
   };
 
-  const SortHeader = ({ label, k }: { label: string; k: SortKey }) => (
+  // A plain render function, not a component: a component defined here is a new type on every render, which remounts the
+  // header and drops keyboard focus after each sort.
+  const sortHeader = (label: string, k: SortKey) => (
     <th
+      key={k}
       aria-sort={sortKey === k ? (sortAsc ? "ascending" : "descending") : "none"}
-      className="type-eyebrow cursor-pointer select-none whitespace-nowrap px-3 py-2 text-left text-quaternary hover:text-secondary-foreground"
-      onClick={() => handleSort(k)}
+      className={`type-eyebrow cursor-pointer select-none whitespace-nowrap px-3 py-2 text-left text-quaternary hover:text-secondary-foreground ${activatableFocus}`}
+      {...activatable(() => handleSort(k))}
     >
       <span className="flex items-center gap-1">
         {label}
@@ -66,10 +70,31 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
     </th>
   );
 
+  // Equipment Detail is for one machine: with none selected there is nothing to show, so point back to the list.
+  if (detailOnly && !selectedEquipment) {
+    return (
+      <PageHeader>
+        <Panel>
+          <EmptyState
+            icon={emptyIcon.select}
+            title="Select equipment"
+            detail="Pick a machine in the registry to see its health, live sensors and maintenance."
+            action={
+              <Link
+                to="/equipment"
+                className="type-label-sm inline-flex h-8 items-center rounded-full border border-hairline bg-action px-3 text-secondary-foreground outline-none transition-colors duration-[180ms] hover:border-strong hover:bg-raised-2 hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
+              >
+                Go to Plant Overview
+              </Link>
+            }
+          />
+        </Panel>
+      </PageHeader>
+    );
+  }
+
   return (
     <PageHeader
-      title={locate(pathname).title}
-      subtitle="Equipment status, health and remaining useful life across the plant"
       actions={
         <>
           <SearchField
@@ -104,21 +129,21 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
             <table className="w-full type-body-sm">
               <thead className="sticky top-0 z-10 bg-container">
                 <tr className="border-b border-hairline">
-                  <SortHeader label="Tag" k="tag" />
-                  <SortHeader label="Class" k="classLabel" />
-                  <SortHeader label="Process Unit" k="processUnit" />
-                  <SortHeader label="Health" k="health" />
-                  <SortHeader label="Last Alarm" k="lastAlarm" />
-                  <SortHeader label="RUL" k="rulDays" />
-                  <SortHeader label="Status" k="status" />
+                  {sortHeader("Tag", "tag")}
+                  {sortHeader("Class", "classLabel")}
+                  {sortHeader("Process unit", "processUnit")}
+                  {sortHeader("Health", "health")}
+                  {sortHeader("Last alarm", "lastAlarm")}
+                  {sortHeader("RUL", "rulDays")}
+                  {sortHeader("Status", "status")}
                 </tr>
               </thead>
               <tbody>
                 {filtered.map((eq) => (
                   <tr
                     key={eq.id}
-                    onClick={() => onSelectEquipment(eq.id)}
-                    className={`border-b border-hairline last:border-0 cursor-pointer transition-colors hover:bg-raised ${selectedEquipmentId === eq.id ? "bg-raised" : ""}`}
+                    {...activatable(() => onSelectEquipment(eq.id))}
+                    className={`border-b border-hairline last:border-0 cursor-pointer transition-colors hover:bg-raised ${activatableFocus} ${selectedEquipmentId === eq.id ? "bg-raised" : ""}`}
                   >
                     <td className="px-3 py-2 tabular text-foreground font-medium whitespace-nowrap">{eq.tag}</td>
                     <td className="px-3 py-2 text-tertiary">{eq.classLabel}</td>
@@ -143,7 +168,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                           {eq.rulDays}d
                         </span>
                       ) : (
-                        <span className="text-tertiary">—</span>
+                        <span className="text-tertiary">n/a</span>
                       )}
                     </td>
                     <td className="px-3 py-2">
@@ -153,7 +178,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                 ))}
                 {filtered.length === 0 && (
                   <tr>
-                    <td colSpan={7}><EmptyState title="No equipment match this filter" className="min-h-[96px]" /></td>
+                    <td colSpan={7}><EmptyState icon={emptyIcon.noMatch} title="No equipment match this filter" className="min-h-[96px]" /></td>
                   </tr>
                 )}
               </tbody>
@@ -171,6 +196,12 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
             />
           )}
         </AnimatePresence>
+        {/* Nothing selected: keep the column, as the Dashboard does, instead of leaving it blank. */}
+        {!selectedEquipment && (
+          <Panel>
+            <EmptyState icon={emptyIcon.select} title="Select equipment" detail="Pick a row to see its health, live sensors and maintenance." className="h-full" />
+          </Panel>
+        )}
       </div>
     </PageHeader>
   );

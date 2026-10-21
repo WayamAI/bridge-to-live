@@ -1,22 +1,30 @@
+import { sparklineDomain } from "@/lib/sparkline";
+
 interface SensorSparklineProps {
   data: number[];
-  min: number;
-  max: number;
+  /** Instrument range; kept for callers, the line is scaled to the data and the normal band instead. */
+  min?: number;
+  max?: number;
   normalMin: number;
   normalMax: number;
 }
 
-const SensorSparkline = ({ data, min, max, normalMin, normalMax }: SensorSparklineProps) => {
+const SensorSparkline = ({ data, normalMin, normalMax }: SensorSparklineProps) => {
   const width = 200;
   const height = 32;
-  const range = max - min || 1;
+  const { min, max } = sparklineDomain(data, normalMin, normalMax);
+  const range = max - min;
 
   const toY = (val: number) => height - ((val - min) / range) * height;
-  const normalMinY = toY(normalMin);
-  const normalMaxY = toY(normalMax);
+  // The normal band is clipped to the plot; where the data does not reach it, no band or limit line is drawn.
+  const clampY = (y: number) => Math.max(0, Math.min(height, y));
+  const normalMinY = clampY(toY(normalMin));
+  const normalMaxY = clampY(toY(normalMax));
+  const minVisible = normalMin >= min && normalMin <= max;
+  const maxVisible = normalMax >= min && normalMax <= max;
 
   const points = data.map((val, i) => {
-    const x = (i / (data.length - 1)) * width;
+    const x = data.length > 1 ? (i / (data.length - 1)) * width : width;
     const y = toY(val);
     return `${x},${y}`;
   });
@@ -35,10 +43,14 @@ const SensorSparkline = ({ data, min, max, normalMin, normalMax }: SensorSparkli
         className="fill-raised-2"
       />
       {/* Normal range lines */}
-      <line x1={0} y1={normalMinY} x2={width} y2={normalMinY}
-        className="stroke-quaternary" strokeWidth="0.5" strokeDasharray="3,3" />
-      <line x1={0} y1={normalMaxY} x2={width} y2={normalMaxY}
-        className="stroke-quaternary" strokeWidth="0.5" strokeDasharray="3,3" />
+      {minVisible && (
+        <line x1={0} y1={normalMinY} x2={width} y2={normalMinY}
+          className="stroke-quaternary" strokeWidth="0.5" strokeDasharray="3,3" />
+      )}
+      {maxVisible && (
+        <line x1={0} y1={normalMaxY} x2={width} y2={normalMaxY}
+          className="stroke-quaternary" strokeWidth="0.5" strokeDasharray="3,3" />
+      )}
       {/* Data line */}
       <polyline
         points={points.join(" ")}
