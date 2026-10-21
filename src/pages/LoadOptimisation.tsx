@@ -20,18 +20,18 @@ interface Opportunity {
   annualSaving: number;
   complexity: "Low" | "Medium" | "High";
   payback: string;
-  status: "Identified" | "Under Review" | "Approved" | "Implemented";
+  status: "Identified" | "Under review" | "Approved" | "Implemented";
   baselineKwh: number;
   projectedKwh: number;
 }
 
 const OPPORTUNITIES: Opportunity[] = [
   { id: "o1", opportunity: "Shift Compression Train B startup to off-peak tariff window (02:00–05:00)", category: "Load shifting", system: "Compression Train B", action: "Schedule change", annualSaving: 42, complexity: "Low", payback: "Immediate", status: "Approved", baselineKwh: 84200, projectedKwh: 74600 },
-  { id: "o2", opportunity: "AGC fan speed optimisation via VFD control", category: "Equipment efficiency", system: "Compression Train B", action: "VFD installation", annualSaving: 118, complexity: "Medium", payback: "8 months", status: "Under Review", baselineKwh: 28400, projectedKwh: 19800 },
+  { id: "o2", opportunity: "AGC fan speed optimisation via VFD control", category: "Equipment efficiency", system: "Compression Train B", action: "VFD installation", annualSaving: 118, complexity: "Medium", payback: "8 months", status: "Under review", baselineKwh: 28400, projectedKwh: 19800 },
   { id: "o3", opportunity: "Compressed air pressure setpoint reduction 8.5 bar → 7.8 bar", category: "Scheduling", system: "Instrument Air", action: "Setpoint change", annualSaving: 28, complexity: "Low", payback: "Immediate", status: "Implemented", baselineKwh: 18200, projectedKwh: 15400 },
   { id: "o4", opportunity: "Waste heat recovery from COMP-A discharge to preheat feed stream", category: "Equipment efficiency", system: "Compression Train A", action: "WHRU installation", annualSaving: 234, complexity: "High", payback: "14 months", status: "Identified", baselineKwh: 96000, projectedKwh: 62400 },
   { id: "o5", opportunity: "Cooling water pump sequencing — run 2 of 3 during low-demand periods", category: "Load shifting", system: "Cooling Water", action: "PLC logic change", annualSaving: 18, complexity: "Low", payback: "Immediate", status: "Approved", baselineKwh: 42800, projectedKwh: 38200 },
-  { id: "o6", opportunity: "Compressed air leak detection and repair program", category: "Leak/loss reduction", system: "Instrument Air", action: "Leak survey + repair", annualSaving: 22, complexity: "Low", payback: "2 months", status: "Under Review", baselineKwh: 18200, projectedKwh: 14800 },
+  { id: "o6", opportunity: "Compressed air leak detection and repair program", category: "Leak/loss reduction", system: "Instrument Air", action: "Leak survey + repair", annualSaving: 22, complexity: "Low", payback: "2 months", status: "Under review", baselineKwh: 18200, projectedKwh: 14800 },
 ];
 
 // Fixed month-to-month noise for the projection chart, so toggling an opportunity does not redraw the whole line.

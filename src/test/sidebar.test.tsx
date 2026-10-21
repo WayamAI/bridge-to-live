@@ -17,12 +17,12 @@ describe("Sidebar", () => {
   it("lists six collapsible groups, Dashboard without a heading and Settings in the footer", () => {
     setup();
     const primary = screen.getByRole("navigation", { name: "Primary" });
-    expect(within(primary).getAllByRole("button").map((b) => b.textContent)).toEqual(["Asset Health", "Maintenance", "Energy", "Alarms", "OT Security", "Handover & Data"]);
+    expect(within(primary).getAllByRole("button").map((b) => b.textContent)).toEqual(["Asset health", "Maintenance", "Energy", "Alarms", "OT security", "Handover & data"]);
     expect(within(screen.getByRole("navigation", { name: "Settings" })).getByRole("link", { name: "Settings" })).toHaveAttribute("href", "/settings");
     expect(navGroups.flatMap((g) => g.items)).toHaveLength(26);
   });
 
-  const groups = ["Asset Health", "Maintenance", "Energy", "Alarms", "OT Security", "Handover & Data"];
+  const groups = ["Asset health", "Maintenance", "Energy", "Alarms", "OT security", "Handover & data"];
   const expanded = () => groups.filter((name) => screen.getByRole("button", { name }).getAttribute("aria-expanded") === "true");
 
   it("opens only the group holding the current page", () => {

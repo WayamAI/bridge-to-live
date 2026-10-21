@@ -16,16 +16,16 @@ interface ThreatEvent {
 }
 
 const THREAT_EVENTS: ThreatEvent[] = [
-  { id: "t1", timestamp: shiftTimestamp("2026-03-30 14:23:07"), asset: "DCS Controller DC-02", eventType: "Unexpected OPC-UA connection", severity: "Critical", status: "Investigating", mitreTactic: "Initial Access", details: "Connection from 192.168.3.44 — not in approved connection matrix" },
+  { id: "t1", timestamp: shiftTimestamp("2026-03-30 14:23:07"), asset: "DCS Controller DC-02", eventType: "Unexpected OPC-UA connection", severity: "Critical", status: "Investigating", mitreTactic: "Initial access", details: "Connection from 192.168.3.44 — not in approved connection matrix" },
   { id: "t2", timestamp: shiftTimestamp("2026-03-30 09:44:52"), asset: "PLC-A-01", eventType: "Unauthorised write command", severity: "High", status: "Contained", mitreTactic: "Execution", details: "Modbus write from EW-003 outside maintenance window" },
   { id: "t3", timestamp: shiftTimestamp("2026-03-30 02:11:34"), asset: "HMI-B-002", eventType: "Firmware version query", severity: "Medium", status: "Monitoring", mitreTactic: "Discovery", details: "From unknown IP 10.42.8.91 — reconnaissance pattern" },
   { id: "t4", timestamp: shiftTimestamp("2026-03-29 18:32:41"), asset: "OT Switch SW-L2-01", eventType: "Port scan detected", severity: "High", status: "Resolved", mitreTactic: "Discovery", details: "Sequential port scan from 192.168.3.44 across Level 2 subnet" },
-  { id: "t5", timestamp: shiftTimestamp("2026-03-29 11:15:22"), asset: "PI Interface Node 01", eventType: "Failed authentication attempts", severity: "Medium", status: "Resolved", mitreTactic: "Credential Access", details: "14 failed login attempts from EW-002 in 3 minutes" },
-  { id: "t6", timestamp: shiftTimestamp("2026-03-28 22:48:19"), asset: "Engineering Workstation EW-003", eventType: "Unauthorised USB device", severity: "High", status: "Contained", mitreTactic: "Initial Access", details: "USB mass storage device connected — policy violation" },
-  { id: "t7", timestamp: shiftTimestamp("2026-03-28 08:12:04"), asset: "CCTV NVR NVR-01", eventType: "Outbound connection attempt", severity: "Medium", status: "Resolved", mitreTactic: "Command and Control", details: "HTTP connection to external IP blocked by firewall" },
-  { id: "t8", timestamp: shiftTimestamp("2026-03-27 16:55:38"), asset: "RTU-ML-01", eventType: "Configuration change", severity: "Low", status: "Monitoring", mitreTactic: "Impair Process Control", details: "Setpoint change via authorised session — logged for audit" },
+  { id: "t5", timestamp: shiftTimestamp("2026-03-29 11:15:22"), asset: "PI Interface Node 01", eventType: "Failed authentication attempts", severity: "Medium", status: "Resolved", mitreTactic: "Credential access", details: "14 failed login attempts from EW-002 in 3 minutes" },
+  { id: "t6", timestamp: shiftTimestamp("2026-03-28 22:48:19"), asset: "Engineering Workstation EW-003", eventType: "Unauthorised USB device", severity: "High", status: "Contained", mitreTactic: "Initial access", details: "USB mass storage device connected — policy violation" },
+  { id: "t7", timestamp: shiftTimestamp("2026-03-28 08:12:04"), asset: "CCTV NVR NVR-01", eventType: "Outbound connection attempt", severity: "Medium", status: "Resolved", mitreTactic: "Command and control", details: "HTTP connection to external IP blocked by firewall" },
+  { id: "t8", timestamp: shiftTimestamp("2026-03-27 16:55:38"), asset: "RTU-ML-01", eventType: "Configuration change", severity: "Low", status: "Monitoring", mitreTactic: "Impair process control", details: "Setpoint change via authorised session — logged for audit" },
   { id: "t9", timestamp: shiftTimestamp("2026-03-27 04:22:11"), asset: "Smart Transmitter Gateway GTW-01", eventType: "MQTT topic subscription anomaly", severity: "Low", status: "Resolved", mitreTactic: "Collection", details: "Subscription to all sensor topics from unexpected client ID" },
-  { id: "t10", timestamp: shiftTimestamp("2026-03-26 14:08:55"), asset: "OT Firewall FW-DMZ-02", eventType: "Rule bypass attempt", severity: "Critical", status: "Resolved", mitreTactic: "Lateral Movement", details: "Attempted Level 4→Level 2 traversal bypassing DMZ — blocked" },
+  { id: "t10", timestamp: shiftTimestamp("2026-03-26 14:08:55"), asset: "OT Firewall FW-DMZ-02", eventType: "Rule bypass attempt", severity: "Critical", status: "Resolved", mitreTactic: "Lateral movement", details: "Attempted Level 4→Level 2 traversal bypassing DMZ — blocked" },
 ];
 
 const ThreatMonitor = () => {

@@ -68,7 +68,7 @@ const GapAnalysis = () => {
                   </div>
                   <div>
                     <h3 className="font-semibold text-sm">{gap.title}</h3>
-                    <span className={`text-[10px] font-mono uppercase tracking-wider ${
+                    <span className={`text-[10px] font-mono tracking-wide ${
                       gap.severity === "critical" ? "text-destructive" : "text-gap"
                     }`}>
                       {gap.severity}

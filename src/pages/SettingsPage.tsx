@@ -7,13 +7,13 @@ import PageHeader from "@/components/layout/PageHeader";
 
 const THRESHOLD_PRESETS = [
   { tag: "COMP-*", parameter: "Vibration (DE)", high: 4.5, highHigh: 7.5, unit: "mm/s" },
-  { tag: "COMP-*", parameter: "Discharge Temp", high: 135, highHigh: 150, unit: "°C" },
+  { tag: "COMP-*", parameter: "Discharge temperature", high: 135, highHigh: 150, unit: "°C" },
   { tag: "PUMP-*", parameter: "Vibration", high: 4.5, highHigh: 7.5, unit: "mm/s" },
-  { tag: "PUMP-*", parameter: "Bearing Temp", high: 80, highHigh: 95, unit: "°C" },
-  { tag: "HEX-*", parameter: "Fouling Factor", high: 0.0005, highHigh: 0.001, unit: "m²K/W" },
-  { tag: "MOT-*", parameter: "Winding Temp", high: 100, highHigh: 130, unit: "°C" },
-  { tag: "TURB-*", parameter: "Exhaust Gas Temp", high: 600, highHigh: 650, unit: "°C" },
-  { tag: "FCV-*", parameter: "Positioner Error", high: 5, highHigh: 10, unit: "%" },
+  { tag: "PUMP-*", parameter: "Bearing temperature", high: 80, highHigh: 95, unit: "°C" },
+  { tag: "HEX-*", parameter: "Fouling factor", high: 0.0005, highHigh: 0.001, unit: "m²K/W" },
+  { tag: "MOT-*", parameter: "Winding temperature", high: 100, highHigh: 130, unit: "°C" },
+  { tag: "TURB-*", parameter: "Exhaust gas temperature", high: 600, highHigh: 650, unit: "°C" },
+  { tag: "FCV-*", parameter: "Positioner error", high: 5, highHigh: 10, unit: "%" },
 ];
 
 const MODEL_PARAMS = [
@@ -66,8 +66,8 @@ const SettingsPage = () => {
               <tr className="border-b border-hairline">
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Tag pattern</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Parameter</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH alarm</th>
-                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">HIGH-HIGH alarm</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">High alarm</th>
+                <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-right text-quaternary">High-high alarm</th>
                 <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Unit</th>
               </tr>
             </thead>

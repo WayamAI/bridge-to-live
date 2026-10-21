@@ -16,10 +16,10 @@ const MONTHLY_EMISSIONS = [
 ];
 
 const BY_SOURCE = [
-  { name: "Gas Turbine", value: 42, color: seriesColor(0) },
+  { name: "Gas turbine", value: 42, color: seriesColor(0) },
   { name: "Flaring", value: 18, color: seriesColor(1) },
-  { name: "Grid Electricity", value: 24, color: seriesColor(5) },
-  { name: "Process Venting", value: 8, color: seriesColor(4) },
+  { name: "Grid electricity", value: 24, color: seriesColor(5) },
+  { name: "Process venting", value: 8, color: seriesColor(4) },
   { name: "Fugitive", value: 5, color: seriesColor(2) },
   { name: "Other", value: 3, color: seriesColor(3) },
 ];

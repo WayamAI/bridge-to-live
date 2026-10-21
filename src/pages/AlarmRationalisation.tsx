@@ -23,21 +23,21 @@ interface AlarmPoint {
 }
 
 const ALARM_POINTS: AlarmPoint[] = [
-  { id: "ap1", tag: "TT-A-041", parameter: "Temperature HIGH", currentSetpoint: "82°C", proposedSetpoint: "88°C", rationaleCode: "A1.2", rationale: "Normal operating envelope extends to 85°C per datasheet — setpoint too tight", alarmRate7d: 48, status: "Approved", priority: 3 },
-  { id: "ap2", tag: "PT-A-042", parameter: "Pressure HIGH", currentSetpoint: "88 barg", proposedSetpoint: "92 barg", rationaleCode: "A1.3", rationale: "Discharge pressure routinely exceeds 88 during startup — transient nuisance", alarmRate7d: 34, status: "Pending", priority: 2 },
-  { id: "ap3", tag: "FT-D-018", parameter: "Flow LOW", currentSetpoint: "2400 Nm³/h", proposedSetpoint: "2000 Nm³/h", rationaleCode: "A2.1", rationale: "Low flow during turndown operations is normal — not a fault condition", alarmRate7d: 22, status: "Pending", priority: 3 },
-  { id: "ap4", tag: "COMP-A-001", parameter: "Discharge Temp HIGH", currentSetpoint: "135°C", proposedSetpoint: "135°C", rationaleCode: "B1.1", rationale: "Genuine safety alarm — maintain current setpoint", alarmRate7d: 18, status: "Reviewed", priority: 1 },
-  { id: "ap5", tag: "HEX-C-003", parameter: "DP HIGH", currentSetpoint: "1.0 bar", proposedSetpoint: "1.2 bar", rationaleCode: "A1.2", rationale: "Fouling causes gradual DP rise — adjust to reduce nuisance", alarmRate7d: 14, status: "Approved", priority: 3 },
-  { id: "ap6", tag: "PUMP-CW-003", parameter: "Vibration HIGH", currentSetpoint: "4.0 mm/s", proposedSetpoint: "4.5 mm/s", rationaleCode: "A1.4", rationale: "ISO 10816 allows 4.5 mm/s for this pump class", alarmRate7d: 8, status: "Pending", priority: 3 },
-  { id: "ap7", tag: "MOT-E-018", parameter: "Current HIGH", currentSetpoint: "440A", proposedSetpoint: "460A", rationaleCode: "A1.2", rationale: "FLA is 480A — current setpoint 8% below nameplate", alarmRate7d: 12, status: "Pending", priority: 2 },
-  { id: "ap8", tag: "V-F-007", parameter: "Level HIGH", currentSetpoint: "50%", proposedSetpoint: "Suppress", rationaleCode: "C1.1", rationale: "KO drum level alarm when no flow — suppress when unit offline", alarmRate7d: 6, status: "Suppressed", priority: 4 },
+  { id: "ap1", tag: "TT-A-041", parameter: "Temperature high", currentSetpoint: "82°C", proposedSetpoint: "88°C", rationaleCode: "A1.2", rationale: "Normal operating envelope extends to 85°C per datasheet — setpoint too tight", alarmRate7d: 48, status: "Approved", priority: 3 },
+  { id: "ap2", tag: "PT-A-042", parameter: "Pressure high", currentSetpoint: "88 barg", proposedSetpoint: "92 barg", rationaleCode: "A1.3", rationale: "Discharge pressure routinely exceeds 88 during startup — transient nuisance", alarmRate7d: 34, status: "Pending", priority: 2 },
+  { id: "ap3", tag: "FT-D-018", parameter: "Flow low", currentSetpoint: "2400 Nm³/h", proposedSetpoint: "2000 Nm³/h", rationaleCode: "A2.1", rationale: "Low flow during turndown operations is normal — not a fault condition", alarmRate7d: 22, status: "Pending", priority: 3 },
+  { id: "ap4", tag: "COMP-A-001", parameter: "Discharge temperature high", currentSetpoint: "135°C", proposedSetpoint: "135°C", rationaleCode: "B1.1", rationale: "Genuine safety alarm — maintain current setpoint", alarmRate7d: 18, status: "Reviewed", priority: 1 },
+  { id: "ap5", tag: "HEX-C-003", parameter: "Differential pressure high", currentSetpoint: "1.0 bar", proposedSetpoint: "1.2 bar", rationaleCode: "A1.2", rationale: "Fouling causes gradual DP rise — adjust to reduce nuisance", alarmRate7d: 14, status: "Approved", priority: 3 },
+  { id: "ap6", tag: "PUMP-CW-003", parameter: "Vibration high", currentSetpoint: "4.0 mm/s", proposedSetpoint: "4.5 mm/s", rationaleCode: "A1.4", rationale: "ISO 10816 allows 4.5 mm/s for this pump class", alarmRate7d: 8, status: "Pending", priority: 3 },
+  { id: "ap7", tag: "MOT-E-018", parameter: "Current high", currentSetpoint: "440A", proposedSetpoint: "460A", rationaleCode: "A1.2", rationale: "FLA is 480A — current setpoint 8% below nameplate", alarmRate7d: 12, status: "Pending", priority: 2 },
+  { id: "ap8", tag: "V-F-007", parameter: "Level high", currentSetpoint: "50%", proposedSetpoint: "Suppress", rationaleCode: "C1.1", rationale: "KO drum level alarm when no flow — suppress when unit offline", alarmRate7d: 6, status: "Suppressed", priority: 4 },
 ];
 
 const SUMMARY_PIE = [
   { name: "Reviewed — Keep", value: 1842, color: toneChart.success },
-  { name: "Setpoint Changed", value: 428, color: toneChart.info },
+  { name: "Setpoint changed", value: 428, color: toneChart.info },
   { name: "Suppressed", value: 124, color: toneChart.warning },
-  { name: "Pending Review", value: 453, color: toneChart.neutral },
+  { name: "Pending review", value: 453, color: toneChart.neutral },
 ];
 
 const AlarmRationalisation = () => {

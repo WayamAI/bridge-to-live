@@ -33,12 +33,12 @@ const DAILY_TREND = Array.from({ length: 30 }, (_, i) => {
 const CHATTERING = [
   { tag: "TT-A-041", parameter: "Temperature", count: 48, avgDuration: "12 sec", status: "Chattering" },
   { tag: "PT-A-042", parameter: "Pressure", count: 34, avgDuration: "8 sec", status: "Chattering" },
-  { tag: "FT-D-018", parameter: "Flow Rate", count: 22, avgDuration: "28 sec", status: "Fleeting" },
-  { tag: "COMP-A-001", parameter: "Discharge Temp", count: 18, avgDuration: "47 min", status: "Stale" },
-  { tag: "HEX-C-003", parameter: "Fouling Factor", count: 14, avgDuration: "1 hr 20 min", status: "Stale" },
+  { tag: "FT-D-018", parameter: "Flow rate", count: 22, avgDuration: "28 sec", status: "Fleeting" },
+  { tag: "COMP-A-001", parameter: "Discharge temperature", count: 18, avgDuration: "47 min", status: "Stale" },
+  { tag: "HEX-C-003", parameter: "Fouling factor", count: 14, avgDuration: "1 hr 20 min", status: "Stale" },
   { tag: "MOT-E-018", parameter: "Current", count: 12, avgDuration: "6 hr", status: "Standing" },
-  { tag: "SUB-E-001", parameter: "Power Factor", count: 10, avgDuration: "3.2 hr", status: "Standing" },
-  { tag: "AGC-B-004", parameter: "Fan Vibration", count: 8, avgDuration: "1 day", status: "Standing" },
+  { tag: "SUB-E-001", parameter: "Power factor", count: 10, avgDuration: "3.2 hr", status: "Standing" },
+  { tag: "AGC-B-004", parameter: "Fan vibration", count: 8, avgDuration: "1 day", status: "Standing" },
   { tag: "FCV-D-022", parameter: "Positioner", count: 6, avgDuration: "2 hr", status: "Repeating" },
   { tag: "PUMP-CW-003", parameter: "Efficiency", count: 4, avgDuration: "4 hr", status: "Repeating" },
 ];

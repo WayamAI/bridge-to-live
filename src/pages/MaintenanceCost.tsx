@@ -21,8 +21,8 @@ const BY_UNIT = [
   { name: "Compression A", value: 284, color: seriesColor(0) },
   { name: "Compression B", value: 196, color: seriesColor(1) },
   { name: "Cooling Water", value: 142, color: seriesColor(5) },
-  { name: "Power Gen", value: 118, color: seriesColor(4) },
-  { name: "Feed Gas", value: 94, color: seriesColor(2) },
+  { name: "Power generation", value: 118, color: seriesColor(4) },
+  { name: "Feed gas", value: 94, color: seriesColor(2) },
   { name: "Others", value: 142, color: seriesColor(3) },
 ];
 

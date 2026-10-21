@@ -37,7 +37,7 @@ const CONNECTIONS = [
   { from: "Level 3", to: "Level 2", protocol: "OPC-DA / PI-SDK", status: "amber" as const },
   { from: "Level 2", to: "Level 1", protocol: "Profinet / Modbus", status: "green" as const },
   { from: "Level 1", to: "Level 0", protocol: "HART / 4-20mA", status: "green" as const },
-  { from: "192.168.3.44 → DC-02", to: "Level 2", protocol: "OPC-UA (UNAUTHORIZED)", status: "red" as const },
+  { from: "192.168.3.44 → DC-02", to: "Level 2", protocol: "OPC-UA (unauthorised)", status: "red" as const },
 ];
 
 const NetworkSegmentation = () => (

@@ -27,7 +27,7 @@ export const navGroups: NavGroup[] = [
   { section: "Overview", flat: true, items: [
     { to: "/", label: "Dashboard", description: "Plant health, alarms and equipment status at a glance", icon: navIcon["/"] },
   ]},
-  { section: "Asset Health", items: [
+  { section: "Asset health", items: [
     { to: "/equipment", label: "Plant Overview", description: "Equipment status, health and remaining useful life across the plant", icon: navIcon["/equipment"] },
     { to: "/equipment/detail", label: "Equipment Detail", description: "One machine at a time: health, live sensors and maintenance", icon: navIcon["/equipment/detail"] },
     { to: "/failure-analysis", label: "Failure Analysis", description: "Statistical failure analysis across equipment classes and systemic issue identification", icon: navIcon["/failure-analysis"] },
@@ -49,13 +49,13 @@ export const navGroups: NavGroup[] = [
     { to: "/alarm-analytics", label: "Alarm Analytics", description: "Alarm history: historical performance analysis and chattering alarm identification", icon: navIcon["/alarm-analytics"] },
     { to: "/alarm-rationalisation", label: "Alarm Rationalisation", description: "Systematic review of alarm setpoints per ISA-18.2 / IEC 62682 standards", icon: navIcon["/alarm-rationalisation"] },
   ]},
-  { section: "OT Security", items: [
+  { section: "OT security", items: [
     { to: "/ot-assets", label: "OT Asset Registry", description: "Comprehensive inventory of all OT assets: IEC 62443 asset management", icon: navIcon["/ot-assets"] },
     { to: "/threat-monitor", label: "Threat Monitor", description: "OT security event log with MITRE ATT&CK for ICS framework mapping", icon: navIcon["/threat-monitor"] },
     { to: "/network", label: "Network Segmentation", description: "Segmentation status by Purdue model: OT network zones and inter-zone connection monitoring", icon: navIcon["/network"] },
     { to: "/compliance", label: "Compliance", description: "Compliance dashboard: IEC 62443 Industrial Cybersecurity Standard assessment", icon: navIcon["/compliance"] },
   ]},
-  { section: "Handover & Data", items: [
+  { section: "Handover & data", items: [
     { to: "/handover", label: "Handover Tracker", description: "Handover readiness against target: project summary and requirement scorecard", icon: navIcon["/handover"] },
     { to: "/twin-sync", label: "Engineering Twin Sync", description: "Synchronization status between Hexagon SmartPlant engineering twin and PlantMind operational twin", icon: navIcon["/twin-sync"] },
     { to: "/data-completeness", label: "Data Completeness", description: "Tracking data completeness across all engineering and operational data categories", icon: navIcon["/data-completeness"] },
