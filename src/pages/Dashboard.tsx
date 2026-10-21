@@ -101,8 +101,10 @@ const Dashboard = ({ data, selectedEquipmentId, onSelectEquipment }: DashboardPr
       </div>
 
       {/* Main content row */}
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-[1fr_1fr_340px]">
-        <EquipmentHeatMap equipment={equipment} onSelect={onSelectEquipment} />
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 min-[1400px]:grid-cols-[minmax(0,1.5fr)_minmax(0,1fr)_300px]">
+        <div className="min-w-0 lg:col-span-2 min-[1400px]:col-span-1 [&>section]:h-full">
+          <EquipmentHeatMap equipment={equipment} onSelect={onSelectEquipment} />
+        </div>
 
         <Panel
           title="Top Active Alerts"

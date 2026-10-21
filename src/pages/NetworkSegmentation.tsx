@@ -75,10 +75,10 @@ const NetworkSegmentation = () => (
               </div>
             </div>
             {li < PURDUE_LEVELS.length - 1 && (
-              <div className="flex items-center gap-2 py-1 pl-8">
-                <div className="h-4 border-l border-dashed border-hairline" />
-                <span className="type-caption text-tertiary tabular">{CONNECTIONS[li]?.protocol}</span>
-                <StatusDot tone={toneOf(zoneTone, CONNECTIONS[li]?.status || "green")} />
+              <div className="flex h-9 items-stretch gap-2 pl-8">
+                <div className="-mb-2 border-l border-strong" />
+                <span className="type-caption self-center text-tertiary tabular">{CONNECTIONS[li]?.protocol}</span>
+                <StatusDot className="self-center" tone={toneOf(zoneTone, CONNECTIONS[li]?.status || "green")} />
               </div>
             )}
           </div>

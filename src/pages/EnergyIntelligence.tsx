@@ -1,3 +1,4 @@
+import { sparklineDomain } from "@/lib/sparkline";
 import { seriesColor } from "@/components/dashboard/chartTheme";
 import type { EnergyMetric } from "@/hooks/usePlantData";
 import PageHeader from "@/components/layout/PageHeader";
@@ -28,6 +29,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
         {energyMetrics.map((m) => {
           const deviation = ((m.value - m.setpoint) / m.setpoint * 100).toFixed(1);
           const isOver = m.value > m.setpoint;
+          const dom = sparklineDomain(m.trend, m.setpoint * 0.95, m.setpoint * 1.05); // the line is scaled to its own data, so it never leaves the tile
           return (
             <KpiTile
               key={m.label}
@@ -42,7 +44,7 @@ const EnergyPage = ({ energyMetrics }: EnergyPageProps) => {
               <div className="mt-1 h-6">
                 <svg viewBox="0 0 200 24" className="h-full w-full" preserveAspectRatio="none" aria-hidden>
                   <polyline
-                    points={m.trend.map((v, i) => `${(i / (m.trend.length - 1)) * 200},${24 - ((v - m.setpoint * 0.9) / (m.setpoint * 0.2)) * 24}`).join(" ")}
+                    points={m.trend.map((v, i) => `${(i / (m.trend.length - 1)) * 200},${23 - ((v - dom.min) / (dom.max - dom.min)) * 22}`).join(" ")}
                     fill="none"
                     stroke={seriesColor(0)}
                     strokeWidth="1.5"

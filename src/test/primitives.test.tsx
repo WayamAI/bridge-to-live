@@ -54,7 +54,7 @@ describe("Chronus primitives", () => {
     rerender(<EquipmentStatusLabel status="critical" />);
     expect(container.querySelector(".bg-error-badge")).toBeTruthy();
     rerender(<EquipmentStatusLabel status={null} />);
-    expect(screen.getByText("—")).toBeTruthy();
+    expect(screen.getByText("n/a")).toBeTruthy();
   });
 
   it("EmptyState has a default title and optional detail", () => {

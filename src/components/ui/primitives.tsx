@@ -172,7 +172,7 @@ export const QuietStatus = ({ tone = "success", children, className }: { tone?: 
  * old UI showed). Warning and Critical need attention, so they get a solid badge.
  */
 export const EquipmentStatusLabel = ({ status }: { status?: EquipmentStatus | null }) => {
-  if (!status) return <span className="type-body-sm text-quaternary">—</span>;
+  if (!status) return <span className="type-body-sm text-quaternary">n/a</span>;
   const label = labelOf(equipmentLabel, status);
   if (status === "warning") return <Badge variant="warning">{label}</Badge>;
   if (status === "critical") return <Badge variant="error">{label}</Badge>;

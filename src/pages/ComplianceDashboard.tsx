@@ -95,11 +95,11 @@ const ComplianceDashboard = () => {
             action={<span className={`type-body-sm tabular font-medium ${d.compliance >= d.target ? "text-foreground" : "text-warning"}`}>{d.compliance}% / {d.target}%</span>}
           >
             {d.gaps.length > 0 && (
-              <table className="w-full type-body-sm">
+              <table className="w-full table-fixed type-body-sm">
                 <thead>
                   <tr className="border-b border-hairline">
-                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Finding</th>
-                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Remediation</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-[45%]">Finding</th>
+                    <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary w-[42%]">Remediation</th>
                     <th className="type-eyebrow whitespace-nowrap px-3 py-2 text-left text-quaternary">Effort</th>
                   </tr>
                 </thead>

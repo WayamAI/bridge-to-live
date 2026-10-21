@@ -56,6 +56,15 @@ const MODE_COLORS: Record<string, string> = {
   "Coupling misalignment": seriesColor(2),
   "Other": seriesColor(4),
 };
+/** Y axis ticks for the failure timeline: the 1st of January and July inside the data range, so the labels are 6 months apart. */
+const SCATTER_TICKS = (() => {
+  const times = SCATTER_POINTS.map(d => d.t);
+  const lo = Math.min(...times) - 2592000000, hi = Math.max(...times) + 2592000000;
+  const ticks: number[] = [];
+  for (let y = new Date(lo).getUTCFullYear(); y <= new Date(hi).getUTCFullYear(); y++) for (const m of [0, 6]) { const t = Date.UTC(y, m, 1); if (t >= lo && t <= hi) ticks.push(t); }
+  return ticks;
+})();
+
 interface Props {
   equipment: Equipment[];
 }
@@ -168,7 +177,7 @@ const FailureAnalysis = ({ equipment }: Props) => {
         <ChartBox height="standard" label="Operating hours at failure over time">
           <ScatterChart margin={{ top: 12, left: 8, right: 24, bottom: 4 }}>
             <XAxis tickMargin={8} height={AXIS_TITLE_HEIGHT} dataKey="hours" name="Operating hours" type="number" domain={[0, "dataMax"]} tickCount={7} tickFormatter={(v: number) => formatNumber(v)} tick={axisTick} tickLine={false} axisLine={false} label={axisTitle("Operating hours at failure")} />
-            <YAxis dataKey="t" name="Date" type="number" domain={["dataMin - 2592000000", "dataMax + 2592000000"]} tickCount={5} tickFormatter={(v: number) => formatMonthYear(v)} tick={axisTick} tickLine={false} axisLine={false} width={56} />
+            <YAxis dataKey="t" name="Date" type="number" domain={["dataMin - 2592000000", "dataMax + 2592000000"]} ticks={SCATTER_TICKS} tickFormatter={(v: number) => formatMonthYear(v)} tick={axisTick} tickLine={false} axisLine={false} width={56} />
             <ZAxis dataKey="cost" range={[40, 400]} name="Repair cost (₹L)" />
             <Tooltip contentStyle={chartTooltipStyle} labelStyle={chartTooltipLabelStyle} cursor={{ strokeDasharray: "3 3" }}
               formatter={(val: number, name: string) => [name === "Repair cost (₹L)" ? formatRupees(val) : name === "Date" ? formatMonthYear(val) : formatNumber(val), name]} />
