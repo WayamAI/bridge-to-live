@@ -28,3 +28,6 @@ dist-ssr
 # Raw brand images (AI-generated originals kept untracked; processed copies live in src/assets)
 /login-bg.jpg
 /icons/
+
+# Raw icon sheets (generated originals, never committed)
+/icon-sheets/
