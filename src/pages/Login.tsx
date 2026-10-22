@@ -49,7 +49,12 @@ const Login = () => {
           <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0" />
           <img src={wayamWordmarkDark} alt="Wayam AI" className="h-5 w-auto self-start" />
         </div>
-        <p className="type-display-2xl relative">Drishti</p>
+        <div className="relative">
+          <p className="type-display-2xl lg:text-[2.25rem] lg:leading-tight">Drishti</p>
+          <p className="mt-2 max-w-md text-sm font-normal leading-5 text-white/70">
+            Real-time plant operations, equipment health and predictive maintenance intelligence.
+          </p>
+        </div>
       </div>
 
       {/* Form column */}
