@@ -1,5 +1,7 @@
 # REDESIGN_REPORT.md
 
+> Note: Display name changed from PlantMind to Drishti. Earlier text below keeps the old name as written at the time.
+
 Chronus-style UI redesign of PlantMind (Wayam AI), the app in this repo (`bridge-to-live`). Baseline: `aeabd3f`. Head: the commit that adds the Tickets section and the decisions (the one before it is `60b007d`).
 
 Claims were checked against git (`git diff aeabd3f HEAD`, `git ls-files`) and against the running app where possible. Corrections to numbers or statements in earlier reports and in internal docs (not in repo) are marked **Corrected**. The internal docs (not in repo) keep the per-page log (every wording change, page by page); this file is the summary.

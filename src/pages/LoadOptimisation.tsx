@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { icons, kpi, emptyIcon } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, iconSize, kpi, emptyIcon } from "@/lib/icons";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, LineChart, Line, Area, AreaChart } from "recharts";
 import { axisTick, chartTooltipStyle, chartTooltipLabelStyle, seriesColor } from "@/components/dashboard/chartTheme";
 import PageHeader from "@/components/layout/PageHeader";
@@ -64,7 +65,7 @@ const LoadOptimisation = () => {
           { label: "Total identified savings", icon: kpi.savings, value: formatRupees(totalSaving, { per: "yr" }) },
           { label: "Selected scenario savings", icon: kpi.savings, value: formatRupees(selectedSaving, { per: "yr" }) },
           { label: "Opportunities identified", icon: kpi.opportunity, value: OPPORTUNITIES.length.toString() },
-          { label: "Implemented", icon: kpi.done, value: OPPORTUNITIES.filter(o => o.status === "Implemented").length.toString() },
+          { label: "Implemented", icon: kpi.ok, value: OPPORTUNITIES.filter(o => o.status === "Implemented").length.toString() },
         ].map(s => (
           <KpiTile key={s.label} icon={s.icon} label={s.label} value={s.value} />
         ))}
@@ -101,7 +102,7 @@ const LoadOptimisation = () => {
                         aria-label={`Select ${o.opportunity}`}
                         className={`mx-auto flex size-4 items-center justify-center rounded-[4px] border ${selected.has(o.id) ? "border-transparent bg-action-primary text-on-color" : "border-strong bg-action"}`}
                       >
-                        {selected.has(o.id) && <icons.selected className="size-2.5" strokeWidth={3} aria-hidden />}
+                        {selected.has(o.id) && <Icon name={icons.selected} size={iconSize.control} />}
                       </div>
                     </td>
                     <td className="py-2 px-2">{o.opportunity}</td>

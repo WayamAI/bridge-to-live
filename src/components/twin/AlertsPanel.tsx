@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import type { Alert } from "@/hooks/useFactoryData";
-import { icons, alarmIcon } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, alarmIcon, iconSize } from "@/lib/icons";
 
 const severityStyles = {
   info: "border-engineering/30 bg-engineering/5",
@@ -21,7 +22,7 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
     <div className="rounded-xl border border-border bg-card overflow-hidden">
       <div className="px-4 py-3 border-b border-border flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <icons.alarms className="w-4 h-4 text-muted-foreground" aria-hidden />
+          <Icon name={icons.alarms} size={iconSize.row} />
           <h3 className="text-sm font-semibold">Alerts</h3>
           {unacknowledged > 0 && (
             <span className="bg-destructive text-destructive-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-full">
@@ -35,7 +36,7 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
       <div className="max-h-[400px] overflow-y-auto">
         <AnimatePresence>
           {alerts.map((alert, i) => {
-            const Icon = alarmIcon(alert.type);
+            const typeIcon = alarmIcon(alert.type);
             return (
               <motion.div
                 key={alert.id}
@@ -47,10 +48,7 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
                 }`}
               >
                 <div className="flex items-start gap-2.5">
-                  <Icon className={`w-3.5 h-3.5 mt-0.5 shrink-0 ${
-                    alert.severity === "critical" ? "text-destructive" :
-                    alert.severity === "warning" ? "text-gap" : "text-engineering"
-                  }`} aria-hidden />
+                  <Icon name={typeIcon} size={iconSize.row} className="mt-0.5" />
                   <div className="flex-1 min-w-0">
                     <button
                       onClick={() => onSelectEquipment(alert.equipmentId)}
@@ -71,7 +69,7 @@ const AlertsPanel = ({ alerts, onAcknowledge, onSelectEquipment }: AlertsPanelPr
                           onClick={() => onAcknowledge(alert.id)}
                           className="text-[9px] font-medium text-operational hover:underline flex items-center gap-0.5 outline-none focus-visible:ring-2 focus-visible:ring-active"
                         >
-                          <icons.acknowledge className="w-2.5 h-2.5" aria-hidden /> ACK
+                          <Icon name={icons.acknowledge} size={iconSize.row} /> ACK
                         </button>
                       )}
                     </div>

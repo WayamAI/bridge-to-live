@@ -7,7 +7,8 @@ import { AXIS_TITLE_HEIGHT, axisTick, axisTitle, chartTooltipStyle, chartTooltip
 import { formatMonthYear, formatNumber, yearMonthToTime, formatRupees } from "@/lib/format";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { createRng } from "@/lib/seeded";
-import { kpi } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { iconSize, kpi, trendIcon } from "@/lib/icons";
 import { ChartBox } from "@/components/dashboard/chartKit";
 import { useCategoryAxis } from "@/hooks/useCategoryAxis";
 
@@ -123,7 +124,10 @@ const FailureAnalysis = ({ equipment }: Props) => {
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.downtime}</td>
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{f.cost}</td>
                     <td className="text-right py-2 px-3 tabular whitespace-nowrap">{formatNumber(f.mtbf)}</td>
-                    <td className={`text-center py-2 px-3 ${f.trend === "↑" ? "text-error" : f.trend === "↓" ? "text-success" : "text-tertiary"}`}>{f.trend}</td>
+                    <td className={`text-center py-2 px-3 ${f.trend === "↑" ? "text-error" : f.trend === "↓" ? "text-success" : "text-tertiary"}`}>
+                      <Icon name={f.trend === "↑" ? trendIcon.up : f.trend === "↓" ? trendIcon.down : trendIcon.flat} size={iconSize.row} />
+                      <span className="sr-only">{f.trend === "↑" ? "Rising" : f.trend === "↓" ? "Falling" : "Steady"}</span>
+                    </td>
                   </tr>
                 ))}
               </tbody>

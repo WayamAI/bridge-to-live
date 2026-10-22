@@ -5,7 +5,8 @@ import { AnimatePresence } from "framer-motion";
 import type { Equipment } from "@/hooks/usePlantData";
 import EquipmentDetail from "@/components/twin/EquipmentDetail";
 import FactoryFloor from "@/components/twin/FactoryFloor";
-import { icons, emptyIcon } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, emptyIcon, equipmentIcon, iconSize } from "@/lib/icons";
 import { activatable, activatableFocus } from "@/lib/a11y";
 import { Link, useLocation } from "react-router-dom";
 
@@ -65,7 +66,7 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
     >
       <span className="flex items-center gap-1">
         {label}
-        <icons.sort className={`size-3 ${sortKey === k ? "text-foreground" : "text-icon-quaternary opacity-50"}`} aria-hidden />
+        <Icon name={icons.sort} size={iconSize.control} className={sortKey === k ? "" : "opacity-50 grayscale"} />
       </span>
     </th>
   );
@@ -146,7 +147,12 @@ const EquipmentHealthPage = ({ equipment, selectedEquipmentId, onSelectEquipment
                     className={`border-b border-hairline last:border-0 cursor-pointer transition-colors hover:bg-raised ${activatableFocus} ${selectedEquipmentId === eq.id ? "bg-raised" : ""}`}
                   >
                     <td className="px-3 py-2 tabular text-foreground font-medium whitespace-nowrap">{eq.tag}</td>
-                    <td className="px-3 py-2 text-tertiary">{eq.classLabel}</td>
+                    <td className="px-3 py-2 text-tertiary">
+                      <span className="flex items-center gap-2">
+                        {equipmentIcon(eq) && <Icon name={equipmentIcon(eq)!} size={iconSize.row} />}
+                        {eq.classLabel}
+                      </span>
+                    </td>
                     <td className="px-3 py-2 text-tertiary">{eq.processUnit}</td>
                     <td className="px-3 py-2">
                       <div className="flex items-center gap-2">

@@ -12,6 +12,10 @@ export default defineConfig(() => ({
     },
   },
   plugins: [react()],
+  build: {
+    // Icon PNGs stay separate files (fetched when an <img> renders, so page-specific icons load with their page) instead of base64 in the JS.
+    assetsInlineLimit: (file: string) => (file.replaceAll("\\", "/").includes("/assets/icons/") ? false : undefined),
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

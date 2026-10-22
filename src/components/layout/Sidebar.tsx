@@ -1,6 +1,7 @@
 import { useEffect, useState, type SyntheticEvent } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { icons } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, iconSize } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import type { Alert } from "@/hooks/usePlantData";
 import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
@@ -49,7 +50,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
   // From lg it is a 68px rail that expands to 240px; labels are shown only when expanded.
   const railOnly = expanded ? "" : "lg:hidden";
 
-  const renderItem = (group: string, { to, label, icon: Icon, alertBadge }: NavItem) => {
+  const renderItem = (group: string, { to, label, icon, alertBadge }: NavItem) => {
     const count = alertBadge ? unacknowledgedAlerts : 0;
     return (
       <NavLink
@@ -63,24 +64,21 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
         onBlur={hideFlyout}
         className={({ isActive }) =>
           cn(
-            "group flex h-8 items-center gap-3 rounded-lg px-2.5 outline-none transition-colors duration-[180ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
+            "group flex h-[34px] items-center gap-3 rounded-lg px-3 outline-none transition-colors duration-[180ms] ease-out focus-visible:ring-2 focus-visible:ring-active",
             !expanded && "lg:justify-center lg:px-0",
-            isActive ? "bg-raised text-foreground" : "text-tertiary hover:bg-raised hover:text-secondary-foreground",
+            isActive ? "bg-raised-2 text-foreground" : "text-tertiary hover:bg-raised hover:text-secondary-foreground",
           )
         }
       >
         {({ isActive }) => (
           <>
-            <span className="relative grid size-[17px] shrink-0 place-items-center">
-              <Icon
-                className={cn("size-[17px]", isActive ? "text-foreground" : "text-icon-tertiary group-hover:text-secondary-foreground")}
-                aria-hidden
-              />
+            <span className="relative grid size-[22px] shrink-0 place-items-center">
+              <Icon name={icon} size={iconSize.sidebar} />
               {count > 0 && (
                 <span className={cn("absolute -right-1 -top-1 hidden size-2 rounded-full bg-error ring-2 ring-container", !expanded && "lg:block")} aria-hidden />
               )}
             </span>
-            <span className={cn("type-label-sm flex-1 truncate text-left", isActive && "text-foreground", railOnly)}>{label}</span>
+            <span className={cn("type-label-md flex-1 truncate text-left", isActive && "text-foreground", railOnly)}>{label}</span>
             {count > 0 && (
               <span className={cn("type-caption tabular rounded-full bg-error-badge px-1.5 py-0.5 text-badge", railOnly)} aria-hidden>
                 {count}
@@ -106,7 +104,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
       <div className={cn("flex h-14 shrink-0 items-center border-b border-hairline px-3", !expanded && "lg:px-[18px]")}>
         <Link
           to="/"
-          aria-label="Wayam AI, PlantMind"
+          aria-label="Wayam AI, Drishti"
           className="flex min-w-0 items-center gap-2.5 rounded-[10px] outline-none focus-visible:ring-2 focus-visible:ring-active"
         >
           <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0 dark:hidden" />
@@ -114,7 +112,7 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
           <span className={cn("flex min-w-0 flex-col gap-0.5", railOnly)}>
             <img src={wayamWordmarkLight} alt="" className="h-5 w-auto self-start dark:hidden" />
             <img src={wayamWordmarkDark} alt="" className="hidden h-5 w-auto self-start dark:block" />
-            <span className="type-eyebrow block truncate text-quaternary">PlantMind</span>
+            <span className="type-eyebrow block truncate text-quaternary">Drishti</span>
           </span>
         </Link>
       </div>
@@ -132,21 +130,21 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
             const hiddenAlerts = !isOpen ? group.items.some((i) => i.alertBadge) && unacknowledgedAlerts > 0 : false;
             return (
               <div key={group.section} className="flex flex-col">
-                {gi > 0 && <div className={cn("mx-1 my-1 border-t border-hairline", !expanded && "lg:mx-2")} />}
+                {gi > 0 && <div className={cn("my-1 border-t border-hairline", expanded ? "-mx-3" : "-mx-3 lg:-mx-[14px]")} />}
                 <button
                   type="button"
                   aria-expanded={isOpen}
                   aria-controls={panelId}
                   onClick={() => toggleGroup(group.section)}
                   className={cn(
-                    "type-eyebrow flex h-7 shrink-0 items-center justify-between gap-2 rounded-md px-2.5 text-quaternary outline-none transition-colors duration-[180ms] hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active",
+                    "type-eyebrow flex h-8 shrink-0 items-center justify-between gap-2 rounded-md px-3 text-quaternary outline-none transition-colors duration-[180ms] hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active",
                     railOnly && "lg:hidden",
                   )}
                 >
                   <span className="truncate">{group.section}</span>
                   <span className="flex items-center gap-1.5">
                     {hiddenAlerts && <span className="size-1.5 rounded-full bg-error" aria-label={`${unacknowledgedAlerts} unacknowledged alarms`} />}
-                    <icons.chevronDown className={cn("size-3 shrink-0 transition-transform duration-[180ms]", !isOpen && "-rotate-90")} aria-hidden />
+                    <Icon name={icons.chevron} size={iconSize.chevron} className={cn("opacity-60 grayscale transition-transform duration-[180ms]", !isOpen && "-rotate-90")} />
                   </span>
                 </button>
                 {/* On the rail (lg and up, not expanded) every group shows its icons; elsewhere the group follows its open state. */}
@@ -170,12 +168,12 @@ const Sidebar = ({ alerts, expanded, onToggleExpanded, mobileOpen }: SidebarProp
           aria-expanded={expanded}
           title={expanded ? "Collapse sidebar" : "Expand sidebar"}
           className={cn(
-            "group hidden h-8 w-full items-center gap-3 rounded-lg px-2.5 text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active lg:flex",
+            "group hidden h-[34px] w-full items-center gap-3 rounded-lg px-3 text-tertiary outline-none transition-colors duration-[180ms] hover:bg-raised hover:text-secondary-foreground focus-visible:ring-2 focus-visible:ring-active lg:flex",
             !expanded && "lg:justify-center lg:px-0",
           )}
         >
-          {expanded ? <icons.collapse className="size-[17px] shrink-0 text-icon-tertiary" aria-hidden /> : <icons.expand className="size-[17px] shrink-0 text-icon-tertiary" aria-hidden />}
-          <span className={cn("type-label-sm", railOnly)}>{expanded ? "Collapse sidebar" : "Expand sidebar"}</span>
+          <Icon name={icons.collapse} size={iconSize.sidebar} className={cn(!expanded && "-scale-x-100")} />
+          <span className={cn("type-label-md", railOnly)}>{expanded ? "Collapse sidebar" : "Expand sidebar"}</span>
         </button>
       </div>
 

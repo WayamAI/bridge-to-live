@@ -17,7 +17,7 @@ export default function Logo({ size = 28, showText = true }: LogoProps) {
       <img src={src} alt="Wayam AI" width={size} height={size} className="shrink-0" />
       {showText && (
         <span className="font-bold text-sm text-foreground">
-          PlantMind
+          Drishti
         </span>
       )}
     </div>

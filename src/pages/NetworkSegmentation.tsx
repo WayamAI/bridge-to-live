@@ -2,7 +2,8 @@ import { axisTick, chartTooltipStyle, chartTooltipLabelStyle } from "@/component
 import PageHeader from "@/components/layout/PageHeader";
 import { KpiGrid, KpiTile, Panel, StatusDot, ToneStatus } from "@/components/ui/primitives";
 import { zoneTone, toneOf } from "@/lib/status";
-import { kpi } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { iconSize, kpi, networkZoneIcon } from "@/lib/icons";
 
 interface PurdueLevel {
   level: string;
@@ -12,7 +13,7 @@ interface PurdueLevel {
 
 const PURDUE_LEVELS: PurdueLevel[] = [
   { level: "Level 4", label: "Enterprise IT", devices: [
-    { name: "SAP ERP Server", status: "green" }, { name: "Maximo CMMS", status: "green" }, { name: "Email Gateway", status: "green" }, { name: "PlantMind Cloud", status: "green" },
+    { name: "SAP ERP Server", status: "green" }, { name: "Maximo CMMS", status: "green" }, { name: "Email Gateway", status: "green" }, { name: "Drishti Cloud", status: "green" },
   ]},
   { level: "Level 3.5", label: "DMZ / firewall", devices: [
     { name: "FW-DMZ-01 (Palo Alto)", status: "green" }, { name: "FW-DMZ-02 (Palo Alto)", status: "amber" }, { name: "Jump Server JS-01", status: "green" },
@@ -62,6 +63,7 @@ const NetworkSegmentation = () => (
           <div key={level.level}>
             <div className="rounded-lg border border-strong border-l-[3px] p-3">
               <div className="flex items-center gap-3 mb-2">
+                <Icon name={networkZoneIcon[level.level]} size={iconSize.sidebar} />
                 <span className="type-caption tabular font-semibold text-tertiary w-16">{level.level}</span>
                 <span className="type-body-sm font-medium">{level.label}</span>
               </div>

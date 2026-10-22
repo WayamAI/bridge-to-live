@@ -1,6 +1,8 @@
 import { motion } from "framer-motion";
 import type { Equipment, EquipmentStatus } from "@/hooks/usePlantData";
 import { equipmentLabel, labelOf } from "@/lib/status";
+import { Icon } from "@/components/ui/Icon";
+import { equipmentIcon, iconSize } from "@/lib/icons";
 
 const statusColors: Record<EquipmentStatus, string> = {
   running: "bg-success border-success",
@@ -8,6 +10,14 @@ const statusColors: Record<EquipmentStatus, string> = {
   critical: "bg-error border-error",
   offline: "bg-quaternary border-quaternary",
   maintenance: "bg-info border-info",
+};
+
+const ringClass: Record<EquipmentStatus, string> = {
+  running: "border-success",
+  warning: "border-warning",
+  critical: "border-error",
+  offline: "border-quaternary",
+  maintenance: "border-info",
 };
 
 // The old animate-ping marked alarm states (warning, critical). It is now a static outer ring:
@@ -51,11 +61,14 @@ const FactoryFloor = ({ equipment, selectedId, onSelect }: FactoryFloorProps) =>
             {showRing && (
               <span className={`absolute -inset-1 rounded-full ${colorClass} opacity-30`} />
             )}
+            {/* The ring keeps the status colour; the class icon sits inside it (16px inside a 2px ring). */}
             <span
-              className={`relative block w-4 h-4 rounded-full border-2 ${colorClass} ${
+              className={`relative grid size-5 place-items-center rounded-full border-2 bg-container ${ringClass[eq.status]} ${
                 isSelected ? "ring-2 ring-foreground ring-offset-2 ring-offset-background" : ""
               }`}
-            />
+            >
+              {equipmentIcon(eq) && <Icon name={equipmentIcon(eq)!} size={iconSize.row} />}
+            </span>
             <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block z-10">
               <div className="whitespace-nowrap rounded-md border border-hairline bg-container px-2.5 py-1.5 shadow-lg">
                 <p className="type-label-sm tabular text-foreground">{eq.tag}</p>

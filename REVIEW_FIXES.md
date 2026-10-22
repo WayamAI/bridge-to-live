@@ -1,5 +1,7 @@
 # REVIEW_FIXES.md
 
+> Note: Display name changed from PlantMind to Drishti. Earlier text below keeps the old name as written at the time.
+
 Audit of reviewer feedback a–h on PlantMind (`bridge-to-live`). Branch `review-fixes`, from `origin/main` at `bc9856a`. The audit below was written before any change; **Final status** (next section) records what was done.
 
 How this was checked: production build (`vite preview`, port 4180) and `npm run dev` (port 5180), Playwright/Chromium, 28 routes × light/dark × 1440/390 = 112 combos each. The login and sidebar tests used a fresh browser context (a clean profile).

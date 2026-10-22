@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Navigate, useLocation } from "react-router-dom";
-import { icons } from "@/lib/icons";
+import { Icon } from "@/components/ui/Icon";
+import { icons, iconSize } from "@/lib/icons";
 import { useAuth } from "@/hooks/useAuth";
 import wayamMarkLight from "@/assets/brand/wayam-mark-light.svg";
 import wayamMarkDark from "@/assets/brand/wayam-mark-dark.svg";
@@ -20,7 +21,7 @@ const Login = () => {
   const location = useLocation();
 
   useEffect(() => {
-    document.title = "Sign in · PlantMind";
+    document.title = "Sign in · Drishti";
   }, []);
 
   const from = (location.state as { from?: string } | null)?.from ?? "/";
@@ -48,7 +49,12 @@ const Login = () => {
           <img src={wayamMarkLight} alt="" className="h-auto w-8 shrink-0" />
           <img src={wayamWordmarkDark} alt="Wayam AI" className="h-5 w-auto self-start" />
         </div>
-        <p className="type-display-2xl relative">PlantMind</p>
+        <div className="relative">
+          <p className="type-display-2xl lg:text-[2.25rem] lg:leading-tight">Drishti</p>
+          <p className="mt-2 max-w-md text-sm font-normal leading-5 text-white/70">
+            Real-time plant operations, equipment health and predictive maintenance intelligence.
+          </p>
+        </div>
       </div>
 
       {/* Form column */}
@@ -59,7 +65,7 @@ const Login = () => {
           <span className="flex flex-col gap-0.5">
             <img src={wayamWordmarkLight} alt="Wayam AI" className="h-5 w-auto self-start dark:hidden" />
             <img src={wayamWordmarkDark} alt="Wayam AI" className="hidden h-5 w-auto self-start dark:block" />
-            <span className="type-eyebrow text-quaternary">PlantMind</span>
+            <span className="type-eyebrow text-quaternary">Drishti</span>
           </span>
         </div>
 
@@ -75,7 +81,7 @@ const Login = () => {
                 Email
               </label>
               <div className="relative">
-                <icons.email className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-icon-quaternary" aria-hidden />
+                <Icon name={icons.email} size={iconSize.control} className="absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   id="email"
                   type="email"
@@ -93,7 +99,7 @@ const Login = () => {
                 Password
               </label>
               <div className="relative">
-                <icons.password className="pointer-events-none absolute left-3.5 top-1/2 size-4 -translate-y-1/2 text-icon-quaternary" aria-hidden />
+                <Icon name={icons.password} size={iconSize.control} className="absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
@@ -109,7 +115,7 @@ const Login = () => {
                   className="absolute right-3 top-1/2 flex size-6 -translate-y-1/2 items-center justify-center rounded-full text-quaternary outline-none transition-colors duration-[180ms] hover:text-foreground focus-visible:ring-2 focus-visible:ring-active"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
-                  {showPassword ? <icons.hidePassword className="size-4" aria-hidden /> : <icons.showPassword className="size-4" aria-hidden />}
+                  <Icon name={showPassword ? icons.hidePassword : icons.showPassword} size={iconSize.control} />
                 </button>
               </div>
             </div>
@@ -126,7 +132,7 @@ const Login = () => {
         </div>
 
         <p className="type-caption px-8 pb-8 text-quaternary">
-          Wayam AI · PlantMind demo environment
+          Wayam AI · Drishti demo environment
         </p>
       </div>
     </div>

@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { useLocation } from "react-router-dom";
+import { Icon } from "@/components/ui/Icon";
 import { iconForPath, iconSize, markForPath } from "@/lib/icons";
 import { locate } from "./nav";
 
@@ -14,7 +15,7 @@ export const PageHeader = ({ actions, children }: Props) => {
   const { pathname } = useLocation();
   // The page's name and description come from nav.ts, the same source as the sidebar, the top bar and the document title.
   const { title, description: subtitle } = locate(pathname);
-  const PageIcon = iconForPath(pathname);
+  const pageIcon = iconForPath(pathname);
   const mark = markForPath(pathname);
   return (
   <>
@@ -24,7 +25,7 @@ export const PageHeader = ({ actions, children }: Props) => {
           <div className="flex items-center gap-3">
             {mark && <img src={mark} alt="" width={44} height={44} className="hidden size-11 shrink-0 object-contain sm:block" />}
             <h2 className="type-display-lg sm:type-display-xl flex items-center gap-2.5 text-foreground">
-              {PageIcon && <PageIcon className={`${iconSize.bar} shrink-0 text-icon-tertiary ${mark ? "sm:hidden" : ""}`} aria-hidden />}
+              {pageIcon && <Icon name={pageIcon} size={iconSize.header} className={mark ? "sm:hidden" : ""} />}
               {title}
             </h2>
           </div>
